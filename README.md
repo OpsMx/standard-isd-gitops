@@ -14,30 +14,20 @@ TODO: Clean-up all the sample values.yamls WITH COMMENTS, remove "sai", set the 
 
 6. Push all changes in the gitops-repo to git (git add; git commit;git push)
 
-7. Create the following secrets. The default values are provided, except for gittoken. If you are using External SSO, DBs, etc. you might want to change them. Else, best to leave them at the defaults
-
+7. Create the following secrets. The default values are provided, except for gittoken. If you are using External SSO, DBs, etc. you might want to change them. Else, best to leave them at the defaults:
 kubectl -n opsmx-isd create secret generic gittoken --from-literal=gittoken=PUT_YOUR_GITTOKEN_HERE
 
 kubectl -n opsmx-isd create secret generic ldapconfigpassword --from-literal ldapconfigpassword=opsmxadmin123
-
 kubectl -n opsmx-isd create secret generic ldappassword --from-literal ldappassword=opsmxadmin123
-
 kubectl -n opsmx-isd create secret generic miniopassword --from-literal miniopassword=spinnakeradmin
-
 kubectl -n opsmx-isd create secret generic redispassword --from-literal redispassword=password
-
 kubectl -n opsmx-isd create secret generic saporpassword --from-literal saporpassword=saporadmin
-
 kubectl -n opsmx-isd create secret generic dbpassword --from-literal dbpassword=networks123
-
 kubectl -n opsmx-isd create secret generic rabbitmqpassword --from-literal rabbitmqpassword=Networks123
-
 kubectl -n opsmx-isd create secret generic keystorepassword --from-literal keystorepassword=changeit
 
 8. Create a configmap for inputs and a service account as follows:
-
-kubectl -n opsmx-isd apply -f install/inputcm.yaml  # TODO RENAME initialinstall to just install
-
+kubectl -n opsmx-isd apply -f install/inputcm.yaml 
 kubectl -n opsmx-isd apply -f install/serviceaccount.yaml
 
 9. Initiate the installation by executing this command:
