@@ -15,7 +15,6 @@ spec:
       containers:
         - args:
             - |-
-              set -x
 
               for env in $( echo $envs | tr "," "\n" )
               do
@@ -30,7 +29,7 @@ spec:
 
               source /tmp/environment >/dev/null 2>&1
               cd /repo/
-              chmod -x /repo/"$path"
+              chmod +x /repo/"$path"
               /repo/"$path"
           command:
             - /bin/bash
@@ -95,9 +94,12 @@ spec:
 
                 exit 1
 
+              else
+
+                ls -lrt /repo # Show the files cloned, as a success marker
+
               fi
 
-              ls -lrt /repo
           command:
             - /bin/sh
             - -x
