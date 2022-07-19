@@ -1,7 +1,7 @@
 # ISD Installation Instructions
 
 ## Cluster and Laptop set-up
-Instructions basic requirements of a laptop and cluster can be found [here]{https://docs.google.com/document/d/1SeQ53Ve3xHA9nBBf7C47_Qk4tcd4qxzyq4w2gFMAq28/edit#heading=h.gaiml9joopel}.
+Instructions basic requirements of a laptop and cluster can be found [here](https://docs.google.com/document/d/1SeQ53Ve3xHA9nBBf7C47_Qk4tcd4qxzyq4w2gFMAq28/edit#heading=h.gaiml9joopel).
 
 ## Create your git-repo
 *ISD stores all the configuration in a repo, typically a 'git repo', though bitbucket, S3 and others are supported.*
