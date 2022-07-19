@@ -9,7 +9,8 @@ Installation Instructions
    
    and cd to the gitops-repo e.g. cd gitops-repo
 4. In the gitops-repo cloned to disk and edit install/inputcm.yaml. This should be updated with version of ISD, gitrepo and user details.
-5. Update Values.yaml as required, specifically, the ISD URL, SSO and gitops repo. We recommend with the defaults, updating just the URL and git-repo details and gradually adding SSO, external DBs, etc.
+5. Update Values.yaml as required, specifically, the ISD URL, SSO and gitops repo. 
+NOTE: We recommend that we start with the defaults, updating just the URL and gitopsHalyard details and gradually adding SSO, external DBs, etc. while updating the installed instance
 
 6. Push all changes in the gitops-repo to git (git add; git commit;git push)
 
