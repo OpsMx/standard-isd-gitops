@@ -1,5 +1,6 @@
-# Installation Instructions
+# ISD Installation Instructions
 ## Create your git-repo
+ISD stores all the configuration in a repo, typically a 'git repo', though bitbucket, S3 and others are supported.
 1. Create an empty-repo (called the "gitops-repo"), rename "main" branch as "master" and clone it locally
 2. Clone https://github.com/OpsMx/standard-isd-gitops, selecting the appropriate branch. E.g:
    git clone https://github.com/OpsMx/  -b 3.12
@@ -20,7 +21,7 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 - kubectl -n opsmx-isd apply -f install/serviceaccount.yaml
 
 ## Create secrets
-
+ISD supports multiple secret managers for storing secrets such as DB passwords, SSO authenticatoin details and so on. Using kubernetes secrets is the default
 8. Create the following secrets. The default values are provided, except for gittoken. If you are using External SSO, DBs, etc. you might want to change them. Else, best to leave them at the defaults:
 - kubectl -n opsmx-isd create secret generic gittoken --from-literal=gittoken=PUT_YOUR_GITTOKEN_HERE
 
@@ -34,6 +35,7 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 - kubectl -n opsmx-isd create secret generic keystorepassword --from-literal keystorepassword=changeit
 
 ## Start the installation
+The installation is done by a kubenetes job that processes the secrets, generated YAMLs, stores them into the repo and creating the objectes in Kubernetes.
 
 9. Installation ISD by executing this command:
 
