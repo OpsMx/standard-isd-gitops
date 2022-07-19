@@ -4,7 +4,7 @@ data:
   version: 3.12.6 #Here the version implies ISD version
   gitemail: ksrinimba@gmail.com
   namespace: opsmx-isd ## Please enter the namespace where you wanted to install ISD 
-  path: byosinstall.sh
+  path: install/isd-install.sh
   secrets: gittoken,ldappassword,dbpassword,keystorepassword,rabbitmqpassword,saporpassword,redispassword,miniopassword,ldapconfigpassword ## Please enter comma(,) separated kubernetes secret names required to install ISD
   url: github.com/ksrinimba/gitops2-install ## Please enter the github url of your organization without https from where your script needs to be pulledin
   username: ksrinimba

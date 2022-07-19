@@ -1,11 +1,11 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: byos-hiu
+  name: isd-install
   labels:
-    app: byos
+    app: isd-install
     app.kubernetes.io/managed-by: spinnaker
-    app.kubernetes.io/name: byos
+    app.kubernetes.io/name: isd-install
 spec:
   backoffLimit: 2
   completions: 1
@@ -15,7 +15,7 @@ spec:
       containers:
         - args:
             - |-
-              set +x
+              set -x
 
               for env in $( echo $envs | tr "," "\n" )
               do
@@ -30,18 +30,18 @@ spec:
 
               source /tmp/environment >/dev/null 2>&1
               cd /repo/
-              chmod +x /repo/"$path"
+              chmod -x /repo/"$path"
               /repo/"$path"
           command:
             - /bin/bash
-            - +x
+            - -x
             - '-c'
           envFrom:
           - configMapRef:
               name: inputcm
           image: 'quay.io/opsmxpublic/helm-bash:v2'
           imagePullPolicy: IfNotPresent
-          name: script
+          name: apply-yamls
           volumeMounts:
             - mountPath: /repo
               name: repo-volume
@@ -71,14 +71,14 @@ spec:
 
           command:
             - /bin/bash
-            - +x
+            - -x
             - '-c'
           envFrom:
           - configMapRef:
               name: inputcm
           image: 'bitnami/kubectl:1.22'
           imagePullPolicy: IfNotPresent
-          name: kube
+          name: get-secrets
           volumeMounts:
             - mountPath: /secret
               name: secret-volume
@@ -100,14 +100,14 @@ spec:
               ls -lrt /repo
           command:
             - /bin/sh
-            - +x
+            - -x
             - '-c'
           envFrom:
           - configMapRef:
               name: inputcm
           image: 'bitnami/kubectl:1.22'
           imagePullPolicy: IfNotPresent
-          name: git
+          name: git-clone
           volumeMounts:
             - mountPath: /secret
               name: secret-volume
