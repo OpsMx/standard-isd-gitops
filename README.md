@@ -24,9 +24,10 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 
 6. Push all changes in the gitops-repo to git (e.g `git add -A; git commit -m"my changes";git push`)
 
-7. Create a configmap for inputs and a service account as follows:
+7. Create namespace, a configmap for inputs and a service account as follows:
+- `kubectl create ns opsmx-isd` 
 - `kubectl -n opsmx-isd apply -f install/inputcm.yaml` 
-- `kubectl -n opsmx-isd apply -f install/serviceaccount.yaml`
+- `kubectl -n opsmx-isd apply -f install/serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
 
 ## Create secrets
 *ISD supports multiple secret managers for storing secrets such as DB passwords, SSO authenticatoin details and so on. Using kubernetes secrets is the default.*
