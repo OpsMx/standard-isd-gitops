@@ -61,7 +61,7 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 - `kubectl -n opsmx-isd logs isd-spinnaker-halyard-0 -c create-halyard-local`
 
 ## Check the installation
-11. Access ISD using the URL specified in the values.yaml in step 5
+11. Access ISD using the URL specified in the values.yaml in step 5 in a browser such as Chrome.
 
 
 
