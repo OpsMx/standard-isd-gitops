@@ -48,6 +48,17 @@ kubectl -n opsmx-isd apply -f install/ISD-Install-Job.yaml
 
 kubectl -n opsmx-isd get po -w
 
+NOTE1: If the pod starting with isd-install-* errors out, please check the logs as follows, replacing the pod-name correctly:
+- kubectl -n opsmx-isd logs isd-install-tjzlx -c get-secrets
+- kubectl -n opsmx-isd logs isd-install-tjzlx -c git-clone
+- kubectl -n opsmx-isd logs isd-install-tjzlx -c apply-yamls
+
+
+NOTE: It is normal for some pods, specifically oes-ui pod to crash a few times before running. However, if isd-spinnaker-halyard-0 pod crashes or errors out, please check the logs of the "create-halyard-local" init container using this commamd:
+
+kubectl -n opsmx-isd logs isd-spinnaker-halyard-0 -c create-halyard-local
+
+
 11. Access ISD using the URL specified in the values.yaml in step N
 
 
