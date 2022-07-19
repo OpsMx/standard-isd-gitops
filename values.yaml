@@ -51,7 +51,7 @@ spinnaker:
       ## Configure below fields only if repo type is git/stash.
       baseUrlHostName: github.com    # Change only if using enterprise git or another repo-type
       projectName: ""                # Specify project name only if repo is under a project
-      halConfigBranch: master        # Branch for the "repository", recommend to keep "master"
+      halConfigBranch: main        # Branch for the "repository", recommend to keep "main"
       halConfigPath: /               #relative path from repository root folder
       dynAccntConfigPath: /          #relative path from repository root folder
       
