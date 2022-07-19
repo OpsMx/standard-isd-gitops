@@ -14,7 +14,7 @@ TODO: Clean-up all the sample values.yamls WITH COMMENTS, remove "sai", set the 
 
 7. Create the following secrets. The default values are provided, except for gittoken. If you are using External SSO, DBs, etc. you might want to change them. Else, best to leave them at the defaults
 
-kubectl -n opsmx-isd create secret generic gittoken --from-literal=gittoken=<YOUR TOKEN>
+kubectl -n opsmx-isd create secret generic gittoken --from-literal=gittoken=PUT_YOUR_GITTOKEN_HERE
 
 kubectl -n opsmx-isd create secret generic ldapconfigpassword --from-literal ldapconfigpassword=opsmxadmin123
 
