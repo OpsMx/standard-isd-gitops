@@ -36,7 +36,7 @@ kubectl -n opsmx-isd create secret generic keystorepassword --from-literal keyst
 
 kubectl -n opsmx-isd apply -f initialinstall/inputcm.yaml  # TODO RENAME initialinstall to just install
 
-kubectl -n opsmx-isd apply -f serviceaccount.yaml
+kubectl -n opsmx-isd apply -f initialinstall/serviceaccount.yaml
 
 9. Initiate the installation by executing this command:
 
