@@ -40,7 +40,7 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 - `kubectl -n opsmx-isd create secret generic keystorepassword --from-literal keystorepassword=changeit`
 
 ## Start the installation
-*The installation is done by a kubenetes job that processes the secrets, generated YAMLs, stores them into the repo and creating the objectes in Kubernetes.*
+*The installation is done by a kubenetes job that processes the secrets, generates YAMLs, stores them into the git-repo and creats the objectes in Kubernetes.*
 
 9. Installation ISD by executing this command:
 
