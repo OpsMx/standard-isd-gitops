@@ -1,5 +1,4 @@
-# gitops2-install
-2nd pass of installation instructions
+# Standard-isd-gitops
 
 Installation Instructions
 1. Create an empty-repo (called the "gitops-repo"), rename "main" branch as master and clone it locally
