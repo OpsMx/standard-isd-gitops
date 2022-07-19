@@ -47,7 +47,7 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 - `kubectl -n opsmx-isd apply -f install/ISD-Install-Job.yaml`
 
 ## Monitor the installation process
-10. Wait for all pods to stabilize (about 10-20 min, depending on your cluster load). Check status using:
+10. Wait for all pods to stabilize (about 10-20 min, depending on your cluster load). The "oes-config" in Completed status indicates completion of the installation process. Check status using:
 
 - `kubectl -n opsmx-isd get po -w`
 
