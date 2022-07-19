@@ -8,7 +8,7 @@ Installation Instructions
    cp -r standard-isd-gitops/* gitops-repo
    
    and cd to the gitops-repo e.g. cd gitops-repo
-4. In the gitops-repo cloned to disk and edit initialinstall/inputcm.yaml. This should be updated with version of ISD, gitrepo and user details.
+4. In the gitops-repo cloned to disk and edit install/inputcm.yaml. This should be updated with version of ISD, gitrepo and user details.
 5. Update Values.yaml as required, specifically, the ISD URL, SSO and gitops repo (need clear instructions here)
 TODO: Clean-up all the sample values.yamls WITH COMMENTS, remove "sai", set the defaults correct
 
@@ -36,13 +36,13 @@ kubectl -n opsmx-isd create secret generic keystorepassword --from-literal keyst
 
 8. Create a configmap for inputs and a service account as follows:
 
-kubectl -n opsmx-isd apply -f initialinstall/inputcm.yaml  # TODO RENAME initialinstall to just install
+kubectl -n opsmx-isd apply -f install/inputcm.yaml  # TODO RENAME initialinstall to just install
 
-kubectl -n opsmx-isd apply -f initialinstall/serviceaccount.yaml
+kubectl -n opsmx-isd apply -f install/serviceaccount.yaml
 
 9. Initiate the installation by executing this command:
 
-kubectl -n opsmx-isd apply -f initialinstall/ISD-Install-Job.yaml
+kubectl -n opsmx-isd apply -f install/ISD-Install-Job.yaml
 
 10. Wait for all pods to stabilize (about 10-20 min, depending on your cluster load). Check status using:
 
