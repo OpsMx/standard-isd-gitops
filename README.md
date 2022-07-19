@@ -2,7 +2,7 @@
 ## Create your git-repo
 ISD stores all the configuration in a repo, typically a 'git repo', though bitbucket, S3 and others are supported.
 
-1. Create an empty-repo (called the "gitops-repo"), rename "main" branch as "master" and clone it locally
+1. Create an empty-repo (called the "gitops-repo"),  "main" branch should be the defauly, and clone it locally
 2. Clone https://github.com/OpsMx/standard-isd-gitops, selecting the appropriate branch. E.g:
    git clone https://github.com/OpsMx/  -b 3.12
 3. Copy contents of the standard-isd-repo to the gitops-repo created above using:
