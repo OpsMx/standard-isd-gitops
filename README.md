@@ -3,18 +3,17 @@
 
 Installation Instructions
 1. Create an empty-repo (called the "gitops-repo"), rename "main" branch as master and clone it locally
-2. clone helm-install-update, Copy contents of standard-isd-gitops to the gitops-repo created above
-3. Depending your version, select the values.yaml_3.nn file and copy to "values.yaml" .e.g:
-      cp values.yaml_3.12 values.yaml
+2. Clone https://github.com/OpsMx/standard-isd-gitops, selecting the appropriate branch. E.g:
+   git clone https://github.com/OpsMx/  -b 3.12
+3. Copy contents of the standard-isd-repo to the gitops-repo created above using:
+   cp -r standard-isd-gitops/* gitops-repo
+4. In the gitops-repo cloned to disk and edit initialinstall/inputcm.yaml. This should be updated with version of ISD, gitrepo and user details.
+5. Update Values.yaml as required, specifically, the ISD URL, SSO and gitops repo (need clear instructions here)
 TODO: Clean-up all the sample values.yamls WITH COMMENTS, remove "sai", set the defaults correct
 
-4. In the gitops-repo cloned to disk and edit initialinstall/inputcm.yaml. This should be updated with version of ISD, gitrepo and user details.
-     TODO: create one for each version as a branch, so nothing else is needed to be updated except the repo details
-5. Update Values.yaml as required, specifically, the ISD URL, SSO and gitops repo (need clear instructions here)
+6. Push all changes in the gitops-repo to git (git add; git commit;git push)
 
-7. Push all changes in the gitops-repo to git (git add; git commit;git push)
-
-7. Create the following secrets. The default values are provided
+7. Create the following secrets. The default values are provided, except for gittoken. If you are using External SSO, DBs, etc. you might want to change them. Else, best to leave them at the defaults
 
 kubectl -n opsmx-isd create secret generic gittoken --from-literal=gittoken=<YOUR TOKEN>
 
@@ -43,6 +42,12 @@ kubectl -n opsmx-isd apply -f serviceaccount.yaml
 9. Initiate the installation by executing this command:
 
 kubectl -n opsmx-isd apply -f initialinstall/ISD-Install-Job.yaml
+
+10. Wait for all pods to stabilize (about 10-20 min, depending on your cluster load). Check status using:
+
+kubectl -n opsmx-isd get po -w
+
+11. Access ISD using the URL specified in the values.yaml in step N
 
 
 
