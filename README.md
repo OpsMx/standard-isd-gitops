@@ -1,6 +1,6 @@
 # ISD Installation Instructions
 ## Create your git-repo
-ISD stores all the configuration in a repo, typically a 'git repo', though bitbucket, S3 and others are supported.
+*ISD stores all the configuration in a repo, typically a 'git repo', though bitbucket, S3 and others are supported.*
 
 1. Create an empty-repo (called the "gitops-repo"),  "main" branch should be the defauly, and clone it locally
 2. Clone https://github.com/OpsMx/standard-isd-gitops, selecting the appropriate branch. E.g:
@@ -12,20 +12,20 @@ ISD stores all the configuration in a repo, typically a 'git repo', though bitbu
    and cd to the gitops-repo e.g. `cd gitops-repo`
 
 ## Specify inputs based on your environment and git-repo
-The installation process requires inputs such as the application version, git-repo details and so on.
+*The installation process requires inputs such as the application version, git-repo details and so on.*
 
 4. In the gitops-repo cloned to disk and edit install/inputcm.yaml. This should be updated with version of ISD, gitrepo and user details.
 5. Update Values.yaml as required, specifically, the ISD URL, SSO and gitops repo. 
 NOTE: We recommend that we start with the defaults, updating just the URL and gitopsHalyard details and gradually adding SSO, external DBs, etc. while updating the installed instance
 
-6. Push all changes in the gitops-repo to git (git add -A; git commit -m"my changes";git push)
+6. Push all changes in the gitops-repo to git (e.g `git add -A; git commit -m"my changes";git push`)
 
 7. Create a configmap for inputs and a service account as follows:
 - `kubectl -n opsmx-isd apply -f install/inputcm.yaml` 
 - `kubectl -n opsmx-isd apply -f install/serviceaccount.yaml`
 
 ## Create secrets
-ISD supports multiple secret managers for storing secrets such as DB passwords, SSO authenticatoin details and so on. Using kubernetes secrets is the default
+*ISD supports multiple secret managers for storing secrets such as DB passwords, SSO authenticatoin details and so on. Using kubernetes secrets is the default*
 
 8. Create the following secrets. The default values are provided, except for gittoken. If you are using External SSO, DBs, etc. you might want to change them. Else, best to leave them at the defaults:
 - `kubectl -n opsmx-isd create secret generic gittoken --from-literal=gittoken=`**PUT_YOUR_GITTOKEN_HERE**
@@ -40,7 +40,7 @@ ISD supports multiple secret managers for storing secrets such as DB passwords, 
 - `kubectl -n opsmx-isd create secret generic keystorepassword --from-literal keystorepassword=changeit`
 
 ## Start the installation
-The installation is done by a kubenetes job that processes the secrets, generated YAMLs, stores them into the repo and creating the objectes in Kubernetes.
+*The installation is done by a kubenetes job that processes the secrets, generated YAMLs, stores them into the repo and creating the objectes in Kubernetes.*
 
 9. Installation ISD by executing this command:
 
