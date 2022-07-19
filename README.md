@@ -6,6 +6,8 @@ Installation Instructions
    git clone https://github.com/OpsMx/  -b 3.12
 3. Copy contents of the standard-isd-repo to the gitops-repo created above using:
    cp -r standard-isd-gitops/* gitops-repo
+   
+   and cd to the gitops-repo e.g. cd gitops-repo
 4. In the gitops-repo cloned to disk and edit initialinstall/inputcm.yaml. This should be updated with version of ISD, gitrepo and user details.
 5. Update Values.yaml as required, specifically, the ISD URL, SSO and gitops repo (need clear instructions here)
 TODO: Clean-up all the sample values.yamls WITH COMMENTS, remove "sai", set the defaults correct
