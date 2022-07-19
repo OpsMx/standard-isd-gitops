@@ -1,0 +1,146 @@
+#####################################################
+global:
+  ssl:
+    enabled: true
+
+  certManager:
+    installed: true
+
+  # Common gate for both spin and oes services. Change ONLY if required
+  commonGate:
+    enabled: true
+
+  ## Set to true to expose oes-ui, oes-gate services over ingress
+  createIngress: true
+
+  ## Set to false only if user uses gitops style and user dont want the repo to be created automatically in github.com
+  githubcreationHook: false
+
+  gitea:
+    enabled: false
+    standardrepoBranch: 3.12
+
+  ## OES-UI url configuration
+  oesUI:
+    protocol: https
+    host: oes39.sai.play.opsmx.org
+
+  ###############################################################################
+  # A trial LDAP is installed by default, with users: admin, user1,2,3 with user1password, user2pa...
+  # Set it to false if own LDAP is to be configured
+  installOpenLdap: true
+
+  ## ldap configuration used in oes-gate, oes-platform and spinnaker gate for authentication and authorization
+  ldap:
+    managerPassword: encrypted:ldappassword:ldappassword
+  minio:
+    accessKey: encrypted:miniopassword:miniopassword
+    secretKey: encrypted:miniopassword:miniopassword
+
+db:
+  url: jdbc:postgresql://oes-db:5432
+  username: postgres
+  password: encrypted:dbpassword:dbpassword
+
+###############################################################################
+gate:
+  config:
+    #####################################################
+    # SAML AUthentication
+    #####################################################
+    # keytool -genkey -v -keystore oessaml.jks -alias saml -keyalg RSA -keysize 2048 -validity 10000
+    # oessaml.jks and oesmetadata.xml are mounted as secrets, create them as follows
+    # kubectl create secret generic oesmetadataxml --from-file=oesmetadata.xml -n <namespace>
+    # kubectl create secret generic oessamljks --from-file=oessaml.jks -n <namespace>
+    # kubectl create secret generic samljks-password --from-literal password=changeit -n <namespace>
+    saml:
+      enabled: false
+      userSource: gate  # Groups will be obtained from SAML
+      keyStore: /opt/spinnaker/saml/oessaml.jks  # The key in this secret must be oessaml.jks
+      keyStorePassword: encrypted:keystorepassword:keystorepassword
+      keyStoreAliasName: saml
+      metadataUrl: /opt/spinnaker/saml/oesmetadata.xml # The key in this secret must be oesmetadata.xml
+      redirectProtocol: https
+      redirectHostname: oes-gate.ryzon7-gitops.opsmx.org  # OES gate host name
+      redirectBasePath: /
+      issuerId: ryzonoesgate
+      jksSecretName: oessamljks
+      metadataSecretName: oesmetadataxml
+
+    #####################################################
+    #OAUTH2 Authentication for GitHub
+    #####################################################
+    oauth2:
+      enabled: false
+      client:
+        clientId: #CLIENT_ID
+        clientSecret: #CLIENT_SECRET_ID
+        accessTokenUri: https://github.com/login/oauth/access_token
+        userAuthorizationUri: https://github.com/login/oauth/authorize
+        scope: user-email
+      resource:
+        userInfoUri: https://api.github.com/user
+      userInfoMapping:
+        email: email
+        firstName: firstname
+        lastName: name
+        username: login
+      provider: GITHUB
+
+###############################################################################
+rabbitmq:
+  username: rabbitmq
+  password: encrypted:rabbitmqpassword:rabbitmqpassword
+
+###############################################################################
+saporgate:
+  config:
+    username: admin      # User name with admin permissions and belonging to admin groups defined in platform service
+    password: encrypted:saporpassword:saporpassword # Any generic String, need not be the real password
+
+###############################################################################
+## Details of redis-master image for OES
+redis:
+  url: redis://:encrypted:redispassword:redispassword@{{ .Release.Name }}-redis-master
+  password: encrypted:redispassword:redispassword
+#####################################################
+spinnaker:
+  gitopsHalyard:
+    repo:
+      type: git # git, s3, stash(bitbucket server) use a different sample values file for s3/bitbuck-stash
+      configArgs: "http.sslVerify=false"
+      ## Configure below fields only if repo type is git/stash. Skip to s3 section if type is s3
+      baseUrlHostName: github.com    # Specify the Base FQDN of your repository without the protocol
+      organization: saitejaopsmx
+      projectName: ""                # Specify project name only if repo is under a project
+      repository: sai39 # repo name for GitOps Halyard (Sample Reference: https://github.com/OpsMx/sample-gitops-repo.git).
+      halConfigBranch: master # Branch under which halyard config is present under above repository
+      halConfigPath: / #relative path from repository root folder
+      dynamicAccRepository: sai39 # Please provide the repo name of the GitOps Dynamic Accounts Directory. Can be same as Hal repo. 
+      dynAccntConfigPath: / #relative path from repository root folder
+      username: saitejaopsmx  # Username to authenticate with git/stash repo
+      token: encrypted:gittoken:gittoken  # Token corresponding to above username
+    pipelinePromotion:  # GitHub only,  Not supportd on S3 or Stash
+      enabled: true
+      type: git  # git, s3, stash
+      gitConfig: "git config --global http.sslVerify false"
+      organization: saitejaopsmx  # Also called "project" in some repos
+      repository: sai39  # bucket name in case of S3
+      rootFolder: pipeline/
+      baseUrl: github.com  #  "git_url"
+      username: saitejaopsmx
+      token: encrypted:gittoken:gittoken
+      branch: master
+
+  ## Here basic ldap auth is used by default; everything under spinCli will be pasted in ~/.spin/config
+  spinCli:
+    auth:
+      basic:
+        username: admin          # Use credentials corresponding to saporgate.config.username
+        password: encrypted:saporpassword:saporpassword     # Use credentials corresponding to saporgate.config.password
+
+####################################################
+# OpenLDAP custom configuration; will override default configuration of openldap helm chart
+openldap:
+  adminPassword: encrypted:ldappassword:ldappassword
+  configPassword: encrypted:ldapconfigpassword:ldapconfigpassword

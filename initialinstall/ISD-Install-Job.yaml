@@ -1,0 +1,123 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: byos-hiu
+  labels:
+    app: byos
+    app.kubernetes.io/managed-by: spinnaker
+    app.kubernetes.io/name: byos
+spec:
+  backoffLimit: 2
+  completions: 1
+  parallelism: 1
+  template:
+    spec:
+      containers:
+        - args:
+            - |-
+              set +x
+
+              for env in $( echo $envs | tr "," "\n" )
+              do
+              echo export $env >> /tmp/environment
+              done
+              for filename in /secret/* 
+              do 
+              variable=$(echo $filename | sed 's#/# #g' | awk '{print $2}')
+              echo setting env $variable for $filename 
+              echo "export $variable=$(cat "$filename")" >> /tmp/environment
+              done
+
+              source /tmp/environment >/dev/null 2>&1
+              cd /repo/
+              chmod +x /repo/"$path"
+              /repo/"$path"
+          command:
+            - /bin/bash
+            - +x
+            - '-c'
+          envFrom:
+          - configMapRef:
+              name: inputcm
+          image: 'quay.io/opsmxpublic/helm-bash:v2'
+          imagePullPolicy: IfNotPresent
+          name: script
+          volumeMounts:
+            - mountPath: /repo
+              name: repo-volume
+            - mountPath: /secret
+              name: secret-volume
+      initContainers:
+        - args:
+            - >-
+
+              for secret in $(echo $secrets | sed "s/,/ /g")
+
+              do
+
+              echo getting $secret
+
+              kubectl -n "$namespace" get secret "$secret" || { echo "failed getting
+              secret $secret" ; exit 1; }
+
+              kubectl -n "$namespace" get secret "$secret" -o jsonpath='{.data.*}' |
+              base64 -d > /secret/"$secret" 
+
+              ls -ltr /secret/"$secret"
+
+              #cat /secret/"$secret"
+
+              done
+
+          command:
+            - /bin/bash
+            - +x
+            - '-c'
+          envFrom:
+          - configMapRef:
+              name: inputcm
+          image: 'bitnami/kubectl:1.22'
+          imagePullPolicy: IfNotPresent
+          name: kube
+          volumeMounts:
+            - mountPath: /secret
+              name: secret-volume
+        - args:
+            - >-
+
+              ls -ltr /secret/gittoken || { echo "failed cloning $url" ; exit 1; }
+
+              git clone https://"$username":"$(cat /secret/gittoken)"@"$url" -b "$branch" /repo
+
+              if [ $? != 0 ] 
+
+              then
+
+                exit 1
+
+              fi
+
+              ls -lrt /repo
+          command:
+            - /bin/sh
+            - +x
+            - '-c'
+          envFrom:
+          - configMapRef:
+              name: inputcm
+          image: 'bitnami/kubectl:1.22'
+          imagePullPolicy: IfNotPresent
+          name: git
+          volumeMounts:
+            - mountPath: /secret
+              name: secret-volume
+            - mountPath: /repo
+              name: repo-volume
+      serviceAccount: byos
+      serviceAccountName: byos
+      restartPolicy: "Never"
+      volumes:
+        - emptyDir: {}
+          name: secret-volume
+        - emptyDir: {}
+          name: repo-volume
