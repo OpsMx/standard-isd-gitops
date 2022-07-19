@@ -25,7 +25,7 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 - `kubectl -n opsmx-isd apply -f install/serviceaccount.yaml`
 
 ## Create secrets
-*ISD supports multiple secret managers for storing secrets such as DB passwords, SSO authenticatoin details and so on. Using kubernetes secrets is the default*
+*ISD supports multiple secret managers for storing secrets such as DB passwords, SSO authenticatoin details and so on. Using kubernetes secrets is the default.*
 
 8. Create the following secrets. The default values are provided, except for gittoken. If you are using External SSO, DBs, etc. you might want to change them. Else, best to leave them at the defaults:
 - `kubectl -n opsmx-isd create secret generic gittoken --from-literal=gittoken=`**PUT_YOUR_GITTOKEN_HERE**
