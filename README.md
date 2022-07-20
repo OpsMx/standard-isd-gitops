@@ -87,9 +87,11 @@ Use the following command (replace isd below with the helm release-name) to chec
 
 If the clone is not happening correctly, please check your values.yaml git user, token, repo, branch etc. For those interested, the script can be found in the isd-spinnaker-halyard-init-script
 
-## Below is the process to be followed to take the backup of DBs of the current ISD version(i.e 3.10)
+## Steps followed to upgarde to 3.11 ISD version
 
-1. Use the sed commnads to replace the pvc names in minio,postgres and redis folders
+1. Backup of the DBs
+
+-  Use the sed commnads to replace the pvc names in minio,postgres and redis folders
 
    sed -i 's/PVCNAME/<USER_SPECIFIED_VALUE>/g' redis/*.yaml
    
@@ -111,10 +113,42 @@ If the clone is not happening correctly, please check your values.yaml git user,
    
    Once the above is command is executed pvc will be created and pod will be deployed and backup will be stored in that pvcplease wait 10sec and check      the logs the backup will be sucessfull.
    
-2. Plese verify with the following command if the pvcs created or not
+ - Plese verify with the following command if the pvcs created or not
    
    `kubectl -n opsmx-isd get pvc | grep pvc-`
+ 
+2. Migration Script from 3.10 to 3.11(WIP)
 
+
+3. ISD Upgrade
+
+   The upgrade process requires inputs such as the application version, git-repo details and so on.
+
+   In the gitops-repo cloned to disk and edit upgrade/upgradecm.yaml. This should be updated with version of ISD, gitrepo, srcbranch and user details.
+
+   `kubectl -n opsmx-isd apply -f install/upgradecm.yaml`  # Edit namespace if changed from the default "opsmx-isd"
+
+   Once the job is sucessfull
+
+   A new branch(i.e branch will be the same as ISD version) will be created and all the manifest files will be uploaded in that repo.
+   
+   Compare the new deployment yamls with the previous version to check the differences. Reconcile any differences,  raise a PR and merge the new versions    on to the default ("main") branch.
+
+   User need to cd to path reinstall/ and apply the reinstall.yaml
+   
+   Use below command to apply the manifest files
+
+   kubectl -n opsmx-isd apply -f reinstall.yaml
+   
+   Check the status of the pods by executing this command:
+   
+   `kubectl -n opsmx-isd get po`
+   
+   Once all pods show "Running" or "Completed" status, wait for a couple of minutes amd access the ingress
+
+   `kubectl -n opsmx-isd get ing`
+
+   
 
 # Cleaning up/Delete the installation
 
