@@ -1,5 +1,5 @@
-Below are the steps to be followed to upgrade to 3.11
-
+**Below are the steps to be followed to upgrade to 3.11
+**
 
 1. User need to have ISD 3.10 version installed in the system.
 
@@ -19,15 +19,15 @@ Below are the steps to be followed to upgrade to 3.11
 
   `kubectl -n opsmx-isd apply -f minio/`
 
-  Once the above is command is executed pvc will be created and pod will be deployed and backup will be stored in that pvc.please wait 10sec and check the logs the backup will be sucessfull.
+  Once the above is command is executed pvc will be created and pod will be deployed and backup will be stored in that pvc .please wait 10sec and check     the logs the backup will be sucessfull.
 
   `kubectl -n opsmx-isd apply -f redis/`
 
-  Once the above is command is pvc will be created and pod will be deployed and backup will be stored in that pvc executed please wait 10sec and check the logs the backup will be sucessfull.
+  Once the above is command is pvc will be created and pod will be deployed and backup will be stored in that pvc executed please wait 10sec and check     the logs the backup will be sucessfull.
 
   `kubectl -n opsmx-isd apply -f postgres/`
 
-  Once the above is command is executed pvc will be created and pod will be deployed and backup will be stored in that pvcplease wait 10sec and check the logs the backup will be sucessfull.
+  Once the above is command is executed pvc will be created and pod will be deployed and backup will be stored in that pvcplease wait 10sec and check the   logs the backup will be sucessfull.
 
   Plese verify with the following command if the pvcs created or not
 
@@ -48,7 +48,7 @@ Below are the steps to be followed to upgrade to 3.11
 
 5. To upgrade from current ISD version(i.e 3.10) to desired (i.e 3.11) User need to create a new configmap 
 
-   In the gitops-repo cloned to disk and edit upgrade/upgradecm.yaml. This should be updated with version of ISD (application version ), gitrepo, srcbranch and user details.
+   In the gitops-repo cloned to disk and edit upgrade/upgradecm.yaml. This should be updated with version of ISD (application version ), gitrepo,            srcbranch and user details.
 
    `kubectl -n opsmx-isd apply -f install/upgradecm.yaml` # Edit namespace if changed from the default "opsmx-isd"
 
@@ -56,7 +56,7 @@ Below are the steps to be followed to upgrade to 3.11
 
     A new branch(i.e branch will be the same as ISD version) will be created and all the manifest files will be uploaded in that repo.
 
-    Compare the new deployment yamls with the previous version to check the differences. Reconcile any differences, raise a PR and merge the new versions on to the default ("main") branch.
+    Compare the new deployment yamls with the previous version to check the differences. Reconcile any differences, raise a PR and merge the new versions     on to the default ("main") branch.
 
  6. In the next step user need to apply the apply the uploaded manifest files into the namespace
 
@@ -68,9 +68,11 @@ Below are the steps to be followed to upgrade to 3.11
 
     `kubectl -n opsmx-isd get po`
 
-     Once all pods show "Running" or "Completed" status, wait for a couple of minutes amd access the ingress
+     Once all pods show "Running" or "Completed" status, wait for a couple of minutes and access the ingress
 
      `kubectl -n opsmx-isd get ing`
 
-7. Login to ISD UI and check all the screens of ISD if data is reflecting properly or not.
+7. Login to the the ISD URL and confirm that the upgrade is completed by checking the version at the top-right corner or lower right corner.
+
+8. Go to all the screens in ISD UI and verify everything works fine or not.
 
