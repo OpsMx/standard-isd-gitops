@@ -35,14 +35,16 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 8. Create the following secrets. The default values are handled by the installer, except for gittoken. If you are using External SSO, DBs, etc. you might want to change them. Else, best to leave them at the defaults:
 - `kubectl -n opsmx-isd create secret generic gittoken --from-literal=gittoken=PUT_YOUR_GITTOKEN_HERE`
 
-### Optional, in case we want to change them
+### Optional
+*In case we want to change these, please enter the correct values and create the secrets*
+
 - `kubectl -n opsmx-isd create secret generic ldapconfigpassword --from-literal ldapconfigpassword=PUT_YOUR_SECRET_HERE`
-- `kubectl -n opsmx-isd create secret generic ldappassword --from-literal ldappassword=`**PUT_YOUR_SECRET_HERE**
-- `kubectl -n opsmx-isd create secret generic miniopassword --from-literal miniopassword=`**PUT_YOUR_SECRET_HERE**
-- `kubectl -n opsmx-isd create secret generic redispassword --from-literal redispassword=`**PUT_YOUR_SECRET_HERE**
-- `kubectl -n opsmx-isd create secret generic saporpassword --from-literal saporpassword=`**PUT_YOUR_SECRET_HERE**
-- `kubectl -n opsmx-isd create secret generic rabbitmqpassword --from-literal rabbitmqpassword=`**PUT_YOUR_SECRET_HERE**
-- `kubectl -n opsmx-isd create secret generic keystorepassword --from-literal keystorepassword=`**PUT_YOUR_SECRET_HERE**
+- `kubectl -n opsmx-isd create secret generic ldappassword --from-literal ldappassword=PUT_YOUR_SECRET_HERE`
+- `kubectl -n opsmx-isd create secret generic miniopassword --from-literal miniopassword=PUT_YOUR_SECRET_HERE`
+- `kubectl -n opsmx-isd create secret generic redispassword --from-literal redispassword=PUT_YOUR_SECRET_HERE`
+- `kubectl -n opsmx-isd create secret generic saporpassword --from-literal saporpassword=PUT_YOUR_SECRET_HERE`
+- `kubectl -n opsmx-isd create secret generic rabbitmqpassword --from-literal rabbitmqpassword=PUT_YOUR_SECRET_HERE`
+- `kubectl -n opsmx-isd create secret generic keystorepassword --from-literal keystorepassword=PUT_YOUR_SECRET_HERE`
 
 ## Start the installation
 *The installation is done by a kubenetes job that processes the secrets, generates YAMLs, stores them into the git-repo and creats the objectes in Kubernetes.*
