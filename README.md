@@ -69,7 +69,33 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 11. Access ISD using the URL specified in the values.yaml in step 5 in a browser such as Chrome.
 12. Login to the ISD instance with user/password as admin and opsmxadmin123, if using the defaults for build-in LDAP.
 
+# Troubleshooting Issues during installation
+Most common issues during installation are related to incorrect values in values.yaml. Should you realize that there is a mistake, it is easy to correct it.
+- Update the values.yaml
+- Wait for the helm install to error out, it is best to not break the process
+- `kubectl -n opsmx-isd apply -f install/ISD-Install-Job.yaml`
+- Once the job is in Completed state, if required, delete the crashing/erroring pods and the isd-spinnaker-halyard-0 pod
 
+## *-spinnaker-halyard-0 is in error/crashloop
+One of the common errors faced by first time installers is spinnaker-halyard going into an Error state. Most common reason is that the init container failed to clone the gitops repo. Note that “main” branch is expected to be the default branch for the repo.
 
+Use the following command (replace isd below with the helm release-name) to check if the git clone is happening:
+
+'kubectl logs  -n opsmx-isd isd-spinnaker-halyard-0 -c create-halyard-local'
+
+If the clone is not happening correctly, please check your values.yaml git user, token, repo, branch etc. For those interested, the script can be found in the isd-spinnaker-halyard-init-script
+
+# Cleaning up/Delete the installation
+
+Issue these commands, replace -n option with the namespace 
+kubectl -n opsmx-isd delete deploy --all
+kubectl -n opsmx-isd delete sts --all
+kubectl -n opsmx-isd delete svc --all
+kubectl -n opsmx-isd delete ing --all
+kubectl -n opsmx-isd delete cm --all
+kubectl -n opsmx-isd delete jobs –all 
+kubectl -n opsmx-isddelete pvc –all
+kubectl -n opsmx-isd delete secrets --all
+kubectl delete ns opsmx-isd
 
 
