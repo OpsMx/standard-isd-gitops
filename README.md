@@ -8,7 +8,7 @@ Instructions basic requirements of a laptop and cluster can be found [here](http
 
 1. Create an empty-repo (called the "gitops-repo" in the document),  "main" branch should be the default, and clone it locally
 2. Clone https://github.com/OpsMx/standard-isd-gitops, selecting the appropriate branch. E.g:
-   git clone https://github.com/OpsMx/standard-isd-gitops  -b 3.11
+   git clone https://github.com/OpsMx/standard-isd-gitops  -b 3.10
 3. Copy contents of the standard-isd-repo to the gitops-repo created above using:
    
    `cp -r standard-isd-gitops/* gitops-repo` # Replace "gitops-repo" with your repo-name
