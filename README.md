@@ -81,7 +81,7 @@ One of the common errors faced by first time installers is spinnaker-halyard goi
 
 Use the following command (replace isd below with the helm release-name) to check if the git clone is happening:
 
-- `kubectl logs  -n opsmx-isd isd-spinnaker-halyard-0 -c create-halyard-local`
+- `kubectl -n opsmx-isd logs isd-spinnaker-halyard-0 -c create-halyard-local`
 
 If the clone is not happening correctly, please check your values.yaml git user, token, repo, branch etc. For those interested, the script can be found in the isd-spinnaker-halyard-init-script
 
