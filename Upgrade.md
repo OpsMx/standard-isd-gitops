@@ -5,6 +5,10 @@ Below are the steps to be followed to upgrade to 3.11
 
 2. You should have ISD 3.10 values.yaml in handy and need to update accordingly with 3.11 values and push to git repository.
 
+**NOTE: User need to have the ISD n+1 version of values.yaml in the git repo. 
+
+Example: If user is having 3.10 ISD version he should update 3.11 values accordingly and push to git reposirtoy. 
+
 3. User first need to take the back up of the Databases (i.e Minio,Postgres,Redis).
 
   In the gitops-repo cloned to disk. cd to the gitops-repo cloned
