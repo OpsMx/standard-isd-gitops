@@ -1,5 +1,5 @@
-**Below are the steps to be followed to upgrade to 3.11
-**
+Below are the steps to be followed to upgrade to 3.11
+
 
 1. User need to have ISD 3.10 version installed in the system.
 
