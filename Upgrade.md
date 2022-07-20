@@ -50,7 +50,7 @@ Below are the steps to be followed to upgrade to 3.11
 
    In the gitops-repo cloned to disk and edit upgrade/upgradecm.yaml. This should be updated with version of ISD (application version ), gitrepo,            srcbranch and user details.
 
-   `kubectl -n opsmx-isd apply -f install/upgradecm.yaml` # Edit namespace if changed from the default "opsmx-isd"
+   `kubectl -n opsmx-isd apply -f upgrade/upgradecm.yaml` # Edit namespace if changed from the default "opsmx-isd"
 
     `Once the job is sucessfull`
 
