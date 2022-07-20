@@ -7,6 +7,8 @@ Below are the steps to be followed to upgrade to 3.11
 
 3. User first need to take the back up of the Databases (i.e Minio,Postgres,Redis).
 
+  In the gitops-repo cloned to disk. cd to the gitops-repo cloned
+
   Use the sed commands to replace the pvc names in minio,postgres and redis folders
 
   sed -i 's/PVCNAME/<USER_SPECIFIED_VALUE>/g' redis/*.yaml
