@@ -3,7 +3,7 @@ Below are the steps to be followed to upgrade to 3.11
 
 1. User need to have ISD 3.10 version installed in the system.
 
-2. You should have values.yaml that was used for 3.10 install handy
+2. You should have ISD 3.10 values.yaml in handy and need to update accordingly with 3.11 values and push to git repository.
 
 3. User first need to take the back up of the Databases (i.e Minio,Postgres,Redis).
 
