@@ -112,7 +112,8 @@ If the clone is not happening correctly, please check your values.yaml git user,
    Once the above is command is executed pvc will be created and pod will be deployed and backup will be stored in that pvcplease wait 10sec and check      the logs the backup will be sucessfull.
    
 2. Plese verify with the following command if the pvcs created or not
-   kubectl -n opsmx-isd get pvc | grep pvc-
+   
+   `kubectl -n opsmx-isd get pvc | grep pvc-`
 
 
 # Cleaning up/Delete the installation
