@@ -99,13 +99,16 @@ If the clone is not happening correctly, please check your values.yaml git user,
 
    Once the PVCNAMES are replaced use following commands to apply the manifest files
    
-   kubectl -n opsmx-isd apply -f minio/
+   `kubectl -n opsmx-isd apply -f minio/`
+   
    Once the above is command is executed pvc will be created and pod will be deployed and backup will be stored in that pvc.please wait 10sec and check      the logs the backup will be sucessfull.
    
-   kubectl -n opsmx-isd apply -f redis/
+   `kubectl -n opsmx-isd apply -f redis/`
+   
    Once the above is command is pvc will be created and pod will be deployed and backup will be stored in that pvc executed please wait 10sec and check      the logs the backup will be sucessfull.
  
-   kubectl -n opsmx-isd apply -f postgres/ 
+   `kubectl -n opsmx-isd apply -f postgres/`
+   
    Once the above is command is executed pvc will be created and pod will be deployed and backup will be stored in that pvcplease wait 10sec and check      the logs the backup will be sucessfull.
    
 2. Plese verify with the following command if the pvcs created or not
