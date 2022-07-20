@@ -88,14 +88,14 @@ If the clone is not happening correctly, please check your values.yaml git user,
 # Cleaning up/Delete the installation
 
 Issue these commands, replace -n option with the namespace 
-kubectl -n opsmx-isd delete deploy --all
-kubectl -n opsmx-isd delete sts --all
-kubectl -n opsmx-isd delete svc --all
-kubectl -n opsmx-isd delete ing --all
-kubectl -n opsmx-isd delete cm --all
-kubectl -n opsmx-isd delete jobs –all 
-kubectl -n opsmx-isddelete pvc –all
-kubectl -n opsmx-isd delete secrets --all
-kubectl delete ns opsmx-isd
+- `kubectl -n opsmx-isd delete deploy --all`
+- `kubectl -n opsmx-isd delete sts --all`
+- `kubectl -n opsmx-isd delete svc --all`
+- `kubectl -n opsmx-isd delete ing --all`
+- `kubectl -n opsmx-isd delete cm --all`
+- `kubectl -n opsmx-isd delete jobs –all` 
+- `kubectl -n opsmx-isddelete pvc –all`
+- `kubectl -n opsmx-isd delete secrets --all`
+- `kubectl delete ns opsmx-isd`
 
 
