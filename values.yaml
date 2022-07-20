@@ -7,28 +7,30 @@ global:
   # Common gate for both spin and oes services. Change ONLY if required
   commonGate:
     enabled: true
+    
+  ssl:
+    enabled: false
+    
+  certmanager:
+    installed: false
 
   createIngress: true
 
-  # Spinnaker Deck URL configuration; url overwhich spinnaker deck will be accessed
   spinDeck:
-    protocol: https
-    host: spinbyos39.sai.play.opsmx.org
+    protocol: http
+    host: spinbyos39.sai.play.opsmx.org   #Update the correct spin-deck url
 
-  # Spinnaker Gate URL configuration; url overwhich spinnaker gate will be accessed
   spinGate:
-    protocol: https
-    host: oes-gatebyos39.sai.play.opsmx.org
+    protocol: http
+    host: oes-gatebyos39.sai.play.opsmx.org  #Update the correct spin-gate url
 
-  ## OES-UI url configuration
   oesUI:
-    protocol: https
-    host: oesbyos39.sai.play.opsmx.org
+    protocol: http
+    host: oesbyos39.sai.play.opsmx.org    #Update the correct oesui url
 
-  ## OES-Gate url configuration
   oesGate:
-    protocol: https
-    host: oes-gatebyos39.sai.play.opsmx.org
+    protocol: http
+    host: oes-gatebyos39.sai.play.opsmx.org  #Update the correct oes-gate url
 
   installOpenLdap: true
   ldap:
@@ -121,25 +123,25 @@ spinnaker:
       configArgs: "http.sslVerify=false"
       ## Configure below fields only if repo type is git/stash. Skip to s3 section if type is s3
       baseUrlHostName: github.com    # Specify the Base FQDN of your repository without the protocol
-      organization: saitejaopsmx
+      organization: GITUSERNAME
       projectName: ""                # Specify project name only if repo is under a project
-      repository: datatest # repo name for GitOps Halyard (Sample Reference: https://github.com/OpsMx/sample-gitops-repo.git).
-      halConfigBranch: master # Branch under which halyard config is present under above repository
+      repository: REPOSITORY # repo name for GitOps Halyard (Sample Reference: https://github.com/OpsMx/sample-gitops-repo.git).
+      halConfigBranch: main # Branch under which halyard config is present under above repository
       halConfigPath: / #relative path from repository root folder
-      dynamicAccRepository: datatest # Please provide the repo name of the GitOps Dynamic Accounts Directory. Can be same as Hal repo. 
+      dynamicAccRepository:  REPOSITORY# Please provide the repo name of the GitOps Dynamic Accounts Directory. Can be same as Hal repo. 
       dynAccntConfigPath: / #relative path from repository root folder
-      username: saitejaopsmx  # Username to authenticate with git/stash repo
+      username: GITUSERNAME  # Username to authenticate with git/stash repo
       token: encrypted:gittoken:gittoken  # Token corresponding to above username
     # Promote applications and pipelines from one environment to another or take backup
     pipelinePromotion:  # GitHub only,  Not supportd on S3 or Stash
       enabled: true
       type: git  # git, s3, stash
       gitConfig: "git config --global http.sslVerify false"
-      organization: saitejaopsmx  # Also called "project" in some repos
-      repository: datatest  # bucket name in case of S3
+      organization: GITUSERNAME  # Also called "project" in some repos
+      repository: REPOSITORY  # bucket name in case of S3
       rootFolder: pipeline/
       baseUrl: github.com  #  "git_url"
-      username: saitejaopsmx
+      username: GITUSERNAME
       token: encrypted:gittoken:gittoken
       branch: master
       usermail: krish@company.com
