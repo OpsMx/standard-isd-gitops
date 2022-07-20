@@ -23,6 +23,8 @@ global:
     host: spin.isd-pov.example.com
 
 spinnaker:
+  autoInstallSampleApps: false
+  # Initialize gitOps style Halyard
   gitopsHalyard:
     repo:
       baseUrlHostName: github.com # REPLACE for is using enterprise github
@@ -33,3 +35,4 @@ spinnaker:
       dynamicAccRepository: YOUR-REPO # REPLACE Please provide the repo name of the GitOps Dynamic Accounts Directory
 
 
+oesAutoConfiguration: false

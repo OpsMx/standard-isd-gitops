@@ -322,6 +322,12 @@ deploymentConfigurations:
         userInfoMapping: {}
       saml:
         enabled: false
+        keyStore: "encryptedFile:oessamljks:oessaml.jks"
+        keyStoreAliasName: "saml"
+        keyStorePassword: "encrypted:samljks-password:password"
+        metadataLocal: "encryptedFile:oesmetadataxml:oesmetadata.xml"
+        issuerId: isd                                             # REPLACE
+        serviceAddress: "https://oes-gate.opsmx-isd.opsmx.org"    # REPLACE
         userAttributeMapping: {}
       ldap:
         enabled: true
@@ -424,7 +430,7 @@ deploymentConfigurations:
     trust:
       enabled: false
   stats:
-    enabled: false
+    enabled: true
     endpoint: "https://stats.spinnaker.io"
     instanceId: "01EKYADM081RQT4KAZKBPKMZK7"
     deploymentMethod: {}
