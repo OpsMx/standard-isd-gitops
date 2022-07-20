@@ -71,7 +71,7 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 
 # Troubleshooting Issues during installation
 Most common issues during installation are related to incorrect values in values.yaml. Should you realize that there is a mistake, it is easy to correct it.
-- Update the values.yaml
+- Update the values.yaml, and push to the git-repo
 - Wait for the helm install to error out, it is best to not break the process
 - `kubectl -n opsmx-isd apply -f install/ISD-Install-Job.yaml`
 - Once the job is in Completed state, if required, delete the crashing/erroring pods and the isd-spinnaker-halyard-0 pod
@@ -81,7 +81,7 @@ One of the common errors faced by first time installers is spinnaker-halyard goi
 
 Use the following command (replace isd below with the helm release-name) to check if the git clone is happening:
 
-'kubectl logs  -n opsmx-isd isd-spinnaker-halyard-0 -c create-halyard-local'
+- `kubectl logs  -n opsmx-isd isd-spinnaker-halyard-0 -c create-halyard-local`
 
 If the clone is not happening correctly, please check your values.yaml git user, token, repo, branch etc. For those interested, the script can be found in the isd-spinnaker-halyard-init-script
 
