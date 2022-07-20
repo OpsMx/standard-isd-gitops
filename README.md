@@ -87,6 +87,29 @@ Use the following command (replace isd below with the helm release-name) to chec
 
 If the clone is not happening correctly, please check your values.yaml git user, token, repo, branch etc. For those interested, the script can be found in the isd-spinnaker-halyard-init-script
 
+##Below is the process to be followed to take the backup of DBs
+
+1. Use the sed commnads to replace the pvc names in minio,postgres and redis folders
+
+   sed -i 's/PVCNAME/<USER_SPECIFIED_VALUE>/g' redis/*.yaml
+   sed -i 's/PVCNAME/<USER_SPECIFIED_VALUE>/g' minio/*.yaml
+   sed -i 's/PVCNAME/<USER_SPECIFIED_VALUE>/g' postgres/*.yaml
+
+   Once the PVCNAMES are replaced use following commands to apply the manifest files
+   
+   kubectl -n opsmx-isd apply -f minio/
+   Once the above is command is executed pvc will be created and pod will be deployed and backup will be stored in that pvc.please wait 10sec and check      the logs the backup will be sucessfull.
+   
+   kubectl -n opsmx-isd apply -f redis/
+   Once the above is command is pvc will be created and pod will be deployed and backup will be stored in that pvc executed please wait 10sec and check      the logs the backup will be sucessfull.
+ 
+   kubectl -n opsmx-isd apply -f postgres/ 
+   Once the above is command is executed pvc will be created and pod will be deployed and backup will be stored in that pvcplease wait 10sec and check      the logs the backup will be sucessfull.
+   
+2. Plese verify with the following command if the pvcs created or not
+   kubectl -n opsmx-isd get pvc | grep pvc-
+
+
 # Cleaning up/Delete the installation
 
 Issue these commands, replace -n option with the namespace 
