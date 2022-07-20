@@ -11,7 +11,7 @@ Instructions basic requirements of a laptop and cluster can be found [here](http
    git clone https://github.com/OpsMx/standard-isd-gitops  -b 3.12
 3. Copy contents of the standard-isd-repo to the gitops-repo created above using:
    
-   `cp -r standard-isd-gitops/* gitops-repo`
+   `cp -r standard-isd-gitops/* gitops-repo` # Replace "gitops-repo" with your repo-name
    
    and cd to the gitops-repo e.g. `cd gitops-repo`
 
