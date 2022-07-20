@@ -33,7 +33,7 @@ spec:
               /repo/"$path"
           command:
             - /bin/bash
-            - -x
+            - +x
             - '-c'
           envFrom:
           - configMapRef:
@@ -50,27 +50,120 @@ spec:
         - args:
             - >-
 
+              create_default_secret()
+              {
+              if [[ $1 == "gittoken" ]]
+
+              then
+
+                echo "Error: Cannot create a default gittoken as it is specific to the git-repo. Please create a secret containing the gittoken manually."
+
+                exit 1
+
+              fi
+              
+              if [[ $1 == "ldappassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic ldappassword --from-literal ldappassword=opsmxadmin123
+
+                if [ $?!= 0 ]; then echo "Error creating default secret ldappassword"; exit 1; fi
+
+              fi
+              
+              if [[ $1 == "dbpassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic dbpassword --from-literal dbpassword=networks123
+
+                if [ $?!= 0 ]; then echo "Error creating default secret dbpassword"; exit 1; fi
+
+              fi
+              
+              if [[ $1 == "keystorepassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic keystorepassword --from-literal keystorepassword=changeit
+
+                if [ $?!= 0 ]; then echo "Error creating default secret keystorepassword"l exit 1; fi
+
+              fi
+              
+              if [[ $1 == "rabbitmqpassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic rabbitmqpassword --from-literal rabbitmqpassword=Networks123
+
+                if [ $?!= 0 ]; then echo "Error creating default secret rabbitmqpassword"; exit 1; fi
+
+              fi
+              
+              if [[ $1 == "saporpassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic saporpassword --from-literal saporpassword=saporadmin
+
+                if [ $?!= 0 ]; then echo "Error creating default secret saporpassword"; exit 1; fi
+
+              fi
+              
+              if [[ $1 == "redispassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic redispassword --from-literal redispassword=password
+
+                if [ $?!= 0 ]; then echo "Error creating default secret redispassword"; exit 1; fi
+
+              fi
+              
+              if [[ $1 == "miniopassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic miniopassword --from-literal miniopassword=spinnakeradmin
+
+                if [ $?!= 0 ]; then echo "Error creating default secret miniopassword"; exit 1; fi
+
+              fi
+              
+              if [[ $1 == "ldapconfigpassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic ldapconfigpassword --from-literal ldapconfigpassword=opsmxadmin123
+
+                if [ $?!= 0 ]; then echo "Error creating default secret ldapconfigpassword"; exit 1; fi
+
+              fi
+
+              }
+
+
               for secret in $(echo $secrets | sed "s/,/ /g")
 
               do
 
               echo getting $secret
 
-              kubectl -n "$namespace" get secret "$secret" || { echo "failed getting
-              secret $secret" ; exit 1; }
+              kubectl -n "$namespace" get secret "$secret" 2>/dev/null || { echo "Defaulting secret $secret as it was not found." ; create_default_secret $secret $namespace; }
 
               kubectl -n "$namespace" get secret "$secret" -o jsonpath='{.data.*}' |
+
               base64 -d > /secret/"$secret" 
 
               ls -ltr /secret/"$secret"
-
-              #cat /secret/"$secret"
 
               done
 
           command:
             - /bin/bash
-            - -x
+            - +x
             - '-c'
           envFrom:
           - configMapRef:
@@ -102,7 +195,7 @@ spec:
 
           command:
             - /bin/sh
-            - -x
+            - +x
             - '-c'
           envFrom:
           - configMapRef:
