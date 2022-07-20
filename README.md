@@ -89,7 +89,7 @@ If the clone is not happening correctly, please check your values.yaml git user,
 
 ## Steps followed to upgarde to 3.11 ISD version
 
-1. Backup of the DBs
+1. Backup of the DBs of the current ISD version i.e 3.10
 
 -  Use the sed commnads to replace the pvc names in minio,postgres and redis folders
 
