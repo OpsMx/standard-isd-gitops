@@ -87,7 +87,7 @@ Use the following command (replace isd below with the helm release-name) to chec
 
 If the clone is not happening correctly, please check your values.yaml git user, token, repo, branch etc. For those interested, the script can be found in the isd-spinnaker-halyard-init-script
 
-**##Below is the process to be followed to take the backup of DBs
+## Below is the process to be followed to take the backup of DBs
 
 1. Use the sed commnads to replace the pvc names in minio,postgres and redis folders
 
