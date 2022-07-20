@@ -10,9 +10,3 @@ rest:
 
 microsoftteams:
   enabled: true
-
-#slack:
-#  app:
-#    token: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-#    signing_secret: "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-#

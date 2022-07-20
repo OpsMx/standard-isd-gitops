@@ -33,5 +33,5 @@ spec:
       volumes:
       - configMap:
           defaultMode: 420
-          name: isd-oes-datasource-creation
+          name: test-oes-datasource-creation
         name: datasource-creation
