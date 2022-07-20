@@ -93,8 +93,8 @@ Issue these commands, replace -n option with the namespace
 - `kubectl -n opsmx-isd delete svc --all`
 - `kubectl -n opsmx-isd delete ing --all`
 - `kubectl -n opsmx-isd delete cm --all`
-- `kubectl -n opsmx-isd delete jobs –all` 
-- `kubectl -n opsmx-isddelete pvc –all`
+- `kubectl -n opsmx-isd delete jobs -–all` 
+- `kubectl -n opsmx-isddelete pvc -–all`
 - `kubectl -n opsmx-isd delete secrets --all`
 - `kubectl delete ns opsmx-isd`
 
