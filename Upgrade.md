@@ -15,6 +15,8 @@ Below are the steps to be followed to upgrade to 3.11
 
   sed -i 's/PVCNAME/<USER_SPECIFIED_VALUE>/g' postgres/*.yaml
 
+**NOTE: User should pass USER_SPECIFIED_VALUE as string or integer. 
+
   Once the PVCNAMES are replaced use following commands to apply the manifest files
 
   `kubectl -n opsmx-isd apply -f minio/`
