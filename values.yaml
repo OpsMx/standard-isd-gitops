@@ -1,72 +1,38 @@
-#####################################################
 global:
-  ## URL that will be used to access ISD. MUST BE CHANGED
-  ## Ensure that this URL is reachable from your browser. Either DNS name server record must exist or "hosts" file must be updated
-  oesUI:
-    host: isd.dev.example.com
+  # Common gate for both spin and oes services. Change ONLY if required
+  commonGate:
+    enabled: true
 
-  ssl:
-    enabled: false # Set to true if using "httpS" urls. TLS certificates must be generated for the above URL
-
-  certManager:
-    installed: false # Set to true if you have cert-manager installed in the cluster, the URL must be accessible from the internet
-
-  ## nginx ingress objects are created if set to true. Set to false if using LoadBalancer or any other ingress
-  ## The cluster MUST have nginx ingress controller already installed
   createIngress: true
 
-  #Only for trial purposes, pod-baesd git is installed and automatically configured
-  gitea: 
-    enabled: false # Set to true for trial-install only
+  # Spinnaker Deck URL configuration; url overwhich spinnaker deck will be accessed
+  spinDeck:
+    protocol: https
+    host: spinbyos39.sai.play.opsmx.org
 
-  ###############################################################################
-  # A trial LDAP is installed by default, with users: admin, user1,2,3 with user1password, user2pa...
-  # Set it to false if own LDAP is to be configured
+  # Spinnaker Gate URL configuration; url overwhich spinnaker gate will be accessed
+  spinGate:
+    protocol: https
+    host: oes-gatebyos39.sai.play.opsmx.org
+
+  ## OES-UI url configuration
+  oesUI:
+    protocol: https
+    host: oesbyos39.sai.play.opsmx.org
+
+
+  ## OES-Gate url configuration
+  oesGate:
+    protocol: https
+    host: oes-gatebyos39.sai.play.opsmx.org
+
   installOpenLdap: true
-
-  ## ldap configuration used in oes-gate, oes-platform and spinnaker gate for authentication and authorization
   ldap:
     managerPassword: encrypted:ldappassword:ldappassword
+
   minio:
     accessKey: encrypted:miniopassword:miniopassword
     secretKey: encrypted:miniopassword:miniopassword
-
-####################################################
-spinnaker:
-  gitopsHalyard: # A repo with appropriate contents used for configuring Spinnaker
-    repo:
-      type: git # git, s3, stash(bitbucket server) use a different sample values file for s3/bitbuck-stash
-      ## Git repo details, https://<baseUrlHostName>/<organization>/<repository>
-      organization: YOUR_ORG_NAME_OR_YOUR_USER_NAME_IF_NO_ORG
-      repository: YOUR_REPO_NAME # repo name for GitOps Halyard, will be created if "githubcreationHook" is set to true
-      username: YOUR_USER_NAME  # Username to authenticate with git/stash repo
-      token: encrypted:gittoken:gittoken  # Token corresponding to above username
-      dynamicAccRepository: SAME_AS_REPOSITORY_ABOVE # Repo name of the GitOps Dynamic Accounts Directory, Can be same as "repository"
-
-      ########################################################################################
-      ## Additional git-repo parameters, typically no need to be change
-      ########################################################################################
-
-      configArgs: "http.sslVerify=false"  # Extra arguments to the git clone command
-      ## Configure below fields only if repo type is git/stash.
-      baseUrlHostName: github.com    # Change only if using enterprise git or another repo-type
-      projectName: ""                # Specify project name only if repo is under a project
-      halConfigBranch: main        # Branch for the "repository", recommend to keep "main"
-      halConfigPath: /               #relative path from repository root folder
-      dynAccntConfigPath: /          #relative path from repository root folder
-      
-  ########################################################################################
-  # Lines below this do not need to be changed except where external SSO and DBs are used
-  ########################################################################################
-  
-  ## Here basic ldap auth is used by default; everything under spinCli will be pasted in ~/.spin/config
-  spinCli:
-    auth:
-      basic:
-        username: admin          # Use credentials corresponding to saporgate.config.username
-        password: encrypted:saporpassword:saporpassword     # Use credentials corresponding to saporgate.config.password
-
-####################################################
 
 db:
   url: jdbc:postgresql://oes-db:5432
@@ -135,6 +101,44 @@ redis:
   url: redis://:encrypted:redispassword:redispassword@{{ .Release.Name }}-redis-master
   password: encrypted:redispassword:redispassword
 #####################################################
+spinnaker:
+  gitopsHalyard:
+    enabled: true
+    repo:
+      type: git # git, s3, stash(bitbucket server) use a different sample values file for s3/bitbuck-stash
+      configArgs: "http.sslVerify=false"
+      ## Configure below fields only if repo type is git/stash. Skip to s3 section if type is s3
+      baseUrlHostName: github.com    # Specify the Base FQDN of your repository without the protocol
+      organization: saitejaopsmx
+      projectName: ""                # Specify project name only if repo is under a project
+      repository: datatest # repo name for GitOps Halyard (Sample Reference: https://github.com/OpsMx/sample-gitops-repo.git).
+      halConfigBranch: master # Branch under which halyard config is present under above repository
+      halConfigPath: / #relative path from repository root folder
+      dynamicAccRepository: datatest # Please provide the repo name of the GitOps Dynamic Accounts Directory. Can be same as Hal repo. 
+      dynAccntConfigPath: / #relative path from repository root folder
+      username: saitejaopsmx  # Username to authenticate with git/stash repo
+      token: encrypted:gittoken:gittoken  # Token corresponding to above username
+    pipelinePromotion:  # GitHub only,  Not supportd on S3 or Stash
+      enabled: true
+      type: git  # git, s3, stash
+      gitConfig: "git config --global http.sslVerify false"
+      organization: saitejaopsmx  # Also called "project" in some repos
+      repository: datatest  # bucket name in case of S3
+      rootFolder: pipeline/
+      baseUrl: github.com  #  "git_url"
+      username: saitejaopsmx
+      token: encrypted:gittoken:gittoken
+      branch: master
+      usermail: krish@company.com
+
+  ## Here basic ldap auth is used by default; everything under spinCli will be pasted in ~/.spin/config
+  spinCli:
+    auth:
+      basic:
+        username: admin          # Use credentials corresponding to saporgate.config.username
+        password: encrypted:saporpassword:saporpassword     # Use credentials corresponding to saporgate.config.password
+
+####################################################
 # OpenLDAP custom configuration; will override default configuration of openldap helm chart
 openldap:
   adminPassword: encrypted:ldappassword:ldappassword
