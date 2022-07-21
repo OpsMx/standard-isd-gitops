@@ -1,607 +1,606 @@
 {
- "appConfig": {},
- "application": "opsmx-gitops",
- "description": "This pipe upgrades the postgres db used by isd. The script that upgrades is in github. Before you run this pipe, make sure the byos-set-up-pipe and byos-postgres-db-backup are run and the secrets for github and postgres are created. Choose the parameters accordingly. more info at https://github.com/OpsMx/byos/blob/main/Postgres/Readme.md",
- "id": "349d747c-9eba-4d04-a9e0-bfe46ecdcfff",
- "index": 12,
- "keepWaitingPipelines": false,
- "lastModifiedBy": "admin",
- "limitConcurrent": true,
- "name": "dball",
- "parameterConfig": [
-  {
-   "default": "3.9",
-   "description": "",
-   "hasOptions": true,
-   "label": "",
-   "name": "source",
-   "options": [
+  "appConfig": {},
+  "description": "This pipe upgrades the postgres db used by isd. The script that upgrades is in github. Before you run this pipe, make sure the byos-set-up-pipe and byos-postgres-db-backup are run and the secrets for github and postgres are created. Choose the parameters accordingly. more info at https://github.com/OpsMx/byos/blob/main/Postgres/Readme.md",
+  "keepWaitingPipelines": false,
+  "lastModifiedBy": "admin",
+  "limitConcurrent": true,
+  "parameterConfig": [
     {
-     "value": "3.10"
-    },
-    {
-     "value": "3.11"
-    }
-   ],
-   "pinned": true,
-   "required": false
-  },
-  {
-   "default": "test39",
-   "description": "",
-   "hasOptions": false,
-   "label": "",
-   "name": "namespace",
-   "options": [
-    {
-     "value": ""
-    }
-   ],
-   "pinned": true,
-   "required": false
-  },
-  {
-   "default": "",
-   "description": "Only required for 3.9",
-   "hasOptions": false,
-   "label": "",
-   "name": "adminuser",
-   "options": [
-    {
-     "value": ""
-    }
-   ],
-   "pinned": false,
-   "required": false
-  }
- ],
- "spelEvaluator": "v4",
- "stages": [
-  {
-   "account": "default",
-   "alias": "runJob",
-   "application": "byos",
-   "cloudProvider": "kubernetes",
-   "consumeArtifactSource": "none",
-   "credentials": "default",
-   "manifest": {
-    "apiVersion": "batch/v1",
-    "kind": "Job",
-    "metadata": {
-     "generateName": "byos-",
-     "labels": {
-      "app": "byos"
-     },
-     "namespace": "${parameters.namespace}"
-    },
-    "spec": {
-     "backoffLimit": 2,
-     "template": {
-      "spec": {
-       "containers": [
+      "default": "3.9",
+      "description": "",
+      "hasOptions": true,
+      "label": "",
+      "name": "source",
+      "options": [
         {
-         "args": [
-          "set +x\nsource /repo/environment\nexport source=${parameters.source}\ncd /repo/oes-data-migration-scripts/\n\nif [ \"$source\" == \"3.9\" ]; then\n\n            echo \"upgrading  v3.9 to v3.12\"\n\n            python3 migration_v3.9.x_to_v3.12.x_audit_data.py auditdb $host oesdb $host platformdb $host $port $pguser $pgpassword $saporusername $saporpassword http://oes-audit-service:8097 http://oes-platform:8095 ${parameters.adminuser}\n\nelif [ \"$source\" == \"3.10\" ]; then\n\n            echo \"upgrading  v3.10 to v3.11\"\n\n            python3 migration_v3.10.x_to_v3.11.py auditdb $host opsmx $host http://oes-audit-service-v311:8097 $port $pguser $pgpassword\n\nelif [ \"$source\" == \"3.11\" ]; then\n\n             echo \"upgrading  v3.11 to v3.12\"\n\n             touch /tmp/sess\n\n             curl -s -X POST \"$oesgateurl/login?username=\"admin\"\u0026password=\"$ldappassword\"\u0026submit=Login\" -vvv -c /tmp/sess\n\n             export cookie=`cat /tmp/sess | grep SESSION | awk '{print $7}'` \n\n             echo \"Session cookie is----------------$cookie\"        \n   \n               echo \"started migration\"\n    \n             python3 migration_v3.11.x_to_v3.12.py platformdb $host oesdb $host  opsmx $host auditdb $host visibilitydb oes-db $port  $oesgateurl http://sapor-gate:8084 $oesuiurl SESSION=$cookie $pguser $pgpassword\n  \n  \nelif [ \"$source\" == \"3.12\" ]; then\necho \"upgrading  v3.12 to v4.0\"\n\nelse\n   \n   echo \"Some went wrong in mapping Migration script\"\n    \nfi"
-         ],
-         "command": [
-          "/bin/bash",
-          "+x",
-          "-c"
-         ],
-         "image": "quay.io/opsmxpublic/ubi8-oes-platform:v3.12.5",
-         "name": "script",
-         "volumeMounts": [
-          {
-           "mountPath": "/repo",
-           "name": "repo-volume"
-          }
-         ]
-        }
-       ],
-       "initContainers": [
+          "value": "3.10"
+        },
         {
-         "args": [
-          "\nexport ns=\"${parameters.namespace}\"\nexport saporusername=$(kubectl -n \"$ns\" get secret sapor-gate-files -o yaml | yq e '.data.\"gate-local.yml\"' - | base64 -d | yq e '.security.user.name' -)\n\nexport saporpassword=$(kubectl -n \"$ns\" get secret sapor-gate-files -o yaml | yq e '.data.\"gate-local.yml\"' - | base64 -d | yq e '.security.user.password' -)\nexport host=$(kubectl -n \"$ns\" get secret oes-platform-config -o yaml | yq e '.data.\"platform-local.yml\"' - | base64 -d  | yq e '.spring.datasource.url' - |sed 's|://| |g' | sed 's|:| |g' | awk '{print $3}')\nexport port=$(kubectl -n \"$ns\" get secret oes-platform-config -o yaml | yq e '.data.\"platform-local.yml\"' - | base64 -d  | yq e '.spring.datasource.url' - | grep -Eo '[0-9]{1,4}')\nexport username=$(kubectl -n \"$ns\" get secret oes-platform-config -o yaml | yq e '.data.\"platform-local.yml\"' - | base64 -d  | yq e '.spring.datasource.username' -)\nexport password=$(kubectl -n \"$ns\" get secret oes-platform-config -o yaml | yq e '.data.\"platform-local.yml\"' - | base64 -d  | yq e '.spring.datasource.password' -)\n\nexport password=$(kubectl -n \"$ns\" get secret oes-platform-config -o yaml | yq e '.data.\"platform-local.yml\"' - | base64 -d  | yq e '.spring.datasource.password' -)\nexport ldappassword=$(kubectl -n \"$ns\" get secret ldappassword -o yaml | yq e '.data.ldappassword' - | base64 -d )\nexport oesgateurl=https://$(kubectl  get  ing | grep \"oes-gate\" | awk '{print $3}')\n\nexport oesuiurl=https://$(kubectl  get  ing | grep \"oes-ui\" | awk '{print $3}')/gate\necho \"export ns=$ns\" \u003e /repo/environment\necho \"export host=$host\" \u003e\u003e  /repo/environment\necho \"export oesgateurl=$oesgateurl\" \u003e\u003e  /repo/environment\necho \"export oesuiurl=$oesuiurl\" \u003e\u003e  /repo/environment\necho \"export port=$port\" \u003e\u003e /repo/environment\necho \"export pguser=$username\" \u003e\u003e /repo/environment\necho \"export pgpassword=$password\" \u003e\u003e /repo/environment\necho \"export saporpassword=$saporpassword\" \u003e\u003e /repo/environment\necho \"export saporusername=$saporusername\" \u003e\u003e /repo/environment\necho \"export ldappassword=$ldappassword\" \u003e\u003e /repo/environment\n\n\ncp -r /home/opsmx/scripts/scripts/oes-data-migration-scripts/ /repo/"
-         ],
-         "command": [
-          "/bin/bash",
-          "+x",
-          "-c"
-         ],
-         "image": "quay.io/opsmxpublic/opsmx-custom-binaries:opsmxscripts",
-         "name": "kube",
-         "volumeMounts": [
-          {
-           "mountPath": "/repo",
-           "name": "repo-volume"
-          }
-         ]
-        }
-       ],
-       "restartPolicy": "Never",
-       "serviceAccountName": "byos",
-       "volumes": [
+          "value": "3.11"
+        },
         {
-         "emptyDir": {},
-         "name": "repo-volume"
+          "value": ""
         }
-       ]
-      }
-     }
-    }
-   },
-   "name": "Run Job (Manifest)",
-   "refId": "1",
-   "requisiteStageRefIds": [
-    "2"
-   ],
-   "source": "text",
-   "type": "runJobManifest"
-  },
-  {
-   "account": "default",
-   "cloudProvider": "kubernetes",
-   "manifests": [
-    {
-     "apiVersion": "v1",
-     "kind": "Service",
-     "metadata": {
-      "labels": {
-       "app": "oes",
-       "component": "auditclient-v311"
-      },
-      "name": "oes-audit-client-v311"
-     },
-     "spec": {
-      "ports": [
-       {
-        "name": "auditclient",
-        "port": 8098,
-        "protocol": "TCP",
-        "targetPort": 8098
-       }
       ],
-      "selector": {
-       "app": "oes",
-       "component": "auditclient-v311"
-      },
-      "sessionAffinity": "None",
-      "type": "ClusterIP"
-     },
-     "status": {
-      "loadBalancer": {}
-     }
+      "pinned": true,
+      "required": false
     },
     {
-     "apiVersion": "v1",
-     "kind": "Service",
-     "metadata": {
-      "labels": {
-       "app": "oes",
-       "component": "auditservice-v311"
-      },
-      "name": "oes-audit-service-v311"
-     },
-     "spec": {
-      "ports": [
-       {
-        "name": "auditservice",
-        "port": 8097,
-        "protocol": "TCP",
-        "targetPort": 8097
-       }
+      "default": "opsmx-isd",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "namespace",
+      "options": [
+        {
+          "value": ""
+        }
       ],
-      "selector": {
-       "app": "oes",
-       "component": "auditservice-v311"
-      },
-      "sessionAffinity": "None",
-      "type": "ClusterIP"
-     },
-     "status": {
-      "loadBalancer": {}
-     }
+      "pinned": true,
+      "required": false
     },
     {
-     "apiVersion": "v1",
-     "data": {
-      "audit-local.yml": "ICAgIHNwcmluZzoKICAgICAgZGF0YXNvdXJjZToKICAgICAgICB1cmw6IGpkYmM6cG9zdGdyZXNxbDovL29lcy1kYjo1NDMyL2F1ZGl0ZGIKICAgICAgICB1c2VybmFtZTogcG9zdGdyZXMKICAgICAgICBwYXNzd29yZDogbmV0d29ya3MxMjMKICAgIGxvZ2dpbmc6CiAgICAgIGxldmVsOgogICAgICAgIGNvbS5vcHNteC5hdWRpdGNsaWVudHNlcnZpY2U6IElORk8KICAgIG9lczoKICAgICAgYWRtaW46CiAgICAgICAgdXNlcjogYWRtaW4KICAgIGZlaWduOgogICAgICBjbGllbnQ6CiAgICAgICAgY29uZmlnOgogICAgICAgICAgZGVmYXVsdDoKICAgICAgICAgICAgY29ubmVjdFRpbWVvdXQ6IDUwMDAKICAgICAgICAgICAgcmVhZFRpbWVvdXQ6IDUwMDAKICAgICAgICAgICAgbG9nZ2VyTGV2ZWw6IGJhc2ljCiAgICAgICAgcGxhdGZvcm1zZXJ2aWNlOgogICAgICAgICAgbmFtZTogcGxhdGZvcm1zZXJ2aWNlCiAgICAgICAgICB1cmw6IGh0dHA6Ly9vZXMtcGxhdGZvcm06ODA5NQogICAgICAgIHZpc2liaWxpdHlzZXJ2aWNlOgogICAgICAgICAgbmFtZTogdmlzaWJpbGl0eXNlcnZpY2UKICAgICAgICAgIHVybDogaHR0cDovL29lcy12aXNpYmlsaXR5OjgwOTY="
-     },
-     "kind": "Secret",
-     "metadata": {
-      "labels": {
-       "app": "oes",
-       "component": "auditclient-v311"
-      },
-      "name": "oes-audit-client-config-v311"
-     },
-     "type": "Opaque"
-    },
-    {
-     "apiVersion": "v1",
-     "data": {
-      "audit-local.yml": "ICAgIHNwcmluZzoKICAgICAgZGF0YXNvdXJjZToKICAgICAgICB1cmw6IGpkYmM6cG9zdGdyZXNxbDovL29lcy1kYjo1NDMyL2F1ZGl0ZGIKICAgICAgICB1c2VybmFtZTogcG9zdGdyZXMKICAgICAgICBwYXNzd29yZDogbmV0d29ya3MxMjMKICAgIGxvZ2dpbmc6CiAgICAgIGxldmVsOgogICAgICAgIGNvbS5vcHNteC5hdWRpdHNlcnZpY2U6IElORk8KICAgIGZlaWduOgogICAgICBjbGllbnQ6CiAgICAgICAgY29uZmlnOgogICAgICAgICAgZGVmYXVsdDoKICAgICAgICAgICAgY29ubmVjdFRpbWVvdXQ6IDEwMDAwMAogICAgICAgICAgICByZWFkVGltZW91dDogMTAwMDAwCiAgICAgICAgICAgIGxvZ2dlckxldmVsOiBiYXNpYwogICAgICAgIHBsYXRmb3Jtc2VydmljZToKICAgICAgICAgIG5hbWU6IHBsYXRmb3Jtc2VydmljZQogICAgICAgICAgdXJsOiBodHRwOi8vb2VzLXBsYXRmb3JtOjgwOTUKICAgICAgICBhdWRpdGNsaWVudHNlcnZpY2U6CiAgICAgICAgICBuYW1lOiBhdWRpdGNsaWVudHNlcnZpY2UKICAgICAgICAgIHVybDogaHR0cDovL29lcy1hdWRpdC1jbGllbnQtdjMxMTo4MDk4CiAgICAgICAgb2VzOgogICAgICAgICAgdXJsOiBodHRwOi8vb2VzLXNhcG9yOjgwODUKICAgICAgICBhdXRvcGlsb3Q6CiAgICAgICAgICB1cmw6IGh0dHA6Ly9vZXMtYXV0b3BpbG90OjgwOTAKICAgICAgICB2aXNpYmlsaXR5c2VydmljZToKICAgICAgICAgIHVybDogaHR0cDovL29lcy12aXNpYmlsaXR5OjgwOTYKICAgICAgICBkYXNoYm9hcmQ6CiAgICAgICAgICB1cmw6IGh0dHA6Ly9vZXMtZGFzaGJvYXJkOjgwOTQ="
-     },
-     "kind": "Secret",
-     "metadata": {
-      "labels": {
-       "app": "oes",
-       "component": "auditservice"
-      },
-      "name": "oes-audit-service-config-v311"
-     },
-     "type": "Opaque"
-    },
-    {
-     "apiVersion": "apps/v1",
-     "kind": "Deployment",
-     "metadata": {
-      "labels": {
-       "app": "oes",
-       "component": "auditservice-v311"
-      },
-      "name": "oes-audit-service-v311"
-     },
-     "spec": {
-      "replicas": 1,
-      "selector": {
-       "matchLabels": {
-        "app": "oes",
-        "component": "auditservice-v311"
-       }
-      },
-      "strategy": {
-       "rollingUpdate": {
-        "maxSurge": "25%",
-        "maxUnavailable": "25%"
-       },
-       "type": "RollingUpdate"
-      },
-      "template": {
-       "metadata": {
-        "labels": {
-         "app": "oes",
-         "component": "auditservice-v311"
+      "default": "",
+      "description": "Only required for 3.9",
+      "hasOptions": false,
+      "label": "",
+      "name": "adminuser",
+      "options": [
+        {
+          "value": ""
         }
-       },
-       "spec": {
-        "containers": [
-         {
-          "image": "quay.io/opsmxpublic/ubi8-oes-audit-service:v3.11.1",
-          "imagePullPolicy": "IfNotPresent",
-          "livenessProbe": {
-           "failureThreshold": 3,
-           "httpGet": {
-            "path": "/mgmt/health",
-            "port": 8097,
-            "scheme": "HTTP"
-           },
-           "initialDelaySeconds": 60,
-           "periodSeconds": 60,
-           "successThreshold": 1,
-           "timeoutSeconds": 1
+      ],
+      "pinned": false,
+      "required": false
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "account": "default",
+      "alias": "runJob",
+      "application": "byos",
+      "cloudProvider": "kubernetes",
+      "consumeArtifactSource": "none",
+      "credentials": "default",
+      "manifest": {
+        "apiVersion": "batch/v1",
+        "kind": "Job",
+        "metadata": {
+          "generateName": "byos-",
+          "labels": {
+            "app": "byos"
           },
-          "name": "oes-audit-service-v311",
-          "ports": [
-           {
-            "containerPort": 8097,
-            "name": "backend",
-            "protocol": "TCP"
-           }
-          ],
-          "readinessProbe": {
-           "failureThreshold": 3,
-           "initialDelaySeconds": 60,
-           "periodSeconds": 10,
-           "successThreshold": 1,
-           "tcpSocket": {
-            "port": 8097
-           },
-           "timeoutSeconds": 1
-          },
-          "resources": {
-           "limits": {
-            "cpu": "1000m",
-            "memory": "1000Mi"
-           },
-           "requests": {
-            "cpu": "500m",
-            "memory": "500Mi"
-           }
-          },
-          "terminationMessagePath": "/dev/termination-log",
-          "terminationMessagePolicy": "File",
-          "volumeMounts": [
-           {
-            "mountPath": "/opsmx/conf/audit-service-local.yml",
-            "name": "audit-config-volume",
-            "subPath": "audit-local.yml"
-           },
-           {
-            "mountPath": "/opsmx/conf/bootstrap.yml",
-            "name": "bootstrap-config-volume",
-            "subPath": "bootstrap.yml"
-           }
-          ]
-         }
-        ],
-        "dnsPolicy": "ClusterFirst",
-        "imagePullSecrets": [
-         {
-          "name": "opsmxdev-secret"
-         },
-         {
-          "name": "opsmx11-secret"
-         }
-        ],
-        "initContainers": [
-         {
-          "command": [
-           "/bin/bash",
-           "-c",
-           "sleep 30;echo Waiting for oes-db to be up and running; pg_isready -h oes-db -p 5432 \u0026\u0026 echo PostgreSQL DB is ready to receive connections"
-          ],
-          "image": "postgres:9.6.5",
-          "imagePullPolicy": "IfNotPresent",
-          "name": "db-check",
-          "resources": {},
-          "terminationMessagePath": "/dev/termination-log",
-          "terminationMessagePolicy": "File"
-         }
-        ],
-        "restartPolicy": "Always",
-        "schedulerName": "default-scheduler",
-        "securityContext": {},
-        "terminationGracePeriodSeconds": 30,
-        "volumes": [
-         {
-          "name": "audit-config-volume",
-          "secret": {
-           "defaultMode": 420,
-           "items": [
-            {
-             "key": "audit-local.yml",
-             "path": "audit-local.yml"
+          "namespace": "${parameters.namespace}"
+        },
+        "spec": {
+          "backoffLimit": 2,
+          "template": {
+            "spec": {
+              "containers": [
+                {
+                  "args": [
+                    "set +x\nsource /repo/environment\nexport source=${parameters.source}\ncd /repo/oes-data-migration-scripts/\nls -ltra \nif [ \"$source\" == \"3.9\" ]; then\n\n            echo \"upgrading  v3.9 to v3.12\"\n\n            python3 migration_v3.9.x_to_v3.12.x_audit_data.py auditdb $host oesdb $host platformdb $host $port $pguser $pgpassword $saporusername $saporpassword http://oes-audit-service:8097 http://oes-platform-service:8095 ${parameters.adminuser}\n\nelif [ \"$source\" == \"3.10\" ]; then\n\n            echo \"upgrading  v3.10 to v3.11\"\n\n           python3 migration_v3.10.x_to_v3.11.py auditdb $host opsmx $host http://oes-audit-service-v311:8097 $port $pguser $pgpassword\n\nelif [ \"$source\" == \"3.11\" ]; then\n\n             echo \"upgrading  v3.11 to v3.12\"\n\n             touch /tmp/sess\n\n             curl -s -X POST \"$oesgateurl/login?username=\"admin\"&password=\"$ldappassword\"&submit=Login\" -vvv -c /tmp/sess\n\n             export cookie=`cat /tmp/sess | grep SESSION | awk '{print $7}'` \n\n             echo \"Session cookie is----------------$cookie\"        \n   \n               echo \"started migration\"\n    \n             python3 migration_v3.11.x_to_v3.12.py platformdb $host oesdb $host  opsmx $host auditdb $host visibilitydb oes-db $port  $oesgateurl http://sapor-gate:8084 $oesuiurl SESSION=$cookie $pguser $pgpassword\n  \n  \nelif [ \"$source\" == \"3.12\" ]; then\necho \"upgrading  v3.12 to v4.0\"\n\nelse\n   \n   echo \"Some went wrong in mapping Migration script\"\n    \nfi"
+                  ],
+                  "command": [
+                    "/bin/bash",
+                    "+x",
+                    "-c"
+                  ],
+                  "image": "quay.io/opsmxpublic/ubi8-oes-platform:v3.12.5",
+                  "name": "script",
+                  "volumeMounts": [
+                    {
+                      "mountPath": "/repo",
+                      "name": "repo-volume"
+                    }
+                  ]
+                }
+              ],
+              "initContainers": [
+                {
+                  "args": [
+                    "\nexport ns=\"${parameters.namespace}\"\n\nsource /home/opsmx/scripts/db_migration_script.sh\n\n#cat /home/opsmx/scripts/db_migration_script.sh\nls -ltra  /repo/\n#cat /repo/environment"
+                  ],
+                  "command": [
+                    "/bin/bash",
+                    "+x",
+                    "-c"
+                  ],
+                  "image": "quay.io/opsmxpublic/opsmx-custom-binaries:opsmx-isd-scripts",
+                  "name": "kube",
+                  "volumeMounts": [
+                    {
+                      "mountPath": "/repo",
+                      "name": "repo-volume"
+                    }
+                  ]
+                }
+              ],
+              "restartPolicy": "Never",
+              "serviceAccountName": "byos",
+              "volumes": [
+                {
+                  "emptyDir": {},
+                  "name": "repo-volume"
+                }
+              ]
             }
-           ],
-           "secretName": "oes-audit-service-config-v311"
           }
-         },
-         {
-          "name": "bootstrap-config-volume",
-          "secret": {
-           "defaultMode": 420,
-           "items": [
-            {
-             "key": "bootstrap.yml",
-             "path": "bootstrap.yml"
-            }
-           ],
-           "secretName": "bootstrap"
-          }
-         }
-        ]
-       }
-      }
-     }
+        }
+      },
+      "name": "Run Job (Manifest)",
+      "refId": "1",
+      "requisiteStageRefIds": [
+        "2"
+      ],
+      "source": "text",
+      "type": "runJobManifest"
     },
     {
-     "apiVersion": "apps/v1",
-     "kind": "Deployment",
-     "metadata": {
-      "labels": {
-       "app": "oes",
-       "component": "auditclient-new"
-      },
-      "name": "oes-audit-client-v311"
-     },
-     "spec": {
-      "replicas": 1,
-      "selector": {
-       "matchLabels": {
-        "app": "oes",
-        "component": "auditclient-v311"
-       }
-      },
-      "strategy": {
-       "rollingUpdate": {
-        "maxSurge": "25%",
-        "maxUnavailable": "25%"
-       },
-       "type": "RollingUpdate"
-      },
-      "template": {
-       "metadata": {
-        "labels": {
-         "app": "oes",
-         "component": "auditclient-v311"
+      "account": "default",
+      "cloudProvider": "kubernetes",
+      "manifests": [
+        {
+          "apiVersion": "v1",
+          "kind": "Service",
+          "metadata": {
+            "labels": {
+              "app": "oes",
+              "component": "auditclient-v311"
+            },
+            "name": "oes-audit-client-v311"
+          },
+          "spec": {
+            "ports": [
+              {
+                "name": "auditclient",
+                "port": 8098,
+                "protocol": "TCP",
+                "targetPort": 8098
+              }
+            ],
+            "selector": {
+              "app": "oes",
+              "component": "auditclient-v311"
+            },
+            "sessionAffinity": "None",
+            "type": "ClusterIP"
+          },
+          "status": {
+            "loadBalancer": {}
+          }
+        },
+        {
+          "apiVersion": "v1",
+          "kind": "Service",
+          "metadata": {
+            "labels": {
+              "app": "oes",
+              "component": "auditservice-v311"
+            },
+            "name": "oes-audit-service-v311"
+          },
+          "spec": {
+            "ports": [
+              {
+                "name": "auditservice",
+                "port": 8097,
+                "protocol": "TCP",
+                "targetPort": 8097
+              }
+            ],
+            "selector": {
+              "app": "oes",
+              "component": "auditservice-v311"
+            },
+            "sessionAffinity": "None",
+            "type": "ClusterIP"
+          },
+          "status": {
+            "loadBalancer": {}
+          }
+        },
+        {
+          "apiVersion": "v1",
+          "data": {
+            "audit-local.yml": "ICAgIHNwcmluZzoKICAgICAgZGF0YXNvdXJjZToKICAgICAgICB1cmw6IGpkYmM6cG9zdGdyZXNxbDovL29lcy1kYjo1NDMyL2F1ZGl0ZGIKICAgICAgICB1c2VybmFtZTogcG9zdGdyZXMKICAgICAgICBwYXNzd29yZDogbmV0d29ya3MxMjMKICAgIGxvZ2dpbmc6CiAgICAgIGxldmVsOgogICAgICAgIGNvbS5vcHNteC5hdWRpdGNsaWVudHNlcnZpY2U6IElORk8KICAgIG9lczoKICAgICAgYWRtaW46CiAgICAgICAgdXNlcjogYWRtaW4KICAgIGZlaWduOgogICAgICBjbGllbnQ6CiAgICAgICAgY29uZmlnOgogICAgICAgICAgZGVmYXVsdDoKICAgICAgICAgICAgY29ubmVjdFRpbWVvdXQ6IDUwMDAKICAgICAgICAgICAgcmVhZFRpbWVvdXQ6IDUwMDAKICAgICAgICAgICAgbG9nZ2VyTGV2ZWw6IGJhc2ljCiAgICAgICAgcGxhdGZvcm1zZXJ2aWNlOgogICAgICAgICAgbmFtZTogcGxhdGZvcm1zZXJ2aWNlCiAgICAgICAgICB1cmw6IGh0dHA6Ly9vZXMtcGxhdGZvcm06ODA5NQogICAgICAgIHZpc2liaWxpdHlzZXJ2aWNlOgogICAgICAgICAgbmFtZTogdmlzaWJpbGl0eXNlcnZpY2UKICAgICAgICAgIHVybDogaHR0cDovL29lcy12aXNpYmlsaXR5OjgwOTY="
+          },
+          "kind": "Secret",
+          "metadata": {
+            "labels": {
+              "app": "oes",
+              "component": "auditclient-v311"
+            },
+            "name": "oes-audit-client-config-v311"
+          },
+          "type": "Opaque"
+        },
+        {
+          "apiVersion": "v1",
+          "data": {
+            "audit-local.yml": "ICAgIHNwcmluZzoKICAgICAgZGF0YXNvdXJjZToKICAgICAgICB1cmw6IGpkYmM6cG9zdGdyZXNxbDovL29lcy1kYjo1NDMyL2F1ZGl0ZGIKICAgICAgICB1c2VybmFtZTogcG9zdGdyZXMKICAgICAgICBwYXNzd29yZDogbmV0d29ya3MxMjMKICAgIGxvZ2dpbmc6CiAgICAgIGxldmVsOgogICAgICAgIGNvbS5vcHNteC5hdWRpdHNlcnZpY2U6IElORk8KICAgIGZlaWduOgogICAgICBjbGllbnQ6CiAgICAgICAgY29uZmlnOgogICAgICAgICAgZGVmYXVsdDoKICAgICAgICAgICAgY29ubmVjdFRpbWVvdXQ6IDEwMDAwMAogICAgICAgICAgICByZWFkVGltZW91dDogMTAwMDAwCiAgICAgICAgICAgIGxvZ2dlckxldmVsOiBiYXNpYwogICAgICAgIHBsYXRmb3Jtc2VydmljZToKICAgICAgICAgIG5hbWU6IHBsYXRmb3Jtc2VydmljZQogICAgICAgICAgdXJsOiBodHRwOi8vb2VzLXBsYXRmb3JtOjgwOTUKICAgICAgICBhdWRpdGNsaWVudHNlcnZpY2U6CiAgICAgICAgICBuYW1lOiBhdWRpdGNsaWVudHNlcnZpY2UKICAgICAgICAgIHVybDogaHR0cDovL29lcy1hdWRpdC1jbGllbnQtdjMxMTo4MDk4CiAgICAgICAgb2VzOgogICAgICAgICAgdXJsOiBodHRwOi8vb2VzLXNhcG9yOjgwODUKICAgICAgICBhdXRvcGlsb3Q6CiAgICAgICAgICB1cmw6IGh0dHA6Ly9vZXMtYXV0b3BpbG90OjgwOTAKICAgICAgICB2aXNpYmlsaXR5c2VydmljZToKICAgICAgICAgIHVybDogaHR0cDovL29lcy12aXNpYmlsaXR5OjgwOTYKICAgICAgICBkYXNoYm9hcmQ6CiAgICAgICAgICB1cmw6IGh0dHA6Ly9vZXMtZGFzaGJvYXJkOjgwOTQ="
+          },
+          "kind": "Secret",
+          "metadata": {
+            "labels": {
+              "app": "oes",
+              "component": "auditservice"
+            },
+            "name": "oes-audit-service-config-v311"
+          },
+          "type": "Opaque"
+        },
+        {
+          "apiVersion": "apps/v1",
+          "kind": "Deployment",
+          "metadata": {
+            "labels": {
+              "app": "oes",
+              "component": "auditservice-v311"
+            },
+            "name": "oes-audit-service-v311"
+          },
+          "spec": {
+            "replicas": 1,
+            "selector": {
+              "matchLabels": {
+                "app": "oes",
+                "component": "auditservice-v311"
+              }
+            },
+            "strategy": {
+              "rollingUpdate": {
+                "maxSurge": "25%",
+                "maxUnavailable": "25%"
+              },
+              "type": "RollingUpdate"
+            },
+            "template": {
+              "metadata": {
+                "labels": {
+                  "app": "oes",
+                  "component": "auditservice-v311"
+                }
+              },
+              "spec": {
+                "containers": [
+                  {
+                    "image": "quay.io/opsmxpublic/ubi8-oes-audit-service:v3.11.1",
+                    "imagePullPolicy": "IfNotPresent",
+                    "livenessProbe": {
+                      "failureThreshold": 3,
+                      "httpGet": {
+                        "path": "/mgmt/health",
+                        "port": 8097,
+                        "scheme": "HTTP"
+                      },
+                      "initialDelaySeconds": 60,
+                      "periodSeconds": 60,
+                      "successThreshold": 1,
+                      "timeoutSeconds": 1
+                    },
+                    "name": "oes-audit-service-v311",
+                    "ports": [
+                      {
+                        "containerPort": 8097,
+                        "name": "backend",
+                        "protocol": "TCP"
+                      }
+                    ],
+                    "readinessProbe": {
+                      "failureThreshold": 3,
+                      "initialDelaySeconds": 60,
+                      "periodSeconds": 10,
+                      "successThreshold": 1,
+                      "tcpSocket": {
+                        "port": 8097
+                      },
+                      "timeoutSeconds": 1
+                    },
+                    "resources": {
+                      "limits": {
+                        "cpu": "1000m",
+                        "memory": "1000Mi"
+                      },
+                      "requests": {
+                        "cpu": "500m",
+                        "memory": "500Mi"
+                      }
+                    },
+                    "terminationMessagePath": "/dev/termination-log",
+                    "terminationMessagePolicy": "File",
+                    "volumeMounts": [
+                      {
+                        "mountPath": "/opsmx/conf/audit-service-local.yml",
+                        "name": "audit-config-volume",
+                        "subPath": "audit-local.yml"
+                      },
+                      {
+                        "mountPath": "/opsmx/conf/bootstrap.yml",
+                        "name": "bootstrap-config-volume",
+                        "subPath": "bootstrap.yml"
+                      }
+                    ]
+                  }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "imagePullSecrets": [
+                  {
+                    "name": "opsmxdev-secret"
+                  },
+                  {
+                    "name": "opsmx11-secret"
+                  }
+                ],
+                "initContainers": [
+                  {
+                    "command": [
+                      "/bin/bash",
+                      "-c",
+                      "sleep 30;echo Waiting for oes-db to be up and running; pg_isready -h oes-db -p 5432 && echo PostgreSQL DB is ready to receive connections"
+                    ],
+                    "image": "postgres:9.6.5",
+                    "imagePullPolicy": "IfNotPresent",
+                    "name": "db-check",
+                    "resources": {},
+                    "terminationMessagePath": "/dev/termination-log",
+                    "terminationMessagePolicy": "File"
+                  }
+                ],
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {},
+                "terminationGracePeriodSeconds": 30,
+                "volumes": [
+                  {
+                    "name": "audit-config-volume",
+                    "secret": {
+                      "defaultMode": 420,
+                      "items": [
+                        {
+                          "key": "audit-local.yml",
+                          "path": "audit-local.yml"
+                        }
+                      ],
+                      "secretName": "oes-audit-service-config-v311"
+                    }
+                  },
+                  {
+                    "name": "bootstrap-config-volume",
+                    "secret": {
+                      "defaultMode": 420,
+                      "items": [
+                        {
+                          "key": "bootstrap.yml",
+                          "path": "bootstrap.yml"
+                        }
+                      ],
+                      "secretName": "bootstrap"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "apiVersion": "apps/v1",
+          "kind": "Deployment",
+          "metadata": {
+            "labels": {
+              "app": "oes",
+              "component": "auditclient-new"
+            },
+            "name": "oes-audit-client-v311"
+          },
+          "spec": {
+            "replicas": 1,
+            "selector": {
+              "matchLabels": {
+                "app": "oes",
+                "component": "auditclient-v311"
+              }
+            },
+            "strategy": {
+              "rollingUpdate": {
+                "maxSurge": "25%",
+                "maxUnavailable": "25%"
+              },
+              "type": "RollingUpdate"
+            },
+            "template": {
+              "metadata": {
+                "labels": {
+                  "app": "oes",
+                  "component": "auditclient-v311"
+                }
+              },
+              "spec": {
+                "containers": [
+                  {
+                    "image": "quay.io/opsmxpublic/ubi8-oes-audit-client:v3.11.1",
+                    "imagePullPolicy": "IfNotPresent",
+                    "livenessProbe": {
+                      "failureThreshold": 3,
+                      "httpGet": {
+                        "path": "/mgmt/health",
+                        "port": 8098,
+                        "scheme": "HTTP"
+                      },
+                      "initialDelaySeconds": 60,
+                      "periodSeconds": 60,
+                      "successThreshold": 1,
+                      "timeoutSeconds": 1
+                    },
+                    "name": "oes-audit-client-v311",
+                    "ports": [
+                      {
+                        "containerPort": 8098,
+                        "name": "backend",
+                        "protocol": "TCP"
+                      }
+                    ],
+                    "readinessProbe": {
+                      "failureThreshold": 3,
+                      "initialDelaySeconds": 60,
+                      "periodSeconds": 10,
+                      "successThreshold": 1,
+                      "tcpSocket": {
+                        "port": 8098
+                      },
+                      "timeoutSeconds": 1
+                    },
+                    "resources": {
+                      "limits": {
+                        "cpu": "1000m",
+                        "memory": "1000Mi"
+                      },
+                      "requests": {
+                        "cpu": "500m",
+                        "memory": "500Mi"
+                      }
+                    },
+                    "terminationMessagePath": "/dev/termination-log",
+                    "terminationMessagePolicy": "File",
+                    "volumeMounts": [
+                      {
+                        "mountPath": "/opsmx/conf/audit-client-local.yml",
+                        "name": "audit-config-volume",
+                        "subPath": "audit-local.yml"
+                      },
+                      {
+                        "mountPath": "/opsmx/conf/bootstrap.yml",
+                        "name": "bootstrap-config-volume",
+                        "subPath": "bootstrap.yml"
+                      }
+                    ]
+                  }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "imagePullSecrets": [
+                  {
+                    "name": "opsmxdev-secret"
+                  },
+                  {
+                    "name": "opsmx11-secret"
+                  }
+                ],
+                "initContainers": [
+                  {
+                    "command": [
+                      "/bin/bash",
+                      "-c",
+                      "sleep 30;echo Waiting for oes-db to be up and running; pg_isready -h oes-db -p 5432 && echo PostgreSQL DB is ready to receive connections"
+                    ],
+                    "image": "postgres:9.6.5",
+                    "imagePullPolicy": "IfNotPresent",
+                    "name": "db-check",
+                    "resources": {},
+                    "terminationMessagePath": "/dev/termination-log",
+                    "terminationMessagePolicy": "File"
+                  }
+                ],
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {},
+                "terminationGracePeriodSeconds": 30,
+                "volumes": [
+                  {
+                    "name": "audit-config-volume",
+                    "secret": {
+                      "defaultMode": 420,
+                      "items": [
+                        {
+                          "key": "audit-local.yml",
+                          "path": "audit-local.yml"
+                        }
+                      ],
+                      "secretName": "oes-audit-client-config-v311"
+                    }
+                  },
+                  {
+                    "name": "bootstrap-config-volume",
+                    "secret": {
+                      "defaultMode": 420,
+                      "items": [
+                        {
+                          "key": "bootstrap.yml",
+                          "path": "bootstrap.yml"
+                        }
+                      ],
+                      "secretName": "bootstrap"
+                    }
+                  }
+                ]
+              }
+            }
+          }
         }
-       },
-       "spec": {
-        "containers": [
-         {
-          "image": "quay.io/opsmxpublic/ubi8-oes-audit-client:v3.11.1",
-          "imagePullPolicy": "IfNotPresent",
-          "livenessProbe": {
-           "failureThreshold": 3,
-           "httpGet": {
-            "path": "/mgmt/health",
-            "port": 8098,
-            "scheme": "HTTP"
-           },
-           "initialDelaySeconds": 60,
-           "periodSeconds": 60,
-           "successThreshold": 1,
-           "timeoutSeconds": 1
-          },
-          "name": "oes-audit-client-v311",
-          "ports": [
-           {
-            "containerPort": 8098,
-            "name": "backend",
-            "protocol": "TCP"
-           }
-          ],
-          "readinessProbe": {
-           "failureThreshold": 3,
-           "initialDelaySeconds": 60,
-           "periodSeconds": 10,
-           "successThreshold": 1,
-           "tcpSocket": {
-            "port": 8098
-           },
-           "timeoutSeconds": 1
-          },
-          "resources": {
-           "limits": {
-            "cpu": "1000m",
-            "memory": "1000Mi"
-           },
-           "requests": {
-            "cpu": "500m",
-            "memory": "500Mi"
-           }
-          },
-          "terminationMessagePath": "/dev/termination-log",
-          "terminationMessagePolicy": "File",
-          "volumeMounts": [
-           {
-            "mountPath": "/opsmx/conf/audit-client-local.yml",
-            "name": "audit-config-volume",
-            "subPath": "audit-local.yml"
-           },
-           {
-            "mountPath": "/opsmx/conf/bootstrap.yml",
-            "name": "bootstrap-config-volume",
-            "subPath": "bootstrap.yml"
-           }
-          ]
-         }
-        ],
-        "dnsPolicy": "ClusterFirst",
-        "imagePullSecrets": [
-         {
-          "name": "opsmxdev-secret"
-         },
-         {
-          "name": "opsmx11-secret"
-         }
-        ],
-        "initContainers": [
-         {
-          "command": [
-           "/bin/bash",
-           "-c",
-           "sleep 30;echo Waiting for oes-db to be up and running; pg_isready -h oes-db -p 5432 \u0026\u0026 echo PostgreSQL DB is ready to receive connections"
-          ],
-          "image": "postgres:9.6.5",
-          "imagePullPolicy": "IfNotPresent",
-          "name": "db-check",
-          "resources": {},
-          "terminationMessagePath": "/dev/termination-log",
-          "terminationMessagePolicy": "File"
-         }
-        ],
-        "restartPolicy": "Always",
-        "schedulerName": "default-scheduler",
-        "securityContext": {},
-        "terminationGracePeriodSeconds": 30,
-        "volumes": [
-         {
-          "name": "audit-config-volume",
-          "secret": {
-           "defaultMode": 420,
-           "items": [
-            {
-             "key": "audit-local.yml",
-             "path": "audit-local.yml"
-            }
-           ],
-           "secretName": "oes-audit-client-config-v311"
-          }
-         },
-         {
-          "name": "bootstrap-config-volume",
-          "secret": {
-           "defaultMode": 420,
-           "items": [
-            {
-             "key": "bootstrap.yml",
-             "path": "bootstrap.yml"
-            }
-           ],
-           "secretName": "bootstrap"
-          }
-         }
-        ]
-       }
-      }
-     }
+      ],
+      "moniker": {
+        "app": "opsmx-gitops"
+      },
+      "name": "deployNewServices",
+      "namespaceOverride": "opsmx-isd",
+      "refId": "2",
+      "requisiteStageRefIds": [],
+      "skipExpressionEvaluation": false,
+      "source": "text",
+      "stageEnabled": {
+        "expression": "${ parameters.source == \"3.10\" }",
+        "type": "expression"
+      },
+      "trafficManagement": {
+        "enabled": false,
+        "options": {
+          "enableTraffic": false
+        }
+      },
+      "type": "deployManifest"
+    },
+    {
+      "account": "default",
+      "app": "from310to311",
+      "cloudProvider": "kubernetes",
+      "location": "${parameters.namespace}",
+      "manifestName": "deployment oes-audit-client-v311",
+      "mode": "static",
+      "name": "Delete-Audit-client-deployment",
+      "options": {
+        "cascading": true
+      },
+      "refId": "3",
+      "requisiteStageRefIds": [
+        "1"
+      ],
+      "stageEnabled": {
+        "expression": "${ parameters.source == \"3.10\" }",
+        "type": "expression"
+      },
+      "type": "deleteManifest"
+    },
+    {
+      "account": "default",
+      "app": "from310to311",
+      "cloudProvider": "kubernetes",
+      "location": "${parameters.namespace}",
+      "manifestName": "deployment oes-audit-service-v311",
+      "mode": "static",
+      "name": "Delete-Audit-service-deployment",
+      "options": {
+        "cascading": true
+      },
+      "refId": "4",
+      "requisiteStageRefIds": [
+        "1"
+      ],
+      "stageEnabled": {
+        "expression": "${ parameters.source == \"3.10\" }",
+        "type": "expression"
+      },
+      "type": "deleteManifest"
     }
-   ],
-   "moniker": {
-    "app": "opsmx-gitops"
-   },
-   "name": "deployNewServices",
-   "namespaceOverride": "${parameters.namespace}",
-   "refId": "2",
-   "requisiteStageRefIds": [],
-   "skipExpressionEvaluation": false,
-   "source": "text",
-   "stageEnabled": {
-    "expression": "${ parameters.source == \"3.10\" }",
-    "type": "expression"
-   },
-   "trafficManagement": {
-    "enabled": false,
-    "options": {
-     "enableTraffic": false
-    }
-   },
-   "type": "deployManifest"
-  },
-  {
-   "account": "default",
-   "app": "from310to311",
-   "cloudProvider": "kubernetes",
-   "location": "${parameters.namespace}",
-   "manifestName": "deployment oes-audit-client-v311",
-   "mode": "static",
-   "name": "Delete-Audit-client-deployment",
-   "options": {
-    "cascading": true
-   },
-   "refId": "3",
-   "requisiteStageRefIds": [
-    "1"
-   ],
-   "stageEnabled": {
-    "expression": "${ parameters.source == \"3.10\" }",
-    "type": "expression"
-   },
-   "type": "deleteManifest"
-  },
-  {
-   "account": "default",
-   "app": "from310to311",
-   "cloudProvider": "kubernetes",
-   "location": "${parameters.namespace}",
-   "manifestName": "deployment oes-audit-service-v311",
-   "mode": "static",
-   "name": "Delete-Audit-service-deployment",
-   "options": {
-    "cascading": true
-   },
-   "refId": "4",
-   "requisiteStageRefIds": [
-    "1"
-   ],
-   "stageEnabled": {
-    "expression": "${ parameters.source == \"3.10\" }",
-    "type": "expression"
-   },
-   "type": "deleteManifest"
-  }
- ],
- "triggers": []
+  ],
+  "triggers": []
 }

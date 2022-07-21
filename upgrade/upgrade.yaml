@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: byos-hiu
+  name: isd-upgrade
   labels:
     app: byos
 spec:
