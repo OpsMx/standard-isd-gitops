@@ -17,13 +17,13 @@ spec:
 
               rm -rf /repo/environment
 
-              chmod +x /repo/byosupgrade.sh
+              chmod +x /repo/upgrade/upgrade.sh
                    
               export version="$version"
 
               ls  -ltra /repo/
 
-              /repo/$path
+              /repo/upgrade/upgrade.sh
           command:
             - /bin/bash
             - +x

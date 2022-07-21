@@ -15,11 +15,11 @@ spec:
 
               source /repo/environment
 
-              chmod +x /repo/byos-reinstall.sh
+              chmod +x /repo/upgrade/reinstall.sh
 
               export version="$version"
 
-              /repo/byos-reinstall.sh
+              /repo/upgrade/reinstall.sh
                    
           command:
             - /bin/bash
