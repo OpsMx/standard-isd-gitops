@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: isd311-postgres-backup
+  name: PVCNAME-postgres-backup
   labels:
     app: byos
   namespace: opsmx-isd
@@ -58,9 +58,9 @@ spec:
 
               echo "export dbpassword=$dbpassword" >> /repo/secrets
 
-              export host=`kubectl -n "$ns" get secret oes-platform-config -o
+              export host=$(kubectl -n "$ns" get secret oes-platform-config -o
               yaml | yq e '.data."platform-local.yml"' - | base64 -d  | yq e
-              '.spring.datasource.url' - | sed 's|://| |g;s|:| |g' | awk '{print $3}')`
+              '.spring.datasource.url' - | sed 's|://| |g;s|:| |g' | awk '{print $3}')
 
               export port=`kubectl -n "$ns" get secret oes-platform-config -o
               yaml | yq e '.data."platform-local.yml"' - | base64 -d  | yq e
@@ -102,5 +102,5 @@ spec:
           name: repo-volume
         - name: pgdump-volume
           persistentVolumeClaim:
-            claimName: 'pvc-isd311-postgres'
+            claimName: 'pvc-PVCNAME-postgres'
 

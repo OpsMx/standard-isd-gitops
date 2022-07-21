@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: isd311-backup
+  name: PVCNAME-spinnakerexec-backup
   labels:
     app: byos
   namespace: opsmx-isd
@@ -49,4 +49,4 @@ spec:
       volumes:
         - name: redisdump-volume
           persistentVolumeClaim:
-            claimName: 'pvc-isd311-redis'
+            claimName: 'pvc-PVCNAME-redis'
