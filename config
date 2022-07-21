@@ -1,0 +1,432 @@
+currentDeployment: "default"
+deploymentConfigurations:
+- name: "default"
+  version: "1.26.6"
+  providers:
+    appengine:
+      enabled: false
+      accounts: []
+    aws:
+      enabled: false
+      accounts: []
+      bakeryDefaults:
+        baseImages: []
+      defaultKeyPairTemplate: "{{name}}-keypair"
+      defaultRegions:
+      - name: "us-west-2"
+      defaults:
+        iamRole: "BaseIAMRole"
+    ecs:
+      enabled: false
+      accounts: []
+    azure:
+      enabled: false
+      accounts: []
+      bakeryDefaults:
+        templateFile: "azure-linux.json"
+        baseImages: []
+    dcos:
+      enabled: false
+      accounts: []
+      clusters: []
+    dockerRegistry:
+      enabled: true
+      accounts:
+      - name: "dockerhub"
+        requiredGroupMembership: []
+        permissions: {}
+        address: "https://index.docker.io"
+        email: "fake.email@spinnaker.io"
+        cacheIntervalSeconds: 30
+        clientTimeoutMillis: 60000
+        cacheThreads: 1
+        paginateSize: 100
+        sortTagsByDate: false
+        trackDigests: false
+        insecureRegistry: false
+        repositories:
+        - "library/alpine"
+        - "library/ubuntu"
+        - "library/centos"
+        - "library/nginx"
+      primaryAccount: "dockerhub"
+    google:
+      enabled: false
+      accounts: []
+      bakeryDefaults:
+        templateFile: "gce.json"
+        baseImages: []
+        zone: "us-central1-f"
+        network: "default"
+        useInternalIp: false
+    huaweicloud:
+      enabled: false
+      accounts: []
+      bakeryDefaults:
+        baseImages: []
+    kubernetes:
+      enabled: true
+      accounts:
+      - name: "default"
+        requiredGroupMembership: []
+        permissions: {}
+        dockerRegistries:
+        - accountName: "dockerhub"
+          namespaces: []
+        providerVersion: "V2"
+        context: "default"
+        configureImagePullSecrets: true
+        serviceAccount: true
+        cacheThreads: 1
+        namespaces: []
+        omitNamespaces:
+        - "kube-system"
+        - "kube-public"
+        kinds: []
+        omitKinds: []
+        customResources: []
+        cachingPolicies: []
+        oAuthScopes: []
+        onlySpinnakerManaged: true
+      primaryAccount: "default"
+    tencentcloud:
+      enabled: false
+      accounts: []
+      bakeryDefaults:
+        baseImages: []
+    oracle:
+      enabled: false
+      accounts: []
+      bakeryDefaults:
+        templateFile: "oci.json"
+        baseImages: []
+    cloudfoundry:
+      enabled: false
+      accounts: []
+  deploymentEnvironment:
+    size: "SMALL"
+    type: "Distributed"
+    accountName: "default"
+    imageVariant: "SLIM"
+    updateVersions: true
+    consul:
+      enabled: false
+    vault:
+      enabled: false
+    location: SPINNAKER_NAMESPACE
+    customSizing:
+      front50:
+        requests:
+          memory: "650Mi"
+          cpu: "500m"
+      echo-scheduler:
+        requests:
+          cpu: "300m"
+          memory: "128Mi"
+      echo-worker:
+        requests:
+          cpu: "300m"
+          memory: "128Mi"
+      clouddriver:
+        requests:
+          cpu: "500m"
+          memory: "512Mi"
+      clouddriver-caching:
+        requests:
+          cpu: "500m"
+          memory: "512Mi"
+      clouddriver-ro-deck:
+        requests:
+          cpu: "500m"
+          memory: "512Mi"
+      clouddriver-ro:
+        requests:
+          cpu: "500m"
+          memory: "512Mi"
+      clouddriver-rw:
+        requests:
+          cpu: "500m"
+          memory: "512Mi"
+      deck:
+        requests:
+          memory: "64Mi"
+          cpu: "50m"
+      gate:
+        requests:
+          memory: "650Mi"
+          cpu: "300m"
+      igor:
+        requests:
+          memory: "650Mi"
+          cpu: "100m"
+      rosco:
+        requests:
+          memory: "1000Mi"
+          cpu: "100m"
+      echo:
+        requests:
+          memory: "512Mi"
+          cpu: "100m"
+      orca:
+        requests:
+          memory: "1000Mi"
+          cpu: "500m"
+      monitoring-daemon:
+        requests:
+          memory: 70Mi
+          cpu: 100m
+    sidecars: {}
+#    sidecars:
+#      spin-clouddriver-caching:
+#      - name: k8s-config-sync
+#        dockerImage: quay.io/konikris/k8s-decoder:git-k8s
+#        command: ["sh", "-c"]
+#        args: ["while true; do sh /tmp/script/k8config-sync.sh; sleep 60s; done"]
+#        configMapVolumeMounts:
+#        - configMapName: k8config-sync
+#          mountPath: /tmp/script
+#        mountPath: /opsmx
+#        secretVolumeMounts:
+#          - secretName: opsmx-gitops-auth
+#            mountPath: /tmp/secret
+#      spin-clouddriver-ro:
+#      - name: k8s-config-sync
+#        dockerImage: quay.io/konikris/k8s-decoder:git-k8s
+#        command: ["sh", "-c"]
+#        args: ["while true; do sh /tmp/script/k8config-sync.sh; sleep 60s; done"]
+#        configMapVolumeMounts:
+#        - configMapName: k8config-sync
+#          mountPath: /tmp/script
+#        mountPath: /opsmx
+#        secretVolumeMounts:
+#          - secretName: opsmx-gitops-auth
+#            mountPath: /tmp/secret 
+#      spin-clouddriver-ro-deck:
+#      - name: k8s-config-sync
+#        dockerImage: quay.io/konikris/k8s-decoder:git-k8s
+#        command: ["sh", "-c"]
+#        args: ["while true; do sh /tmp/script/k8config-sync.sh; sleep 60s; done"]
+#        configMapVolumeMounts:
+#        - configMapName: k8config-sync
+#          mountPath: /tmp/script
+#        mountPath: /opsmx
+#        secretVolumeMounts:
+#          - secretName: opsmx-gitops-auth
+#            mountPath: /tmp/secret
+#      spin-clouddriver-rw:
+#      - name: k8s-config-sync
+#        dockerImage: quay.io/konikris/k8s-decoder:git-k8s
+#        command: ["sh", "-c"]
+#        args: ["while true; do sh /tmp/script/k8config-sync.sh; sleep 60s; done"]
+#        configMapVolumeMounts:
+#        - configMapName: k8config-sync
+#          mountPath: /tmp/script
+#        mountPath: /opsmx
+#        secretVolumeMounts:
+#          - secretName: opsmx-gitops-auth
+#            mountPath: /tmp/secret
+    initContainers: {}
+    hostAliases: {}
+    affinity: {}
+    tolerations: {}
+    nodeSelectors: {}
+    gitConfig:
+      upstreamUser: "spinnaker"
+    livenessProbeConfig:
+      enabled: false
+    haServices:
+      clouddriver:
+        enabled: true
+        disableClouddriverRoDeck: false
+      echo:
+        enabled: true
+  persistentStorage:
+    persistentStoreType: "s3"
+    azs: {}
+    gcs:
+      rootFolder: "front50"
+    redis: {}
+    s3:
+      bucket: "spinnaker"
+      rootFolder: "front50"
+      pathStyleAccess: true
+      endpoint: "http://RELEASE_NAME-minio:9000"
+      accessKeyId: "spinnakeradmin"
+      secretAccessKey: "spinnakeradmin"
+    oracle: {}
+  features:
+    chaos: false
+    pipelineTemplates: true
+    artifacts: true
+    managedPipelineTemplatesV2UI: true
+  metricStores:
+    datadog:
+      enabled: false
+      tags: []
+    prometheus:
+      enabled: false
+      add_source_metalabels: true
+    stackdriver:
+      enabled: false
+    newrelic:
+      enabled: false
+      tags: []
+    period: 30
+    enabled: false
+  notifications:
+    slack:
+      enabled: false
+    twilio:
+      enabled: false
+      baseUrl: "https://api.twilio.com/"
+    github-status:
+      enabled: false
+  timezone: "America/Los_Angeles"
+  ci:
+    jenkins:
+      enabled: false
+      masters: []
+    travis:
+      enabled: false
+      masters: []
+    wercker:
+      enabled: false
+      masters: []
+    concourse:
+      enabled: false
+      masters: []
+    gcb:
+      enabled: false
+      accounts: []
+    codebuild:
+      enabled: false
+      accounts: []
+  repository:
+    artifactory:
+      enabled: false
+      searches: []
+  security:
+    apiSecurity:
+      ssl:
+        enabled: false
+      overrideBaseUrl: /gate/
+    uiSecurity:
+      ssl:
+        enabled: false
+      overrideBaseUrl: PROTOCOL://OVERRIDE_DECK_URL
+    authn:
+      oauth2:
+        enabled: false
+        client: {}
+        resource: {}
+        userInfoMapping: {}
+      saml:
+        enabled: false
+        userAttributeMapping: {}
+      ldap:
+        enabled: true
+        url: "ldap://RELEASE_NAME-openldap:389/dc=example,dc=org"
+        userDnPattern: "cn={0}"
+      x509:
+        enabled: false
+      iap:
+        enabled: false
+      enabled: true
+    authz:
+      groupMembership:
+        service: "EXTERNAL"
+        google:
+          roleProviderType: "GOOGLE"
+        github:
+          roleProviderType: "GITHUB"
+        file:
+          roleProviderType: "FILE"
+        ldap:
+          roleProviderType: "LDAP"
+      enabled: false
+  artifacts:
+    bitbucket:
+      enabled: false
+      accounts: []
+    gcs:
+      enabled: false
+      accounts: []
+    oracle:
+      enabled: false
+      accounts: []
+    github:
+      enabled: true
+      accounts: 
+      - name: opsmxdemo_account
+    gitlab:
+      enabled: false
+      accounts: []
+    gitrepo:
+      enabled: true 
+      accounts: 
+      - name: opsmx_repo
+    http:
+      enabled: false
+      accounts: []
+    helm:
+      enabled: true 
+      accounts: 
+      - name: "opsmx-oes-helm-repo"
+        repository: "https://helmcharts.opsmx.com"
+    s3:
+      enabled: false
+      accounts: []
+    maven:
+      enabled: false
+      accounts: []
+    templates: []
+  pubsub:
+    enabled: false
+    google:
+      enabled: false
+      pubsubType: "GOOGLE"
+      subscriptions: []
+      publishers: []
+  canary:
+    enabled: false
+    serviceIntegrations:
+    - name: "google"
+      enabled: false
+      accounts: []
+      gcsEnabled: false
+      stackdriverEnabled: false
+    - name: "prometheus"
+      enabled: false
+      accounts: []
+    - name: "datadog"
+      enabled: false
+      accounts: []
+    - name: "signalfx"
+      enabled: false
+      accounts: []
+    - name: "aws"
+      enabled: false
+      accounts: []
+      s3Enabled: false
+    - name: "newrelic"
+      enabled: false
+      accounts: []
+    reduxLoggerEnabled: true
+    defaultJudge: "NetflixACAJudge-v1.0"
+    stagesEnabled: true
+    templatesEnabled: true
+    showAllConfigsEnabled: true
+  spinnaker:
+    extensibility:
+      plugins: {}
+      repositories: {}
+  webhook:
+    trust:
+      enabled: false
+  stats:
+    enabled: false
+    endpoint: "https://stats.spinnaker.io"
+    instanceId: "01EKYADM081RQT4KAZKBPKMZK7"
+    deploymentMethod: {}
+    connectionTimeoutMillis: 3000
+    readTimeoutMillis: 5000

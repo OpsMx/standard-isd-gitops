@@ -1,0 +1,218 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: isd-install
+  labels:
+    app: isd-install
+    app.kubernetes.io/managed-by: spinnaker
+    app.kubernetes.io/name: isd-install
+spec:
+  backoffLimit: 2
+  completions: 1
+  parallelism: 1
+  template:
+    spec:
+      containers:
+        - args:
+            - |-
+
+              for env in $( echo $envs | tr "," "\n" )
+              do
+              echo export $env >> /tmp/environment
+              done
+              for filename in /secret/* 
+              do 
+              variable=$(echo $filename | sed 's#/# #g' | awk '{print $2}')
+              echo setting env $variable for $filename 
+              echo "export $variable=$(cat "$filename")" >> /tmp/environment
+              done
+
+              source /tmp/environment >/dev/null 2>&1
+              cd /repo/
+              chmod +x /repo/"$path"
+              /repo/"$path"
+          command:
+            - /bin/bash
+            - +x
+            - '-c'
+          envFrom:
+          - configMapRef:
+              name: inputcm
+          image: 'quay.io/opsmxpublic/helm-bash:v2'
+          imagePullPolicy: IfNotPresent
+          name: apply-yamls
+          volumeMounts:
+            - mountPath: /repo
+              name: repo-volume
+            - mountPath: /secret
+              name: secret-volume
+      initContainers:
+        - args:
+            - >-
+
+              create_default_secret()
+              {
+              if [[ $1 == "gittoken" ]]
+
+              then
+
+                echo "Error: Cannot create a default gittoken as it is specific to the git-repo. Please create a secret containing the gittoken manually."
+
+                exit 1
+
+              fi
+              
+              if [[ $1 == "ldappassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic ldappassword --from-literal ldappassword=opsmxadmin123
+
+                if [ $?!= 0 ]; then echo "Error creating default secret ldappassword"; exit 1; fi
+
+              fi
+              
+              if [[ $1 == "dbpassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic dbpassword --from-literal dbpassword=networks123
+
+                if [ $?!= 0 ]; then echo "Error creating default secret dbpassword"; exit 1; fi
+
+              fi
+              
+              if [[ $1 == "keystorepassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic keystorepassword --from-literal keystorepassword=changeit
+
+                if [ $?!= 0 ]; then echo "Error creating default secret keystorepassword"l exit 1; fi
+
+              fi
+              
+              if [[ $1 == "rabbitmqpassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic rabbitmqpassword --from-literal rabbitmqpassword=Networks123
+
+                if [ $?!= 0 ]; then echo "Error creating default secret rabbitmqpassword"; exit 1; fi
+
+              fi
+              
+              if [[ $1 == "saporpassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic saporpassword --from-literal saporpassword=saporadmin
+
+                if [ $?!= 0 ]; then echo "Error creating default secret saporpassword"; exit 1; fi
+
+              fi
+              
+              if [[ $1 == "redispassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic redispassword --from-literal redispassword=password
+
+                if [ $?!= 0 ]; then echo "Error creating default secret redispassword"; exit 1; fi
+
+              fi
+              
+              if [[ $1 == "miniopassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic miniopassword --from-literal miniopassword=spinnakeradmin
+
+                if [ $?!= 0 ]; then echo "Error creating default secret miniopassword"; exit 1; fi
+
+              fi
+              
+              if [[ $1 == "ldapconfigpassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic ldapconfigpassword --from-literal ldapconfigpassword=opsmxadmin123
+
+                if [ $?!= 0 ]; then echo "Error creating default secret ldapconfigpassword"; exit 1; fi
+
+              fi
+
+              }
+
+
+              for secret in $(echo $secrets | sed "s/,/ /g")
+
+              do
+
+              echo getting $secret
+
+              kubectl -n "$namespace" get secret "$secret" 2>/dev/null || { echo "Defaulting secret $secret as it was not found." ; create_default_secret $secret $namespace; }
+
+              kubectl -n "$namespace" get secret "$secret" -o jsonpath='{.data.*}' |
+
+              base64 -d > /secret/"$secret" 
+
+              ls -ltr /secret/"$secret"
+
+              done
+
+          command:
+            - /bin/bash
+            - +x
+            - '-c'
+          envFrom:
+          - configMapRef:
+              name: inputcm
+          image: 'bitnami/kubectl:1.22'
+          imagePullPolicy: IfNotPresent
+          name: get-secrets
+          volumeMounts:
+            - mountPath: /secret
+              name: secret-volume
+        - args:
+            - >-
+
+              ls -ltr /secret/gittoken || { echo "failed cloning $url" ; exit 1; }
+
+              git clone https://"$username":"$(cat /secret/gittoken)"@"$url" -b "$branch" /repo
+
+              if [ $? != 0 ] 
+
+              then
+
+                exit 1
+
+              else
+
+                ls -lrt /repo # Show the files cloned, as a success marker
+
+              fi
+
+          command:
+            - /bin/sh
+            - +x
+            - '-c'
+          envFrom:
+          - configMapRef:
+              name: inputcm
+          image: 'bitnami/kubectl:1.22'
+          imagePullPolicy: IfNotPresent
+          name: git-clone
+          volumeMounts:
+            - mountPath: /secret
+              name: secret-volume
+            - mountPath: /repo
+              name: repo-volume
+      serviceAccount: byos
+      serviceAccountName: byos
+      restartPolicy: "Never"
+      volumes:
+        - emptyDir: {}
+          name: secret-volume
+        - emptyDir: {}
+          name: repo-volume

@@ -1,0 +1,32 @@
+# This file can be used for very simple installation that uses
+# insecure urls (i.e. http, not httpS). This may not be be allowed in some environments
+# and/or your browser may give a security warning
+# Excellent choice for 1st time ISD Trial
+#
+# Instructions:
+# a) Update the 3 URLs below
+# b) Update the git repo details
+# c) Follow the installation instructions to experience the next generation of Software Delivery
+#
+global:
+  createIngress: true
+  gitea:
+    enabled: false
+  ## OES-UI url configuration
+  oesUI:
+    protocol: http
+    host: oes.isd-pov.example.com    # REPLACE if you have DNS access, else use hosts file entries
+  
+spinnaker:
+  gitopsHalyard:
+    enabled: true
+    repo:
+      type: git  # git, s3, stash(bitbucket server) 
+      baseUrlHostName: gitlab.com
+      organization: <your gitlab organisation> # REPLACE 
+      username: <your gitlab username>    # REPLACE
+      Usermailid: <mail id>
+      token: <your token>    # REPLACE
+      repository: <repo name>    # REPLACE repo name for Gitlab
+      dynamicAccRepository: <repo name>   # REPLACE   
+

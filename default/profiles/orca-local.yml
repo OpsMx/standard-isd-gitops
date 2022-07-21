@@ -1,0 +1,596 @@
+pollers:
+  oldPipelineCleanup:
+    enabled: true                  # This enables old pipeline execution cleanup (default: false)
+    intervalMs: 3600000            # How many milliseconds between pipeline cleanup runs (default: 1hr or 3600000)
+    thresholdDays: 30              # How old a pipeline execution must be to be deleted (default: 30)
+    minimumPipelineExecutions: 5   # How many executions to keep around (default: 5)
+
+tasks:
+  daysOfExecutionHistory: 180      # How many days to keep old task executions around.
+  useManagedServiceAccounts: false
+job:
+  preconfigured:
+    kubernetes:
+      - label: pipelineSyncToGit
+        cloudProvider: kubernetes
+        credentials: default
+        description: Update git with pipelines in Spinnaker
+        account: default
+        application: sampleapp
+        type: pipelineSyncToGit
+        waitForCompletion: true
+        parameters:
+          - defaultValue: "app1,app2,..."
+            description: "Please enter spinnaker applications separated by comma"
+            label: spinnaker applications
+            mapping: 'manifest.spec.template.spec.containers[0].env[0].value'
+            name: spinnaker_applications
+          - defaultValue: "pipeline1,pipeline2..."
+            description: "Please enter spinnaker pipelines separated by comma"
+            label: pipieline names
+            mapping: 'manifest.spec.template.spec.containers[0].env[1].value'
+            name: spinnaker_pipelines
+          - defaultValue: ""
+            description: "Please enter the Specific branch to upload APP/pipeline data to github repo,It is optional if not specified default branch is taken from the configmap"
+            label: Branch
+            mapping: 'manifest.spec.template.spec.containers[0].env[2].value'
+            name: branch_ui
+          - defaultValue: ""
+            description: "Please enter the path to upload/download APP/pipeline data to github specific directory,It is optional if not specified default path is taken from the configmap"
+            label: SavePath
+            mapping: 'manifest.spec.template.spec.containers[0].env[3].value'
+            name: rootfolder_ui
+        manifest:
+            apiVersion: batch/v1
+            kind: Job
+            metadata:
+              generateName: pipepromot-
+              namespace: SPINNAKER_NAMESPACE
+              labels:
+                 stage: opsmx-custom
+                 stagetype: pipelinepromotion
+            spec:
+              backoffLimit: 0
+              template:
+                spec:
+                  containers:
+                  - command: ["bash", "scripts/deployer.sh"]
+                    image: 'opsmxdev/pipepromot:1.0'
+                    imagePullPolicy: IfNotPresent
+                    name: pipepromot
+                    volumeMounts:
+                    - mountPath: /home/opsmx/scripts
+                      name: pipe-promot-scripts
+                    - mountPath: /home/opsmx/config
+                      name: pipe-promot-config
+                    - mountPath: /home/opsmx/.spin
+                      name: spin-cli-config
+                    - name: git-token
+                      mountPath: /etc/git-secret
+                      readOnly: false
+                    env:
+                      - name: spinnaker_applications
+                        value: 'will be replaced'
+                      - name: spinnaker_pipelines
+                        value: 'will be replaced'
+                      - name: branch_ui
+                        value: 'will be replaced'
+                      - name: rootfolder_ui
+                        value: 'will be replaced'
+                      - name: command
+                        value: 'upload'
+                      - name: git_secret_token
+                        valueFrom:
+                          secretKeyRef:
+                            name: git-token
+                            key: git_secret_token
+                      - name: git_pr_token
+                        valueFrom:
+                          secretKeyRef:
+                            name: git-token
+                            key: git_pr_token
+                      - name: git_secret_sshkey
+                        value: ""
+                        #valueFrom:
+                        #  secretKeyRef:
+                        #    name: git-token
+                        #    key: git_secret_sshkey
+                  volumes:
+                  - configMap:
+                      defaultMode: 420
+                      name: pipe-promot-config
+                    name: pipe-promot-config
+                  - configMap:
+                      defaultMode: 420
+                      name: pipe-promot-scripts
+                    name: pipe-promot-scripts
+                  - name: spin-cli-config
+                    secret:
+                      defaultMode: 420
+                      secretName: spin-cli-config
+                  - name: git-token
+                    secret:
+                      defaultMode: 420
+                      secretName: git-token
+                  restartPolicy: Never
+                  serviceAccountName: default
+      - label: pipelineSyncToSpinnaker
+        cloudProvider: kubernetes
+        credentials: default
+        description: Sync Spinnaker pipelines from git
+        account: default
+        application: sampleapp
+        type: pipelineSyncToSpinnaker
+        waitForCompletion: true
+        parameters:
+          - defaultValue: "app1,app2,..."
+            description: "Please enter spinnaker applications separated by comma"
+            label: spinnaker applications
+            mapping: 'manifest.spec.template.spec.containers[0].env[0].value'
+            name: spinnaker_applications
+          - defaultValue: "pipeline1,pipeline2..."
+            description: "Please enter spinnaker pipelines separated by comma"
+            label: pipieline names
+            mapping: 'manifest.spec.template.spec.containers[0].env[1].value'
+            name: spinnaker_pipelines
+          - defaultValue: ""
+            description: "Please enter the Specific branch to download APP/pipeline data from github repo, It is optional if not specified default branch is taken from the configmap" 
+            label: Branch
+            mapping: 'manifest.spec.template.spec.containers[0].env[2].value'
+            name: branch_ui
+          - defaultValue: ""
+            description: "Please enter the path to upload/download APP/pipeline data to github specific directory,It is optional if not specified default path is taken from the configmap"
+            label: SavePath
+            mapping: 'manifest.spec.template.spec.containers[0].env[3].value'
+            name: rootfolder_ui
+        manifest:
+            apiVersion: batch/v1
+            kind: Job
+            metadata:
+              generateName: pipepromot-
+              namespace: SPINNAKER_NAMESPACE
+              labels:
+                 stage: opsmx-custom
+                 stagetype: pipelinepromotion
+            spec:
+              backoffLimit: 0
+              template:
+                spec:
+                  containers:
+                  - command: ["bash", "scripts/deployer.sh"]
+                    image: 'opsmxdev/pipepromot:1.0'
+                    imagePullPolicy: IfNotPresent
+                    name: pipepromot
+                    volumeMounts:
+                    - mountPath: /home/opsmx/scripts
+                      name: pipe-promot-scripts
+                    - mountPath: /home/opsmx/config
+                      name: pipe-promot-config
+                    - mountPath: /home/opsmx/.spin
+                      name: spin-cli-config
+                    - name: git-token
+                      mountPath: /etc/git-secret
+                      readOnly: false
+                    env:
+                      - name: spinnaker_applications
+                        value: 'will be replaced'
+                      - name: spinnaker_pipelines
+                        value: 'will be replaced'
+                      - name: branch_ui
+                        value: 'will be replaced'
+                      - name: rootfolder_ui
+                        value: 'will be replaced'
+                      - name: command
+                        value: 'download'
+                      - name: git_secret_token
+                        valueFrom:
+                          secretKeyRef:
+                            name: git-token
+                            key: git_secret_token
+                      - name: git_pr_token
+                        valueFrom:
+                          secretKeyRef:
+                            name: git-token
+                            key: git_pr_token
+                      - name: git_secret_sshkey
+                        value: ""
+                        #valueFrom:
+                        #  secretKeyRef:
+                        #    name: git-token
+                        #    key: git_secret_sshkey
+                  volumes:
+                  - configMap:
+                      defaultMode: 420
+                      name: pipe-promot-config
+                    name: pipe-promot-config
+                  - configMap:
+                      defaultMode: 420
+                      name: pipe-promot-scripts
+                    name: pipe-promot-scripts
+                  - name: spin-cli-config
+                    secret:
+                      defaultMode: 420
+                      secretName: spin-cli-config
+                  - name: git-token
+                    secret:
+                      defaultMode: 420
+                      secretName: git-token
+                  restartPolicy: Never
+                  serviceAccountName: default
+webhook:
+  preconfigured:
+  - label: "ServiceNow-Create Change Request"
+    type: CreateServiceNowChangeRequest
+    enabled: true
+    description: Custom stage for servicenow normal request creation
+    method: POST
+    url: SERVICENOW_URL/api/sn_chg_rest/v1/change
+    customHeaders:
+      Authorization: Basic SERVICENOW_BASE64_USR_PASSWD
+      Content-Type: application/json
+    payload: |-
+      {
+        "delivery_plan":"${parameterValues['deliveryplan']}",
+        "impact":"${parameterValues['impact']}",
+        "priority":"${parameterValues['priority']}",
+        "change_plan":"${parameterValues['changeplan']}",
+        "short_description":"${parameterValues['shortdescription']}",
+        "description":"${parameterValues['description']}",
+        "implementation_plan":"${parameterValues['implementationplan']}",
+        "backout_plan":"${parameterValues['backoutplan']}",
+        "type":"${parameterValues['type']}"
+      }
+    parameters:
+    - label: Delivery Plan
+      name: deliveryplan
+      description: Delivery plan
+      type: string
+    - label: Impact
+      name: impact
+      description: 1-High, 2-Medium, 3-Low. Mention 1 or 2 or 3 in the column.
+      type: string
+    - label: Priority
+      name: priority
+      description: 1-Critical, 2-High, 3-Moderate, 4-Low
+      type: string
+    - label: Change Plan
+      name: changeplan
+      description: Change plan
+      type: string
+    - label: Short Description
+      name: shortdescription
+      description: Short description
+      type: string
+    - label: Description
+      name: description
+      description: Description
+      type: string
+    - label: Implementation Plan
+      name: implementationplan
+      description: Implementation plan
+      type: string
+    - label: Backout Plan
+      name: backoutplan
+      description: Backout plan
+      type: string
+    - label: Type
+      name: type
+      description: Emergency, Normal etc 
+      type: string
+
+  - label: "ServiceNow-Change State of Change Request"
+    type: ChangeStateofChangeRequest
+    enabled: true
+    description: Custom stage to change the state of the normal request
+    method: PATCH
+    url: SERVICENOW_URL/api/sn_chg_rest/v1/change/${parameterValues['sysid']}
+    customHeaders:
+      Authorization: Basic SERVICENOW_BASE64_USR_PASSWD
+      Content-Type: application/json
+    payload: |-
+      {
+        "assignment_group":"${parameterValues['assignmentgroup']}",
+        "state":"${parameterValues['state']}"
+      }
+    parameters:
+    - label: Assignment Group
+      name: assignmentgroup
+      description: Assignment group to approval the state change Eg- CAB Approval 
+      type: string
+    - label: State
+      name: state
+      description: Change to which state? Eg- Assess 
+      type: string
+    - label: sys_id
+      name: sysid
+      description: Sys id of the request. Can get from url of the request Eg-7067852307303010268affa08c1ed0a6
+      type: string
+
+  - label: "ServiceNow-Add Work Note to Change Request"
+    type: AddWorkNotetoChangeRequst
+    enabled: true
+    description: Custom stage to add work note to normal request
+    method: PATCH
+    url: SERVICENOW_URL/api/sn_chg_rest/change/${parameterValues['sysid']}
+    customHeaders:
+      Authorization: Basic SERVICENOW_BASE64_USR_PASSWD
+      Content-Type: application/json
+    payload: |-
+      {
+        "work_notes":"${parameterValues['worknotes']}"
+      }
+    parameters:
+    - label: Work Notes
+      name: worknotes
+      description: Add work notes to the request 
+      type: string
+    - label: sys_id
+      name: sysid
+      description: Sys id of the request. Can get from url of the request Eg-7067852307303010268affa08c1ed0a6
+      type: string
+      
+  - label: "Service Now: Wait for state"    
+    type: waitServiceNowState          
+    enabled: true                    
+    description: Custom stage that waits for a specific state on a Service Now Issue
+    method: GET                                                              
+    url: SERVICENOW_URL/api/sn_chg_rest/change/${parameterValues['sysid']}
+    customHeaders:                                                                       
+      Authorization: Basic SERVICENOW_BASE64_USR_PASSWD
+      Content-Type: application/json                                                     
+    failPipeline: true                                                                   
+    progressJsonPath: "result.state.display_value"                                               
+    payload: ""                                                                          
+    retryStatusCodes:                                                                    
+      - 200                                                                              
+    statusJsonPath: "result.state.display_value"                                                 
+    statusUrlResolution: "getMethod"                                                   
+    successStatuses: ${parameterValues['success']}                                       
+    retryStatuses: ${parameterValue['retry']}                                            
+    terminalStatuses: ${parameterValues['terminate']}                                    
+    canceledStatuses: ${parameterValues['cancel']}                                       
+    waitBeforeMonitor: "1"                                                             
+    waitForCompletion: true                                                            
+    parameters:                                                                          
+    - label: Sys id                            
+      name: sysid                                                                        
+      description: "sys id of the request"
+      type: string                                                                     
+      defaultValue: ""                                                
+    - label: Service Now Success States              
+      name: success                                                              
+      description: "Service Now issue States that progress the pipeline, e.g,: In Verificaiton etc."
+      type: string
+      defaultValue: ""  
+    - label: Service Now Retry States                                                     
+      name: retry                                                                  
+      description: "Service Now issue states that Retry the stage e.g,: New etc. Can give multiple states coma seperated"
+      type: string                                                                        
+      defaultValue: ""
+    - label: Service Now Termination States                                                          
+      name: terminate           
+      description: "Service Now issue states that terminates the pipeline, e.g,: Done etc."    
+      type: string                                                                        
+      defaultValue: ""                                                             
+    - label: Service Now Canceled States                                                         
+      name: cancel                                                                           
+      description: "Service Now issue states that cancel the pipeline e.g,: Closed, etc."             
+      type: string                                                                           
+      defaultValue: Closed 
+  - label: "JIRA: Wait for state"
+    type: waitJiraState
+    enabled: true
+    description: Custom stage that waits for a specific state on a Jira Issue
+    method: GET
+    url: JIRA_URL/rest/api/latest/issue/${parameterValues['issue']}
+    customHeaders:
+      ## Provide the JIRA credentails that are in base64 encoded USER:PASSWORD/TOKEN
+      Authorization: Basic JIRA_BASE64_USR_PASSWD
+      Content-Type: application/json
+    failPipeline: true
+    progressJsonPath: "fields.status.name"
+    payload: ""
+    retryStatusCodes:
+      - 200
+    statusJsonPath: "fields.status.name"
+    statusUrlResolution: "getMethod"
+    successStatuses: ${parameterValues['success']}
+    retryStatuses: ${parameterValue['retry']}
+    terminalStatuses: ${parameterValues['terminate']}
+    canceledStatuses: ${parameterValues['cancel']}
+    waitBeforeMonitor: "1"
+    waitForCompletion: true
+    parameters:
+    - label: JIRA Issue ID
+      name: issue
+      description: "The JIRA issue, the default relies on JIRA issue ID extraction"
+      type: string
+      defaultValue: ${jira_issue}
+    - label: JIRA Retry States
+      name: retry
+      description: "JIRA issue states that Retry the stage e.g,: To Do, In Progress, etc."
+      type: string
+      defaultValue: To Do, In Progress
+    - label: JIRA Success States
+      name: success
+      description: "JIRA issue States that progress the pipeline, e.g,: In Verificaiton etc."
+      type: string
+      defaultValue: In Verification
+    - label: JIRA Temination States
+      name: terminate
+      description: "JIRA issue states that terminates the pipeline, e.g,: PR Raised etc."
+      type: string
+      defaultValue: PR Raised
+    - label: JIRA Canceled States
+      name: cancel
+      description: "JIRA issue states that cancel the pipeline e.g,: Done, etc."
+      type: string
+      defaultValue: Done
+  - label: "JIRA: Create Issue"
+    type: addJiraIss
+    enabled: true
+    description: Custom stage that add an Issue in Jira
+    method: POST
+    url: JIRA_URL/rest/api/2/issue/
+    customHeaders:
+     ## Provide the JIRA credentails that are in base64 encoded USER:PASSWORD/TOKEN
+     Authorization: Basic JIRA_BASE64_USR_PASSWD
+     Content-Type: application/json
+    payload: |-
+      {
+        "fields": {
+           "project":
+            {
+              "key": "${parameterValues['projectid']}"
+            },
+            "summary": "${parameterValues['summary']}",
+            "description": "${parameterValues['description']}",
+            "issuetype": {
+              "name": "${parameterValues['issuetype']}"
+            },
+            "components": [
+                {
+              "id": "${parameterValues['components']}"
+            }
+            ],
+            "priority": {
+              "name": "${parameterValues['priority']}"
+            }
+        }
+      }
+    parameters:
+    - label: Project ID ("ENG" or "DOCS")
+      name: projectid
+      description: Which JIRA project do you want to create an item in?
+      type: string
+    - label: Issue Type ("Improvement", "Task", "New Feature", or "Bug")
+      name: issuetype
+      description: issuetype
+      type: string
+    - label: Priority ("Low", "Medium", or "High")
+      name: priority
+      description: priority
+      type: string
+    - label: Components ("10103")
+      name: components
+      description: component of the project
+    - label: Issue Summary
+      name: summary
+      description: summary
+      type: string
+    - label: Description
+      name: description
+      description: description
+      type: string
+  - label: "JIRA: Comment on Issue"
+    type: comJiraIss
+    enabled: true
+    description: Custom stage that posts a comment in a Jira Issue
+    method: POST
+    url: JIRA_URL/rest/api/latest/issue/${parameterValues['issue']}/comment
+    customHeaders:
+      ## Provide the JIRA credentails that are in base64 encoded USER:PASSWORD/TOKEN
+      Authorization: Basic JIRA_BASE64_USR_PASSWD
+      Content-Type: application/json
+    payload: |-
+      {
+        "body": "${parameterValues['message']}"
+      }
+    parameters:
+    - label: Issue ID
+      name: issue
+      description: Issue
+      type: string
+    - label: Message
+      name: message
+      description: message
+      type: string
+  - label: "JIRA: Update Issue"
+    type: updJiraIss
+    enabled: true
+    description: Custom stage that updates an Issue in Jira
+    method: PUT
+    url: JIRA_URL/rest/api/latest/issue/${parameterValues['issue']}
+    customHeaders:
+      ## Provide the JIRA credentails that are in base64 encoded USER:PASSWORD/TOKEN
+      Authorization: Basic JIRA_BASE64_USR_PASSWD
+      Content-Type: application/json
+    payload: |-
+      {
+        "update": {
+            "summary": [
+                {
+                    "set": "${parameterValues['summary']}"
+                }
+            ],
+            "description": [
+                {
+                   "set": "${parameterValues['description']}"
+                }
+            ]
+        }
+      }
+    parameters:
+    - label: Issue ID
+      name: issue
+      description: Issue
+      type: string
+    - label: Summary
+      name: summary
+      description: summary
+      type: string
+    - label: Description
+      name: description
+      description: description
+  - label: "JIRA: Transition Issue"
+    type: transJiraIss
+    enabled: true
+    description: Custom stage that transitions an Issue in Jira
+    method: POST
+    url: JIRA_URL/rest/api/latest/issue/${parameterValues['issue']}/transitions
+    customHeaders:
+      ## Provide the JIRA credentails that are in base64 encoded USER:PASSWORD/TOKEN
+      Authorization: Basic JIRA_BASE64_USR_PASSWD
+      Content-Type: application/json
+    payload: |-
+      {
+        "transition": {
+          "id": "${parameterValues['targetStageID']}"
+        }
+      }
+    parameters:
+    - label: Issue ID
+      name: issue
+      description: Issue
+      type: string
+    - label: Target Stage ID
+      name: targetStageID
+      description: Target Stage ID (11 is "To Do", 21 is "In Progress", 31 is "In Review", 41 is "Done")
+      type: string
+spinnaker:
+  extensibility:
+    plugins:
+      Opsmx.VerificationGatePlugin:
+        enabled: true
+        version: 1.0.1
+        config:
+      Opsmx.VisibilityApprovalPlugin:
+        enabled: true
+        version: 1.0.1
+        config:
+      Opsmx.TestVerificationGatePlugin:
+        enabled: true
+        version: 1.0.1
+        config:
+      Opsmx.PolicyGatePlugin:
+        enabled: true
+        version: 1.0.1
+        config:
+      Opsmx.RbacPlugin:
+        enabled: true
+        version: 1.0.1
+        config:
+policy:
+  opa:
+    enabled: true
+    url: http://oes-sapor:8085

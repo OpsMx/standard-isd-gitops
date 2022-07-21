@@ -1,0 +1,72 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: byos-hiu
+  labels:
+    app: byos
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      containers:
+        - args:
+            - |-
+              set +x
+
+              source /repo/environment
+
+              rm -rf /repo/environment
+
+              chmod +x /repo/byosupgrade.sh
+                   
+              export version="$version"
+
+              ls  -ltra /repo/
+
+              /repo/$path
+          command:
+            - /bin/bash
+            - +x
+            - '-c'
+          envFrom:
+            - configMapRef:
+                name: upgradecm
+          image: 'quay.io/opsmxpublic/helm-bash:v4'
+          name: script
+          volumeMounts:
+            - mountPath: /repo
+              name: repo-volume
+      initContainers:
+        - args:
+            - >-
+
+              export gittoken=$(kubectl -n "$namespace" get secret gittoken -o yaml |
+              yq e '.data.gittoken' - | base64 -d)
+
+              git clone https://"$username":"$gittoken"@"$url" -b
+              "$srcbranch" /repo
+               
+              echo "export namespace=$namespace" > /repo/environment
+
+              echo "export gittoken=$gittoken" >> /repo/environment
+
+              echo "export version=$version" >> /repo/environment
+
+              ls -ltra /repo
+          command:
+            - /bin/bash
+            - +x
+            - '-c'
+          envFrom:
+            - configMapRef:
+                name: upgradecm
+          image: quay.io/opsmxpublic/helm-bash:v4-yq-jq
+          name: kube
+          volumeMounts:
+            - mountPath: /repo
+              name: repo-volume
+      restartPolicy: Never
+      serviceAccountName: byos
+      volumes:
+        - emptyDir: {}
+          name: repo-volume
