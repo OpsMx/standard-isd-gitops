@@ -8,7 +8,7 @@ Instructions basic requirements of a laptop and cluster can be found [here](http
 
 1. Create an empty-repo (called the "gitops-repo" in the document),  "main" branch should be the default, and clone it locally
 2. Clone https://github.com/OpsMx/standard-isd-gitops, selecting the appropriate branch:
-- `git clone https://github.com/OpsMx/standard-isd-gitops  -b 3.12`
+- `git clone https://github.com/OpsMx/standard-isd-gitops  -b 3.11`
 
 3. Copy contents of the standard-isd-repo to the gitops-repo created above using:
    
@@ -88,6 +88,10 @@ Use the following command (replace isd below with the helm release-name) to chec
 - `kubectl -n opsmx-isd logs isd-spinnaker-halyard-0 -c create-halyard-local`
 
 If the clone is not happening correctly, please check your values.yaml git user, token, repo, branch etc. For those interested, the script can be found in the isd-spinnaker-halyard-init-script
+
+## Only clouddriver and igor pods are in error/crashloop
+This is usually caused by incorrect "branch". Ensure that the "default" label in default/profiles/spinnakerconfig.yml is "main" or whatever branch you are using. Once corrected, restart the halyard pod by deleting it e.g.:
+- `kubectl -n opsmx-isd delete po isd-spinnaker-halyard-0`
 
 # Cleaning up/Delete the installation
 

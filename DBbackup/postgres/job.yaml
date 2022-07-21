@@ -1,0 +1,106 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: isd310-postgres-backup
+  labels:
+    app: byos
+  namespace: opsmx-isd
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      containers:
+        - args:
+            - >-
+              set +x
+
+              source /repo/secrets
+
+              $path
+
+              if [ $? -eq 0 ]; then  
+
+              echo "Postgress backup is sucessfull into the namespace opsmx-isd"
+
+              else
+
+              echo "Postgress backup is failed"
+
+              exit 1
+
+              fi
+          command:
+            - /bin/bash
+            - +x
+            - '-c'
+          env:
+            - name: path
+              value: /repo/postgres-backup.sh
+          image: 'quay.io/opsmxpublic/postgres:postgres13.7'
+          name: script
+          volumeMounts:
+            - mountPath: /repo
+              name: repo-volume
+            - mountPath: /pgdump
+              name: pgdump-volume
+      initContainers:
+        - args:
+            - >-
+
+              export ns="opsmx-isd"
+
+              export dbpassword=`kubectl -n "$ns" get secret dbpassword -o yaml
+              | yq e '.data.dbpassword' - | base64 -d`
+
+              echo "export gituser=$gituser" >> /repo/secrets
+
+              echo "export ns=$ns" >> /repo/secrets
+
+              echo "export dbpassword=$dbpassword" >> /repo/secrets
+
+              export host=$(kubectl -n "$ns" get secret oes-platform-config -o
+              yaml | yq e '.data."platform-local.yml"' - | base64 -d  | yq e
+              '.spring.datasource.url' - | sed 's|://| |g;s|:| |g' | awk '{print $3}')
+
+              export port=`kubectl -n "$ns" get secret oes-platform-config -o
+              yaml | yq e '.data."platform-local.yml"' - | base64 -d  | yq e
+              '.spring.datasource.url' - | grep -Eo '[0-9]{1,4}'`
+
+              export username=`kubectl -n "$ns" get secret oes-platform-config
+              -o yaml | yq e '.data."platform-local.yml"' - | base64 -d  | yq e
+              '.spring.datasource.username' -`
+
+              export password=`kubectl -n "$ns" get secret oes-platform-config
+              -o yaml | yq e '.data."platform-local.yml"' - | base64 -d  | yq e
+              '.spring.datasource.password' -`
+
+              echo "export host=$host" >>  /repo/secrets
+
+              echo "export port=$port" >> /repo/secrets
+
+              echo "export pguser=$username" >> /repo/secrets
+
+              echo "export dbpassword=$dbpassword" >> /repo/secrets
+
+              ls -ltra /home/opsmx/scripts
+
+              cp /home/opsmx/scripts/*.sh /repo/
+          command:
+            - /bin/bash
+            - +x
+            - '-c'
+          image: >-
+            quay.io/opsmxpublic/opsmx-custom-binaries:byossbackup_restore_scripts
+          name: kube
+          volumeMounts:
+            - mountPath: /repo
+              name: repo-volume
+      restartPolicy: Never
+      serviceAccountName: byos
+      volumes:
+        - emptyDir: {}
+          name: repo-volume
+        - name: pgdump-volume
+          persistentVolumeClaim:
+            claimName: 'pvc-PVCNAME-postgres'
+

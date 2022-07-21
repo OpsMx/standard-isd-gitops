@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: isd311-spinnakerexec-backup
+  labels:
+    app: byos
+  namespace: opsmx-isd
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      containers:
+        - args:
+            - >-
+              set +x
+
+              echo "Redis Data backup Started"
+
+              chmod +x "$path"
+
+              "$path"
+
+              if [ $? -eq 0 ]; then  
+
+              echo "Redis backup is sucessfull into the namespace opsmx-isd"
+
+              else
+
+              echo "Redis backup is failed"
+
+              exit 1
+
+              fi
+          command:
+            - /bin/bash
+            - +x
+            - '-c'
+          env:
+            - name: path
+              value: /home/opsmx/scripts/redis-backup.sh
+          image: >-
+            quay.io/opsmxpublic/opsmx-custom-binaries:byossbackup_restore_scripts
+          name: script
+          volumeMounts:
+            - mountPath: /redisdump
+              name: redisdump-volume
+      restartPolicy: Never
+      serviceAccountName: byos
+      volumes:
+        - name: redisdump-volume
+          persistentVolumeClaim:
+            claimName: 'pvc-PVCNAME-redis'
