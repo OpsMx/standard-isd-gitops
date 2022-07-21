@@ -8,7 +8,7 @@ global:
 
   spinGate:
     protocol: http
-    host: oes-gate.dev.example.com  #Update the correct spin-gate url
+    host: oes-gate.dev.example.com  #Update the correct spin-gate url, same as oes-gate for common-gate
 
   oesUI:
     protocol: http
@@ -16,7 +16,7 @@ global:
 
   oesGate:
     protocol: http
-    host: oes-gatedev.example.com #Update the correct oes-gate url
+    host: oes-gate.dev.example.com #Update the correct oes-gate url
 
   ssl:
     enabled: false # Set to true if using "httpS" urls. TLS certificates must be generated for the above URL
