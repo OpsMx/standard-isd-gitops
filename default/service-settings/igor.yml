@@ -1,4 +1,4 @@
-artifactId: quay.io/opsmxpublic/ubi8-spin-igor:v3.12.0
+artifactId: quay.io/opsmxpublic/ubi8-spin-igor:1.16.0
 kubernetes:
   volumes:
   #- id: ca-trust-bundle
@@ -13,8 +13,5 @@ kubernetes:
     mountPath: /etc/pki/ca-trust/extracted/java
     type: secret
     readOnly: true
-  podAnnotations:
-    moniker.spinnaker.io/application: spin
-
 env:
   JAVA_OPTS: "-XX:MaxRAMPercentage=100.0"

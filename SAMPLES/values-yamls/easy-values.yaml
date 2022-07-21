@@ -9,14 +9,21 @@
 # c) Follow the installation instructions to experience the next generation of Software Delivery
 #
 global:
-  createIngress: true
-  gitea:
+  certManager:
+    installed: false
+  ssl:
     enabled: false
-
+  spinDeck:
+    protocol: http
+    host: spin.isd-pov.example.com   # REPLACE if you have DNS access, else use hosts file entries
   ## OES-UI url configuration
   oesUI:
     protocol: http
     host: oes.isd-pov.example.com    # REPLACE if you have DNS access, else use hosts file entries
+  ## OES-Gate url configuration
+  oesGate:
+    protocol: http
+    host: oes-gate.isd-pov.example.com # REPLACE if you have DNS access, else use hosts file entries
 
 spinnaker:
   gitopsHalyard:
