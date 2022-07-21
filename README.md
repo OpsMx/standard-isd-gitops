@@ -89,6 +89,10 @@ Use the following command (replace isd below with the helm release-name) to chec
 
 If the clone is not happening correctly, please check your values.yaml git user, token, repo, branch etc. For those interested, the script can be found in the isd-spinnaker-halyard-init-script
 
+## Only clouddriver and igor pods are in error/crashloop
+This is usually caused by incorrect "branch". Ensure that the "default" label in default/profiles/spinnakerconfig.yml is "main" or whatever branch you are using. Once corrected, restart the halyard pod by deleting it e.g.:
+- `kubectl -n opsmx-isd delete po isd-spinnaker-halyard-0`
+
 # Cleaning up/Delete the installation
 
 Issue these commands, replace -n option with the namespace 
