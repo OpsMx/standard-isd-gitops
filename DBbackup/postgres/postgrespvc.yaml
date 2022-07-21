@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: 'pvc-PVCNAME-redis'
+  name: 'pvc-isd311-postgres'
   namespace: opsmx-isd
 spec:
   accessModes:

@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: isd310-backup
+  name: isd310-minio-backup
   labels:
     app: byos
   namespace: opsmx-isd
@@ -14,19 +14,17 @@ spec:
             - >-
               set +x
 
-              echo "Redis Data backup Started"
-
-              chmod +x "$path"
+              chmod +x $path
 
               "$path"
 
               if [ $? -eq 0 ]; then  
 
-              echo "Redis backup is sucessfull into the namespace opsmx-isd"
+              echo "Minio backup is sucessfull into the namespace opsmx-isd"
 
               else
 
-              echo "Redis backup is failed"
+              echo "Minio backup is failed"
 
               exit 1
 
@@ -37,16 +35,17 @@ spec:
             - '-c'
           env:
             - name: path
-              value: /home/opsmx/scripts/redis-backup.sh
+              value: /home/opsmx/scripts/minio-backup.sh
           image: >-
             quay.io/opsmxpublic/opsmx-custom-binaries:byossbackup_restore_scripts
           name: script
           volumeMounts:
-            - mountPath: /redisdump
-              name: redisdump-volume
+            - mountPath: /miniodump
+              name: miniodump-volume
       restartPolicy: Never
       serviceAccountName: byos
       volumes:
-        - name: redisdump-volume
+        - name: miniodump-volume
           persistentVolumeClaim:
-            claimName: 'pvc-PVCNAME-redis'
+            claimName: 'pvc-isd311-minio'
+
