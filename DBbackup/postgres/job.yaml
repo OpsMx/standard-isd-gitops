@@ -58,9 +58,9 @@ spec:
 
               echo "export dbpassword=$dbpassword" >> /repo/secrets
 
-              export host=`kubectl -n "$ns" get secret oes-platform-config -o
+              export host=$(kubectl -n "$ns" get secret oes-platform-config -o
               yaml | yq e '.data."platform-local.yml"' - | base64 -d  | yq e
-              '.spring.datasource.url' - | grep -oP '(?<=//).*(?=:)'`
+              '.spring.datasource.url' - | sed 's|://| |g;s|:| |g' | awk '{print $3}')
 
               export port=`kubectl -n "$ns" get secret oes-platform-config -o
               yaml | yq e '.data."platform-local.yml"' - | base64 -d  | yq e

@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: isd310-backup
+  name: isd310-spinnaker-executions-backup
   labels:
     app: byos
   namespace: opsmx-isd

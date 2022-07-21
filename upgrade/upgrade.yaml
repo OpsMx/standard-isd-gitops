@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: byos-hiu
+  name: isd-upgrade
   labels:
     app: byos
 spec:
@@ -17,13 +17,15 @@ spec:
 
               rm -rf /repo/environment
 
-              chmod +x /repo/byosupgrade.sh
+              chmod +x /repo/upgrade/upgrade.sh
                    
               export version="$version"
 
               ls  -ltra /repo/
 
-              /repo/$path
+              ls -ltra /repo/upgrade/
+
+              /repo/upgrade/upgrade.sh
           command:
             - /bin/bash
             - +x
