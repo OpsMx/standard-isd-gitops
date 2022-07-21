@@ -7,9 +7,10 @@ Instructions basic requirements of a laptop and cluster can be found [here](http
 *ISD stores all the configuration in a repo, typically a 'git repo', though bitbucket, S3 and others are supported.*
 
 1. Create an empty-repo (called the "gitops-repo" in the document),  "main" branch should be the default, and clone it locally
-2. Clone https://github.com/OpsMx/standard-isd-gitops, selecting the appropriate branch. E.g:
-   git clone https://github.com/OpsMx/standard-isd-gitops  -b 3.10
-3. Copy contents of the standard-isd-repo to the gitops-repo created above using:
+2. Clone https://github.com/OpsMx/standard-isd-gitops, selecting the appropriate branch:
+- `git clone https://github.com/OpsMx/standard-isd-gitops  -b 3.10`
+
+4. Copy contents of the standard-isd-repo to the gitops-repo created above using:
    
    `cp -r standard-isd-gitops/* gitops-repo` # Replace "gitops-repo" with your repo-name
    
@@ -18,8 +19,9 @@ Instructions basic requirements of a laptop and cluster can be found [here](http
 ## Specify inputs based on your environment and git-repo
 *The installation process requires inputs such as the application version, git-repo details and so on.*
 
-4. In the gitops-repo cloned to disk and edit install/inputcm.yaml. This should be updated with version of ISD, gitrepo and user details.
-5. Update Values.yaml as required, specifically, the ISD URL, SSO and gitops repo. 
+4. In the gitops-repo cloned to disk and edit install/inputcm.yaml. This should be updated, at a **minimum**, with gitrepo and username.
+5. Update Values.yaml as required, specifically: At at **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated.
+
 NOTE: We recommend that we start with the defaults, updating just the URL and gitopsHalyard details and gradually adding SSO, external DBs, etc. while updating the installed instance
 
 6. Push all changes in the gitops-repo to git (e.g `git add -A; git commit -m"my changes";git push`)
@@ -158,7 +160,7 @@ Issue these commands, replace -n option with the namespace
 - `kubectl -n opsmx-isd delete svc --all`
 - `kubectl -n opsmx-isd delete ing --all`
 - `kubectl -n opsmx-isd delete cm --all`
-- `kubectl -n opsmx-isd delete jobs  --all` 
+- `kubectl -n opsmx-isd delete jobs --all` 
 - `kubectl -n opsmx-isd delete pvc -–all`
 - `kubectl -n opsmx-isd delete secrets --all`
 - `kubectl delete ns opsmx-isd`
