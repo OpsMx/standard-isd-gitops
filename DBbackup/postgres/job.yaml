@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: PVCNAME-postgres-backup
+  name: isd310-postgres-backup
   labels:
     app: byos
   namespace: opsmx-isd
