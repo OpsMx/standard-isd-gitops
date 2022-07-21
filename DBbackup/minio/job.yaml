@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: isd310-minio-backup
+  name: isd310-spinnakerdata-backup
   labels:
     app: byos
   namespace: opsmx-isd
@@ -47,5 +47,5 @@ spec:
       volumes:
         - name: miniodump-volume
           persistentVolumeClaim:
-            claimName: 'pvc-isd311-minio'
+            claimName: 'pvc-PVCNAME-minio'
 
