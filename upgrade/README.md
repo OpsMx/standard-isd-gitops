@@ -18,7 +18,7 @@ Use these instructions if:
 - Have values.yaml that was used for helm installation
 
 Execute these commands, replacing "gitops-repo" with your repo
-- `git clone `**http://github.com/.../gitops-repo**
+- `git clone `**https://github.com/.../gitops-repo**
 - `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 3.12`
 - `cp -r standard-isd-gitops.git/upgrade gitops-repo`  
 - `cd gitops-repo`
@@ -30,7 +30,7 @@ a) You have a 3.11 installed using gitops installer
 b) Already have a gitops-repo for ISD (AP and Spinnaker) Configuration
 
 Execute these commands, replacing "gitops-repo" with your repo
-- `git clone `**http://github.com/.../gitops-repo**
+- `git clone `**https://github.com/.../gitops-repo**
 - `cd <your gitops-repo>`
 - Check that a "values.yaml" file exists in this directory (root of the gitops-repo)
 
