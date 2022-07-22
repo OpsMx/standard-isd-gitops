@@ -1,9 +1,9 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: byos-hiu
+  name: isd-generate-yamls
   labels:
-    app: byos
+    app: isd
 spec:
   backoffLimit: 2
   template:
@@ -17,7 +17,7 @@ spec:
 
               rm -rf /repo/environment
 
-              chmod +x /repo/byosupgrade.sh
+              chmod +x /repo/$path
                    
               export version="$version"
 
@@ -30,9 +30,9 @@ spec:
             - '-c'
           envFrom:
             - configMapRef:
-                name: upgradecm
+                name: inputcm
           image: 'quay.io/opsmxpublic/helm-bash:v4'
-          name: script
+          name: gen-yamls
           volumeMounts:
             - mountPath: /repo
               name: repo-volume
@@ -44,7 +44,7 @@ spec:
               yq e '.data.gittoken' - | base64 -d)
 
               git clone https://"$username":"$gittoken"@"$url" -b
-              "$srcbranch" /repo
+              "$branch" /repo
                
               echo "export namespace=$namespace" > /repo/environment
 
@@ -59,9 +59,9 @@ spec:
             - '-c'
           envFrom:
             - configMapRef:
-                name: upgradecm
+                name: inputcm
           image: quay.io/opsmxpublic/helm-bash:v4-yq-jq
-          name: kube
+          name: git-clone
           volumeMounts:
             - mountPath: /repo
               name: repo-volume
