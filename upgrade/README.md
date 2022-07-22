@@ -4,18 +4,29 @@ TODO: Move changes from standard-gitops-repo 3.12 to gitops-repo: What are they?
 
 # Upgrade Instructions
 
-Please follow these instructions if you are upgrading from 3.10 to 3.11. The previous installtion (3.10) could have been installed using helm (Scenario A) 
-or using the gitops installer (Scenario B). Please follow the steps as per your current scenario
+Please follow these instructions if you are upgrading from 3.11 (to 3.12). The previous installtion (3.11) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
 
 ## Scenario A
 Use this set if instructions if:
-- You have a 3.10 installed using the helm installer (installated prio to Feb 2022) and
-- Already have a gitops-repo for Spinnaker Configuration
+- You have a 3.11 installed using the helm installer (installated prio to Feb 2022) and
+- Already have a "gitops-repo" for Spinnaker Configuration
+
+Execute these commands, replacing "gitops-repo" with your repo
+- `git clone `**http://github.com/.../gitops-repo**
+- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 3.12`
+- `cp -r standard-isd-gitops.git/upgrade gitops-repo`  
+- `cd gitops-repo`
+- `cd upgrade`
 
 ## Scenario B
 Use this set if instructions if:
-a) You have a 3.10 installed using gitops installer
+a) You have a 3.11 installed using gitops installer
 b) Already have a gitops-repo for ISD (AP and Spinnaker) Configuration
+
+Execute these commands, replacing "gitops-repo" with your repo
+- `git clone `**http://github.com/.../gitops-repo**
+- `cd <your gitops-repo>`
+- `cd upgrade`
 
 ## Common Steps
 Upgrade sequence: (3.10 to 3.11)
