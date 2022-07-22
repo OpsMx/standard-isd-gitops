@@ -8,7 +8,7 @@ TODO:
 
 Please follow these instructions if you are upgrading from 3.11 (to 3.12). The current installtion (3.11) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
 
-<font color="red">**WARNING**</font>: Please backup all the databases, in particualr the Posgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration. Kindly refer to **THIS** document for backup procedures. 
+<font color="red">WARNING</font>: Please backup all the databases, in particualr the Posgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration. Kindly refer to **THIS** document for backup procedures. 
 
 ## Scenario A
 Use these instructions if:
