@@ -30,7 +30,7 @@ spec:
             - '-c'
           envFrom:
             - configMapRef:
-                name: inputcm
+                name: upgrade-inputcm
           image: 'quay.io/opsmxpublic/helm-bash:v4'
           name: gen-yamls
           volumeMounts:
@@ -59,7 +59,7 @@ spec:
             - '-c'
           envFrom:
             - configMapRef:
-                name: inputcm
+                name: upgrade-inputcm
           image: quay.io/opsmxpublic/helm-bash:v4-yq-jq
           name: git-clone
           volumeMounts:

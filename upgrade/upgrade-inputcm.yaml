@@ -15,4 +15,4 @@ data:
   secrets: gittoken,ldappassword,dbpassword,keystorepassword,rabbitmqpassword,saporpassword,redispassword,miniopassword,ldapconfigpassword
 kind: ConfigMap
 metadata:
-  name: inputcm
+  name: upgrade-inputcm
