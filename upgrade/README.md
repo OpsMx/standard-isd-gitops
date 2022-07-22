@@ -1,5 +1,6 @@
 TODO: 
 - Rename inputcm.yaml in UPGRADE to upgrade-input.cm, file name AND CM name need to be changed
+- Fix the DBMigrate Pipeline to use updated serviceacc name and ParameterNames
 - Change DB-upgrade pipeline to a JOB
 - Document on ISD backup 
 - Add trouble shooting steps
@@ -55,7 +56,7 @@ Upgrade sequence: (3.11 to 3.12)
 11. Go to ISD UI and check that version number has changed in the bottom-left corner
 
 ## If things go wrong during upgrade
-*As we have a gitops installer, recovering from a completed messed install is very easy. In summary, we simply delete all objects are re-apply.*
+*As we have a gitops installer, recovering from a failed install/upgrade is very easy. In summary, we simply delete all objects are re-apply. Please follow the steps below to recover.*
 
 [Make changes to uppgrade-inputcm and/or values.yaml as required. **Ensure that the changes are pushed to git**]
 1. `kubectl -n opsmx-isd  delete sts isd-spinnaker-halyard`
