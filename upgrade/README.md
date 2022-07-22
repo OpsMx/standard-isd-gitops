@@ -1,5 +1,6 @@
 TODO: 
 - Rename inputcm.yaml in UPGRADE to upgrade-input.cm, file name AND CM name need to be changed
+- Change DB-upgrade pipeline to a JOB
 - Document on ISD backup 
 - Add trouble shooting steps
 - Move changes from standard-gitops-repo 3.12 to gitops-repo: What are they? Any critical changes?
@@ -8,7 +9,7 @@ TODO:
 
 Please follow these instructions if you are upgrading from 3.11 (to 3.12). The current installtion (3.11) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
 
-<font color="red">WARNING</font>: Please backup all the databases, in particualr the Posgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration. Kindly refer to **THIS** document for backup procedures. 
+**WARNING**: Please backup all the databases, in particualr the Posgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration. Kindly refer to **THIS** document for backup procedures. 
 
 ## Scenario A
 Use these instructions if:
@@ -42,22 +43,21 @@ Upgrade sequence: (3.11 to 3.12)
 2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
 3. `cd upgrade`
 4. Update upgradecm.yaml : url, username and gitemail MUST be updated. TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
-5. Upgrade DB - Run pipeline?
-   Cd upgrade
-d) kubectl -n opsmx-isd apply -f inputcm.yaml
-D) kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml
-   Wait for isd-generate-yamls-* pod to complete
+5. Upgrade DB - Run pipeline?-- TO BE CHANGED TO A JOB
+d) `kubectl -n opsmx-isd apply -f inputcm.yaml`
+D) `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
+   [ Wait for isd-generate-yamls-* pod to complete ]
 E) Compare and merge branch
-F) kubectl -n opsmx-isd apply -f ISD-Apply-yamls-job.yaml
+F) `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
    Wait for isd-yaml-update-* pod to complete, and all pods to stabilize
-g) isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this: kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0
+g) isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this: `kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0`
 H) Go to ISD UI and check that version number has changed in the bottom-left corner
 
 If things go wrong:
 [Make changes to ineputcm, values.yaml as required]
-a) kubectl -n opsmx-isd  delete sts isd-spinnaker-halyard
-b) kubectl -n opsmx-isd  delete deploy --all
-c) kubectl -n opsmx-isd delete svc --all
-c) DELETE ALL DB INFO: Note that pipelines data may be lost: kubectl -n opsmx-isd delete pvc --all
-c) kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml
+a) `kubectl -n opsmx-isd  delete sts isd-spinnaker-halyard`
+b) `kubectl -n opsmx-isd  delete deploy --all`
+c) `kubectl -n opsmx-isd delete svc --all`
+c) DELETE ALL DB INFO: Note that pipelines data may be lost: `kubectl -n opsmx-isd delete pvc --all`
+c) `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
 e) Wait for all the pods to come up: How do we KNOW if it has ended?
