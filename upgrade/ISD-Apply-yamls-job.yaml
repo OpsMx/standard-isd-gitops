@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: byos-hiu
+  name: isd-yaml-update
   labels:
     app: byos
 spec:
@@ -15,11 +15,15 @@ spec:
 
               source /repo/environment
 
-              chmod +x /repo/byos-reinstall.sh
+              chmod +x /repo/upgrade/isd-apply-yamls.sh
 
               export version="$version"
+              ls -la /repo
 
-              /repo/byos-reinstall.sh
+              echo "Upgrade folder"
+              ls -la /repo/upgrade
+
+              /repo/upgrade/isd-apply-yamls.sh
                    
           command:
             - /bin/bash
@@ -27,7 +31,7 @@ spec:
             - '-c'
           envFrom:
             - configMapRef:
-                name: upgradecm
+                name: inputcm
           image: 'quay.io/opsmxpublic/helm-bash:v4'
           name: script
           volumeMounts:
@@ -68,7 +72,7 @@ spec:
               ldapconfigpassword -o yaml | yq e '.data.ldapconfigpassword' - |
               base64 -d`
 
-              export branch="$version"
+              #export branch="$version"
 
               git clone https://"$username":"$gittoken"@"$url" -b "$branch"
               /repo
@@ -99,21 +103,21 @@ spec:
 
               echo "export version=$version" >> /repo/environment
 
-              ls -ltra /repo
+              ls -ltRa /repo
           command:
             - /bin/bash
-            - +x
+            - -x
             - '-c'
           envFrom:
             - configMapRef:
-                name: upgradecm
+                name: inputcm
           image: quay.io/opsmxpublic/helm-bash:v4-yq-jq
-          name: kube
+          name: git-clone
           volumeMounts:
             - mountPath: /repo
               name: repo-volume
       restartPolicy: Never
-      serviceAccountName: byos
+      serviceAccountName: isd-install
       volumes:
         - emptyDir: {}
           name: repo-volume
