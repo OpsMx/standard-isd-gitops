@@ -53,8 +53,10 @@ Upgrade sequence: (3.11 to 3.12)
 10 isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this: `kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0`
 11. Go to ISD UI and check that version number has changed in the bottom-left corner
 
-## If things go wrong during upgrade:
-[Make changes to uppgrade-inputcm and/or values.yaml as required]
+## If things go wrong during upgrade
+*As we have a gitops installer, recovering from a completed messed install is very easy. In summary, we simply delete all objects are re-apply.*
+
+[Make changes to uppgrade-inputcm and/or values.yaml as required. **Ensure that the changes are pushed to git**]
 1. `kubectl -n opsmx-isd  delete sts isd-spinnaker-halyard`
 2. `kubectl -n opsmx-isd  delete deploy --all`
 3. `kubectl -n opsmx-isd delete svc --all`
@@ -63,4 +65,4 @@ Upgrade sequence: (3.11 to 3.12)
 
 ## Recovering from a failed "Upgrade DB" job
 1. Restore PostgresDB from backup
-TBD
+**TBD**
