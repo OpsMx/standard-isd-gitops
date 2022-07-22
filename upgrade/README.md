@@ -44,20 +44,23 @@ Upgrade sequence: (3.11 to 3.12)
 3. `cd upgrade`
 4. Update upgradecm.yaml : url, username and gitemail MUST be updated. TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
 5. Upgrade DB - Run pipeline?-- TO BE CHANGED TO A JOB
-d) `kubectl -n opsmx-isd apply -f inputcm.yaml`
-D) `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
+6. `kubectl -n opsmx-isd apply -f inputcm.yaml`
+7. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
-E) Compare and merge branch
-F) `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
+8. Compare and merge branch
+9. `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
    Wait for isd-yaml-update-* pod to complete, and all pods to stabilize
-g) isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this: `kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0`
-H) Go to ISD UI and check that version number has changed in the bottom-left corner
+10 isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this: `kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0`
+11. Go to ISD UI and check that version number has changed in the bottom-left corner
 
-If things go wrong:
-[Make changes to ineputcm, values.yaml as required]
-a) `kubectl -n opsmx-isd  delete sts isd-spinnaker-halyard`
-b) `kubectl -n opsmx-isd  delete deploy --all`
-c) `kubectl -n opsmx-isd delete svc --all`
-c) DELETE ALL DB INFO: Note that pipelines data may be lost: `kubectl -n opsmx-isd delete pvc --all`
-c) `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
-e) Wait for all the pods to come up: How do we KNOW if it has ended?
+## If things go wrong during upgrade:
+[Make changes to uppgrade-inputcm and/or values.yaml as required]
+1. `kubectl -n opsmx-isd  delete sts isd-spinnaker-halyard`
+2. `kubectl -n opsmx-isd  delete deploy --all`
+3. `kubectl -n opsmx-isd delete svc --all`
+4. `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
+5.  Wait for all the pods to come up: How do we KNOW if it has ended?
+
+## Recovering from a failed "Upgrade DB" job
+1. Restore PostgresDB from backup
+TBD
