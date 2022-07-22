@@ -43,9 +43,10 @@ Upgrade sequence: (3.11 to 3.12)
 2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
 3. `cd upgrade`
 4. Update upgradecm.yaml : url, username and gitemail MUST be updated. TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
-5. Upgrade DB - Run pipeline?-- TO BE CHANGED TO A JOB
-6. `kubectl -n opsmx-isd apply -f inputcm.yaml`
-7. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
+5. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
+6. Upgrade DB - Run pipeline?-- TO BE CHANGED TO A JOB
+7. `kubectl -n opsmx-isd apply -f inputcm.yaml`
+8. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
 8. Compare and merge branch
 9. `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
