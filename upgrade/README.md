@@ -1,6 +1,7 @@
 TODO: 
 - Rename inputcm.yaml in UPGRADE to upgrade-input.cm, file name AND CM name need to be changed
 - Fix the DBMigrate Pipeline to use updated serviceacc name and ParameterNames
+- Fix 3.12 HELM-CHART - it must honor oes-gate full URL if available. Needed for Spinnaker URL AND upgrade
 - Change DB-upgrade pipeline to a JOB
 - Document on ISD backup 
 - Add trouble shooting steps
@@ -43,11 +44,14 @@ Upgrade sequence: (3.11 to 3.12)
     enabled: false'
 2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
 3. `cd upgrade`
-4. Update upgradecm.yaml : url, username and gitemail MUST be updated. TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
-5. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
-6. Upgrade DB - Run pipeline?-- TO BE CHANGED TO A JOB
-7. `kubectl -n opsmx-isd apply -f inputcm.yaml`
-8. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
+4. Update upgradecm.yaml: 
+   - url, username and gitemail MUST be updated. TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
+   - **If ISD Namespace is different from "opsmx-isd"**: Update namespace (default is opsmx-isd) to the namespace where ISD is installed
+6. **If ISD Namespace is different from "opsmx-isd"**: Edit serviceacc.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
+7. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
+8. Upgrade DB - Run pipeline?-- TO BE CHANGED TO A JOB
+9. `kubectl -n opsmx-isd apply -f inputcm.yaml`
+10. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
 8. Compare and merge branch
 9. `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
