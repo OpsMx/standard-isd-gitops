@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: isd-db-migrate
+  generateName: isd-db-migrate
   labels:
     app: isd-install
   namespace: '${parameters.namespace}'
@@ -14,7 +14,7 @@ spec:
             - |-
               set +x
               source /repo/environment
-              export source=${parameters.source}
+              export source=${parameters.currentISDVersion}
               cd /repo/oes-data-migration-scripts/
               ls -ltra 
               if [ "$source" == "3.9" ]; then
