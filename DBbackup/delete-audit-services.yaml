@@ -16,9 +16,9 @@ spec:
 
               export ns="$namespace"
 
-              kubectl delete svc,cm,secrets,deploy --all -l component=auditclient-v311 -n $ns
+              kubectl delete svc,cm,secrets,deploy -l component=auditclient-v311 -n $ns
 
-              kubectl delete svc,cm,secrets,deploy --all -l component=auditservice-v311 -n $ns
+              kubectl delete svc,cm,secrets,deploy -l component=auditservice-v311 -n $ns
 
           command:
             - /bin/bash
