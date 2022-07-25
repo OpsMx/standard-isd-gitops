@@ -1,0 +1,19 @@
+apiVersion: v1
+data:
+  url: github.com/ORGANIZATION_OR_USERNAME/GIT-REPO ## github url without the leading "https://", the "git-repo" in the documentation
+  username: YOUR_USERNAME
+  gitemail: YOUR_EMAIL@COMPANY.COM
+
+  #####################################################################################################
+  # Typically, there is no need to change the values below this line
+  #####################################################################################################
+  branch: master         # Gitrepo branch, MUST be the default branch
+  chartVersion: 3.11.4      # Helm Chart Version
+  release: oes         # ISD helm-release version, default is ISD
+  currentISDVersion: "3.10"
+  namespace: oes # Namespace to install ISD, best not to change 
+  path: upgrade/isd-generate-yamls.sh  # Script to execute for installation, should not be changed
+  secrets: gittoken,ldappassword,dbpassword,keystorepassword,rabbitmqpassword,saporpassword,redispassword,miniopassword,ldapconfigpassword
+kind: ConfigMap
+metadata:
+  name: upgrade-inputcm
