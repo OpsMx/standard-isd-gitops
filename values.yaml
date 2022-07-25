@@ -2,8 +2,23 @@
 global:
   ## URL that will be used to access ISD. MUST BE CHANGED
   ## Ensure that this URL is reachable from your browser. Either DNS name server record must exist or "hosts" file must be updated
+  spinDeck:
+  # Custom Images registry where all the OSS and customized images used in the helm chart are stored
+    protocol: http
+    host: spin.dev.example.com   #Update the correct spin-deck url
+
+  spinGate:
+    protocol: http
+    host: oes-gate.dev.example.com  #Update the correct spin-gate url
+
   oesUI:
-    host: isd.dev.example.com
+    protocol: http
+    host: oes.dev.example.com   #Update the correct oesui url
+
+  oesGate:
+    protocol: http
+    host: oes-gate.dev.example.com #Update the correct oes-gate url
+
 
   ssl:
     enabled: false # Set to true if using "httpS" urls. TLS certificates must be generated for the above URL
@@ -15,9 +30,13 @@ global:
   ## The cluster MUST have nginx ingress controller already installed
   createIngress: true
 
-  #Only for trial purposes, pod-baesd git is installed and automatically configured
-  gitea: 
-    enabled: false # Set to true for trial-install only
+  # Only update this is using a private repo such as ACR, ECR, GCR, JFrog, etc.
+  customImages:
+    registry: quay.io/opsmxpublic
+
+  # Common gate for both spin and oes services. Change ONLY if required
+  commonGate:
+    enabled: true
 
   ###############################################################################
   # A trial LDAP is installed by default, with users: admin, user1,2,3 with user1password, user2pa...
