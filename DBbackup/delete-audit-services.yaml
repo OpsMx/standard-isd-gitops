@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  generateName: delete-services
+  name: delete-services
   labels:
     app: isd-install
 spec:
@@ -27,7 +27,7 @@ spec:
           envFrom:
             - configMapRef:
                 name: upgrade-inputcm
-          image: 'quay.io/opsmxpublic/ubi8-oes-platform:v3.12.5'
+          image: 'quay.io/opsmxpublic/helm-bash:v4'
           name: delete-svc-audit
           volumeMounts:
             - mountPath: /repo

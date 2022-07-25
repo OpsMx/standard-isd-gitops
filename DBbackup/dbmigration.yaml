@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  generateName: isd-db-migrate
+  name: isd-db-migrate
   labels:
     app: isd-install
 spec:
