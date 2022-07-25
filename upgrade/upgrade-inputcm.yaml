@@ -8,7 +8,7 @@ data:
   # Typically, there is no need to change the values below this line
   #####################################################################################################
   branch: master         # Gitrepo branch, MUST be the default branch
-  chartversion: 3.11.1      # ISD version
+  chartVersion: 3.11.4      # Helm Chart Version
   release: oes         # ISD helm-release version, default is ISD
   currentISDVersion: "3.10"
   namespace: oes # Namespace to install ISD, best not to change 
