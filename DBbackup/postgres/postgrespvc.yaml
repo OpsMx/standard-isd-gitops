@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: 'pvc-PVCNAME-postgres'
-  namespace: opsmx-isd
+  namespace: oes
 spec:
   accessModes:
     - ReadWriteOnce

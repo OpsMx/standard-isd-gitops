@@ -17,7 +17,7 @@ spec:
 
               rm -rf /repo/environment
 
-              chmod +x /repo/$path
+              chmod +x /repo/upgrade/isd-generate-yamls.sh
                    
               export version="$chartversion"
 
@@ -25,7 +25,7 @@ spec:
 
               ls  -ltra /repo/
 
-              /repo/$path
+              /repo/upgrade/isd-generate-yamls.sh
           command:
             - /bin/bash
             - +x

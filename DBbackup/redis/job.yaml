@@ -1,10 +1,9 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: isd311-spinnakerexec-backup
+  name: RELEASENAME-spinnakerexec-backup
   labels:
     app: byos
-  namespace: opsmx-isd
 spec:
   backoffLimit: 2
   template:
@@ -22,7 +21,7 @@ spec:
 
               if [ $? -eq 0 ]; then  
 
-              echo "Redis backup is sucessfull into the namespace opsmx-isd"
+              echo "Redis backup is sucessfull into the namespace oes"
 
               else
 
@@ -45,7 +44,7 @@ spec:
             - mountPath: /redisdump
               name: redisdump-volume
       restartPolicy: Never
-      serviceAccountName: byos
+      serviceAccountName: install-isd
       volumes:
         - name: redisdump-volume
           persistentVolumeClaim:

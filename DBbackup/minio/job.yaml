@@ -1,10 +1,9 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: isd311-spinnakerdata-backup
+  name: RELEASENAME-spinnakerdata-backup
   labels:
     app: byos
-  namespace: opsmx-isd
 spec:
   backoffLimit: 2
   template:
@@ -20,7 +19,7 @@ spec:
 
               if [ $? -eq 0 ]; then  
 
-              echo "Minio backup is sucessfull into the namespace opsmx-isd"
+              echo "Minio backup is sucessfull into the namespace oes"
 
               else
 
@@ -43,7 +42,7 @@ spec:
             - mountPath: /miniodump
               name: miniodump-volume
       restartPolicy: Never
-      serviceAccountName: byos
+      serviceAccountName: install-isd
       volumes:
         - name: miniodump-volume
           persistentVolumeClaim:
