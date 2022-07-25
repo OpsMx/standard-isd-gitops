@@ -31,7 +31,7 @@ spec:
 
               cd /repo/
 
-              export version="$chartversion"
+              export version="$chartVersion"
 
               chmod +x /repo/upgrade/isd-apply-yamls.sh
 
@@ -182,11 +182,11 @@ spec:
 
               ls -ltr /secret/gittoken || { echo "failed cloning $url" ; exit 1; }
 
-              export branch="$chartversion"
+              export branch="$chartVersion"
 
               git clone https://"$username":"$(cat /secret/gittoken)"@"$url" -b "$branch" /repo
 
-              echo "export version=$chartversion" >> /repo/environment
+              echo "export version=$chartVersion" >> /repo/environment
 
               if [ $? != 0 ] 
 
@@ -256,7 +256,7 @@ spec:
 
               cd /repo/
 
-              export version="$chartversion"
+              export version="$chartVersion"
 
               chmod +x /repo/upgrade/isd-apply-yamls.sh
 
@@ -407,11 +407,11 @@ spec:
 
               ls -ltr /secret/gittoken || { echo "failed cloning $url" ; exit 1; }
 
-              export branch="$chartversion"
+              export branch="$chartVersion"
 
               git clone https://"$username":"$(cat /secret/gittoken)"@"$url" -b "$branch" /repo
 
-              echo "export version=$chartversion" >> /repo/environment
+              echo "export version=$chartVersion" >> /repo/environment
 
               if [ $? != 0 ] 
 

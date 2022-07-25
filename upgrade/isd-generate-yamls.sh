@@ -7,10 +7,10 @@ helm repo add isd https://helmcharts.opsmx.com/
 helm repo list
 helm repo update
 helm search repo --versions
-#chartversion=$(helm search repo isd/oes --versions | awk '{print $2,$3}' | grep "${version}" | head -1 | awk -F ' ' '{print $1}')
-version=$chartversion
-helm pull isd/oes --version="$chartversion"
-tar -xf oes-"$chartversion".tgz
+#chartVersion=$(helm search repo isd/oes --versions | awk '{print $2,$3}' | grep "${version}" | head -1 | awk -F ' ' '{print $1}')
+version=$chartVersion
+helm pull isd/oes --version="$chartVersion"
+tar -xf oes-"$chartVersion".tgz
 if [ $? -eq 0 ]; then  
      echo "#################################Sucessfully downloaded the helm chart#################################"
 else
@@ -42,7 +42,7 @@ ls -l /tmp/isd/oes/templates/
 rm -rf /tmp/isd/oes/charts/spinnaker/templates/hooks/
 rm -rf /tmp/isd/oes/templates/hooks/cleanup.yaml
 rm -rf /repo/oes/
-rm -rf oes-"$chartversion".tgz
+rm -rf oes-"$chartVersion".tgz
 #####################################committing tempates to github repo################################
 git branch "$version"
 if [ $? -eq 0 ]; then  
