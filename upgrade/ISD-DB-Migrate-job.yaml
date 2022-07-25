@@ -1,0 +1,81 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: isd-db-migrate
+  labels:
+    app: isd-install
+  namespace: '${parameters.namespace}'
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      containers:
+        - args:
+            - |-
+              set +x
+              source /repo/environment
+              export source=${parameters.currentISDVersion}
+              cd /repo/oes-data-migration-scripts/
+              ls -ltra 
+              if [ "$source" == "3.9" ]; then
+
+                          echo "upgrading  v3.9 to v3.12"
+
+                          python3 migration_v3.9.x_to_v3.12.x_audit_data.py auditdb $host oesdb $host platformdb $host $port $pguser $pgpassword $saporusername $saporpassword http://oes-audit-service:8097 http://oes-platform-service:8095 ${parameters.adminuser}
+
+              elif [ "$source" == "3.10" ]; then
+
+                          echo "upgrading  v3.10 to v3.11"
+
+                         python3 migration_v3.10.x_to_v3.11.py auditdb $host opsmx $host http://oes-audit-service-v311:8097 $port $pguser $pgpassword
+
+              elif [ "$source" == "3.11" ]; then
+
+                           echo "upgrading  v3.11 to v3.12"
+                 
+                             echo "started migration"
+                  
+                           python3 migration_v3.11.x_to_v3.12.py platformdb $host oesdb $host  opsmx $host auditdb $host visibilitydb oes-db $port  $oesgateurl http://sapor-gate:8084 $oesuiurl admin $saporpassword $pguser $pgpassword
+                
+                
+              elif [ "$source" == "3.12" ]; then
+              echo "upgrading  v3.12 to v4.0"
+
+              else
+                 
+                 echo "Some went wrong in mapping Migration script"
+                  
+              fi
+          command:
+            - /bin/bash
+            - +x
+            - '-c'
+          image: 'quay.io/opsmxpublic/ubi8-oes-platform:v3.12.5'
+          name: script
+          volumeMounts:
+            - mountPath: /repo
+              name: repo-volume
+      initContainers:
+        - args:
+            - |-
+
+              export ns="${parameters.namespace}"
+
+              source /home/opsmx/scripts/db_migration_script.sh
+
+              ls -ltra  /repo/
+          command:
+            - /bin/bash
+            - +x
+            - '-c'
+          image: 'quay.io/opsmxpublic/opsmx-custom-binaries:opsmx-isd-scripts'
+          name: kube
+          volumeMounts:
+            - mountPath: /repo
+              name: repo-volume
+      restartPolicy: Never
+      serviceAccountName: isd-install
+      volumes:
+        - emptyDir: {}
+          name: repo-volume
+
