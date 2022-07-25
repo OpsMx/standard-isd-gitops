@@ -1,9 +1,9 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: isd-upgrade
+  name: isd-generate-yamls
   labels:
-    app: byos
+    app: isd
 spec:
   backoffLimit: 2
   template:
@@ -17,22 +17,24 @@ spec:
 
               rm -rf /repo/environment
 
-              chmod +x /repo/upgrade/upgrade.sh
+              chmod +x /repo/$path
                    
-              export version="$version"
+              export version="$chartversion"
+
+              export release="$release"
 
               ls  -ltra /repo/
 
-              /repo/upgrade/upgrade.sh
+              /repo/$path
           command:
             - /bin/bash
             - +x
             - '-c'
           envFrom:
             - configMapRef:
-                name: upgradecm
+                name: upgrade-inputcm
           image: 'quay.io/opsmxpublic/helm-bash:v4'
-          name: script
+          name: gen-yamls
           volumeMounts:
             - mountPath: /repo
               name: repo-volume
@@ -44,13 +46,15 @@ spec:
               yq e '.data.gittoken' - | base64 -d)
 
               git clone https://"$username":"$gittoken"@"$url" -b
-              "$srcbranch" /repo
+              "$branch" /repo
                
               echo "export namespace=$namespace" > /repo/environment
 
               echo "export gittoken=$gittoken" >> /repo/environment
 
-              echo "export version=$version" >> /repo/environment
+              echo "export version=$chartversion" >> /repo/environment
+
+              echo "export release=$release" >> /repo/environment
 
               ls -ltra /repo
           command:
@@ -59,14 +63,14 @@ spec:
             - '-c'
           envFrom:
             - configMapRef:
-                name: upgradecm
+                name: upgrade-inputcm
           image: quay.io/opsmxpublic/helm-bash:v4-yq-jq
-          name: kube
+          name: git-clone
           volumeMounts:
             - mountPath: /repo
               name: repo-volume
       restartPolicy: Never
-      serviceAccountName: byos
+      serviceAccountName: isd-install
       volumes:
         - emptyDir: {}
           name: repo-volume
