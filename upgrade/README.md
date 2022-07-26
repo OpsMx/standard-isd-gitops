@@ -1,7 +1,3 @@
-TODO: 
-- Fix 3.12 HELM-CHART - it must honor oes-gate full URL if available. Needed for Spinnaker URL AND upgrade
-- Add trouble shooting steps
-- Move changes from standard-gitops-repo 3.12 to gitops-repo: What are they? Any critical changes?
 
 # Upgrade Instructions
 
