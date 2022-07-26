@@ -209,7 +209,7 @@ spec:
             - mountPath: /repo
               name: repo-volume
       serviceAccount: isd-install
-      serviceAccountName: byos
+      serviceAccountName: isd-install
       restartPolicy: "Never"
       volumes:
         - emptyDir: {}
