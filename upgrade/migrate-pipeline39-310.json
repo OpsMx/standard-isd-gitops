@@ -1,0 +1,117 @@
+{
+  "appConfig": {},
+  "description": "This pipe upgrades the postgres db used by isd. The script that upgrades is in github. Before you run this pipe, make sure the byos-set-up-pipe and byos-postgres-db-backup are run and the secrets for github and postgres are created. Choose the parameters accordingly. more info at https://github.com/OpsMx/byos/blob/main/Postgres/Readme.md",
+  "keepWaitingPipelines": false,
+  "lastModifiedBy": "admin",
+  "limitConcurrent": true,
+  "parameterConfig": [
+    {
+      "default": "3.9",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "source",
+      "options": [],
+      "pinned": true,
+      "required": false
+    },
+    {
+      "default": "test39",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "namespace",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": true,
+      "required": false
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "account": "default",
+      "alias": "runJob",
+      "application": "byos",
+      "cloudProvider": "kubernetes",
+      "consumeArtifactSource": "none",
+      "credentials": "default",
+      "manifest": {
+        "apiVersion": "batch/v1",
+        "kind": "Job",
+        "metadata": {
+          "generateName": "byos-",
+          "labels": {
+            "app": "byos"
+          },
+          "namespace": "${parameters.namespace}"
+        },
+        "spec": {
+          "backoffLimit": 2,
+          "template": {
+            "spec": {
+              "containers": [
+                {
+                  "args": [
+                    "set +x\nsource /repo/environment\nexport source=${parameters.source}\ncd /repo/data-migration/\nls -ltra \nif [ \"$source\" == \"3.9\" ]; then\n\necho \"upgrading  v3.9.x to v3.10\"\nexport cmd=\"python3 migration_v3.9.x_to_v3.10.py visibilitydb $host platformdb $host opsmx $host oesdb $host auditdb $host $port admin $saporpassword\"\necho $cmd\n \nexport source=\"3.10\"\n\n\nelif [ \"$source\" == \"3.10\" ]; then\necho \"upgrading  v3.10.x to v3.11\"\n\n    export cmd=\"python3 migration_v3.10.x_to_v3.11.py auditdb $host opsmx $host http://oes-audit-service:8097 $port\"\n     \n      echo $cmd\n      \n      export source=\"3.11\"\n\nelif [ \"$source\" == \"3.11\" ]; then\necho \"upgrading  v3.11 to v3.11.1\"\n\n    export cmd=\"python3 migration_v3.11_to_v3.11.x.py opsmx $host $port\"\n    \n    \n    echo $cmd\n    \n    export source=\"3.11.1\"\n    \nelif [ \"$source\" == \"3.11.1\" ]; then\necho \"upgrading  v3.11.1 to v3.12.4\"\n\n    export cmd=\"python3 migration_v3.11_to_v3.12.py platformdb $host oesdb $host  opsmx $host auditdb $host visibilitydb $host $port\"\n    \n    echo $cmd\n    \n    export source=\"3.12\"\n    \nelif [ \"$source\" == \"3.12.4\" ]; then\necho \"upgrading  v3.12.4 to v3.12.5\"\n\n    export cmd=\"python3 migration_v3.12.4_to_v3.12.5.py opsmx $host $port $pguser $pgpassword\"\n    \n    echo $cmd\n    \n    export source=\"3.12.5\"\n    \nelif [  \"$source\" == \"3.12.5\" ]; then\n\n echo \"upgrading  v3.12.5 to v3.12.6\"\n\n    export cmd=\"python3 migration_v3.12.5_to_v3.12.6.py auditdb $host visibilitydb $host  platformdb $host $port $pguser $pgpassword\"\n    \n    echo $cmd\n    \n    export source=\"3.12.6\"\n     \nelse\n   \n   echo \"Some went wrong in mapping Migration script\"\n    \nfi\n$cmd\nif [ $? -eq 0 ]; then  \necho \"Migration of Postgress DB is sucessfull into your Database\"\nelse\necho \"Migration of Postgress DB failed\"\nexit 1\nfi"
+                  ],
+                  "command": [
+                    "/bin/bash",
+                    "+x",
+                    "-c"
+                  ],
+                  "image": "quay.io/opsmxpublic/ubi8-oes-platform:v3.12.5",
+                  "name": "script",
+                  "volumeMounts": [
+                    {
+                      "mountPath": "/repo",
+                      "name": "repo-volume"
+                    }
+                  ]
+                }
+              ],
+              "initContainers": [
+                {
+                  "args": [
+                    "\nexport ns=\"${parameters.namespace}\"\nexport saporpassword=$(kubectl -n \"$ns\" get secret saporpassword -o yaml | yq e '.data.saporpassword' - | base64 -d)\nexport host=$(kubectl -n \"$ns\" get secret oes-platform-config -o yaml | yq e '.data.\"platform-local.yml\"' - | base64 -d  | yq e '.spring.datasource.url' - | grep -oP '(?<=//).*(?=:)')\nexport port=$(kubectl -n \"$ns\" get secret oes-platform-config -o yaml | yq e '.data.\"platform-local.yml\"' - | base64 -d  | yq e '.spring.datasource.url' - | grep -Eo '[0-9]{1,4}')\nexport username=$(kubectl -n \"$ns\" get secret oes-platform-config -o yaml | yq e '.data.\"platform-local.yml\"' - | base64 -d  | yq e '.spring.datasource.username' -)\nexport password=$(kubectl -n \"$ns\" get secret oes-platform-config -o yaml | yq e '.data.\"platform-local.yml\"' - | base64 -d  | yq e '.spring.datasource.password' -)\nrm -rf /repo/*\n\ngit clone https://Luthan95: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@github.com/opsmx/platform-service -b OP-16820-pre-upgrade-execution /repo\nls -ltra /repo\n\necho \"export ns=$ns\" > /repo/environment\necho \"export host=$host\" >>  /repo/environment\necho \"export port=$port\" >> /repo/environment\necho \"export pguser=$username\" >> /repo/environment\necho \"export pgpassword=$password\" >> /repo/environment\necho \"export saporpassword=$saporpassword\" >> /repo/environment\ncat /repo/environment"
+                  ],
+                  "command": [
+                    "/bin/bash",
+                    "+x",
+                    "-c"
+                  ],
+                  "image": "quay.io/opsmxpublic/opsmx-custom-binaries:kubectl-spin-cli-git-bash-jq-yq",
+                  "name": "kube",
+                  "volumeMounts": [
+                    {
+                      "mountPath": "/repo",
+                      "name": "repo-volume"
+                    }
+                  ]
+                }
+              ],
+              "restartPolicy": "Never",
+              "serviceAccountName": "byos",
+              "volumes": [
+                {
+                  "emptyDir": {},
+                  "name": "repo-volume"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "name": "Run Job (Manifest)",
+      "refId": "1",
+      "requisiteStageRefIds": [],
+      "source": "text",
+      "type": "runJobManifest"
+    }
+  ],
+  "triggers": [],
+  "updateTs": "1658803589000"
+}
