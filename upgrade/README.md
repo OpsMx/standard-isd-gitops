@@ -20,29 +20,12 @@ Execute these commands, replacing "gitops-repo" with your repo
 - `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 3.11`
 - `cp -r standard-isd-gitops.git/upgrade gitops-repo`  
 - `cd gitops-repo`
-- Copy the existing "values.yaml", that was used for installation as "values.yaml" (file name is important) into this directory (root of the gitops-repo)
-- GitOps installer requires secrets in values.yaml to be replaced. Edit the values.yaml to replace secrets with the following:
-   - ldap.managerPassword: encrypted:ldappassword:ldappassword
-   - minio.accessKey: encrypted:miniopassword:miniopassword
-   - minio.secretKey: encrypted:miniopassword:miniopassword
-   - db.password: encrypted:dbpassword:dbpassword
-   - saporgate.password: encrypted:saporpassword:saporpassword # Any generic String, need not be the real password
-   - redis.url: redis://:encrypted:redispassword:redispassword@{{ .Release.Name }}-redis-master
-   - redis.password: encrypted:redispassword:redispassword
-   - spinnaker.gitopsHalyard.token: encrypted:gittoken:gittoken  # Token corresponding to above username
-   - spinnaker.gitopsHalyard.token: encrypted:gittoken:gittoken
-   - spinnaker.spinCli.auth.basic: password: encrypted:saporpassword:saporpassword     # Use credentials corresponding to saporgate.config.password
-   - openldap.adminPassword: encrypted:ldappassword:ldappassword
-   - openldap.configPassword: encrypted:ldapconfigpassword:ldapconfigpassword
-   - ## Add these lines in the rabbitmq section
-     rabbitmq:
-     
-       username: rabbitmq
-       
-       password: encrypted:rabbitmqpassword:rabbitmqpassword
- - create gittoken secret. This token will be used to authenticate to the gitops-repo
+- Copy the existing "values.yaml", that was used for previous installation into this folder. We will call it values-310.yaml
+- diff values-311.yaml values-310.yaml and merge all of your changes into "values.yaml". **NOTE**: In most cases just replacing 3.10.2 with 3.11.1 is enough.
+- Copy the updated values file as "values.yaml" (file name is important)
+- create gittoken secret. This token will be used to authenticate to the gitops-repo
    - `kubectl -n oes create secret generic gittoken --from-literal ldapconfigpassword=PUT_YOUR_GITTOKEN_HERE` 
- - create secrets mentioned above. **NOTE**: You only need to create these secrets if they are changed from the default
+- create secrets mentioned above. **NOTE**: You only need to create these secrets if they are changed from the default
    - `kubectl -n oes create secret generic ldapconfigpassword --from-literal ldapconfigpassword=PUT_YOUR_SECRET_HERE`
    - `kubectl -n oes create secret generic ldappassword --from-literal ldappassword=PUT_YOUR_SECRET_HERE`
    - `kubectl -n oes create secret generic miniopassword --from-literal miniopassword=PUT_YOUR_SECRET_HERE`
