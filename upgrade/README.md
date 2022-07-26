@@ -7,7 +7,7 @@ Please follow these instructions if you are upgrading from 3.10 (to 3.11). The c
 
 ## Scenario A
 Use these instructions if:
-- You have a 3.11 installed using the helm installer (installated prio to Feb 2022) and
+- You have a 3.10.2 installed using the helm installer (installated prio to Feb 2022) and
 - Already have a "gitops-repo" for Spinnaker Configuration
 - Have values.yaml that was used for helm installation
 
@@ -20,7 +20,7 @@ Execute these commands, replacing "gitops-repo" with your repo
 - diff values-311.yaml values-310.yaml and merge all of your changes into "values.yaml". **NOTE**: In most cases just replacing 3.10.2 with 3.11.1 is enough.
 - Copy the updated values file as "values.yaml" (file name is important)
 - create gittoken secret. This token will be used to authenticate to the gitops-repo
-   - `kubectl -n oes create secret generic gittoken --from-literal ldapconfigpassword=PUT_YOUR_GITTOKEN_HERE` 
+   - `kubectl -n oes create secret generic gittoken --from-literal gittoken=PUT_YOUR_GITTOKEN_HERE` 
 - create secrets mentioned above. **NOTE**: You only need to create these secrets if they are changed from the default
    - `kubectl -n oes create secret generic ldapconfigpassword --from-literal ldapconfigpassword=PUT_YOUR_SECRET_HERE`
    - `kubectl -n oes create secret generic ldappassword --from-literal ldappassword=PUT_YOUR_SECRET_HERE`
@@ -53,12 +53,12 @@ Upgrade sequence: (3.10 to 3.11)
    - **If ISD Namespace is different from "oes"**: Update namespace (default is opsmx-isd) to the namespace where ISD is installed
 6. **If ISD Namespace is different from "oes"**: Edit serviceacc.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
 7. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
-8. Upgrade DB:
+8. `kubectl -n oes apply -f upgrade-inputcm.yaml`
+9. `kubectl -n oes apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
+10. Upgrade DB:
    - `kubectl -n oes replace --force -f create-sample-job.yaml`
    - Execute the DB-Migrate310to311 pipeline in opsmx-gitops application
    - In the unlikely even that the pipeline is not present(job failed), please copy paste the pipeline-json available in upgrade folder.
-9. `kubectl -n oes apply -f upgrade-inputcm.yaml`
-10. `kubectl -n oes apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
 11. `kubectl -n oes replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
 12. Compare and merge branch: This job should have created a branch on the gitops-repo with the helmchart version number specified in upgrade-inputcm.yaml. Raise a PR and check what changes are being made. Once satisfied, merge the PR.
