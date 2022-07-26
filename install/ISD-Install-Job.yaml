@@ -208,7 +208,7 @@ spec:
               name: secret-volume
             - mountPath: /repo
               name: repo-volume
-      serviceAccount: byos
+      serviceAccount: isd-install
       serviceAccountName: byos
       restartPolicy: "Never"
       volumes:
