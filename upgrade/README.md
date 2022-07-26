@@ -56,7 +56,7 @@ Upgrade sequence: (3.10 to 3.11)
 8. `kubectl -n oes apply -f upgrade-inputcm.yaml`
 9. `kubectl -n oes apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
 10. Upgrade DB:
-   - `kubectl -n oes replace --force -f create-sample-job.yaml`
+   - `kubectl -n oes replace --force -f create-sample-job.yaml` , please wait for 5 min for the job to complete
    - Execute the DB-Migrate310to311 pipeline in opsmx-gitops application
    - In the unlikely even that the pipeline is not present(job failed), please copy paste the pipeline-json available in upgrade folder.
 11. `kubectl -n oes replace --force -f ISD-Generate-yamls-job.yaml`
