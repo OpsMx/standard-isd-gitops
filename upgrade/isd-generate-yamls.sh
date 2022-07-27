@@ -7,9 +7,10 @@ helm repo add isd https://helmcharts.opsmx.com/
 helm repo list
 helm repo update
 helm search repo --versions
-chartversion=$(helm search repo isd/oes --versions | awk '{print $2,$3}' | grep "${version}" | head -1 | awk -F ' ' '{print $1}')
-helm pull isd/oes --version="$chartversion"
-tar -xf oes-"$chartversion".tgz
+#chartVersion=$(helm search repo isd/oes --versions | awk '{print $2,$3}' | grep "${version}" | head -1 | awk -F ' ' '{print $1}')
+version=$chartVersion
+helm pull isd/oes --version="$chartVersion"
+tar -xf oes-"$chartVersion".tgz
 if [ $? -eq 0 ]; then  
      echo "#################################Sucessfully downloaded the helm chart#################################"
 else
@@ -29,7 +30,7 @@ sed -i 's/| *b64enc *//' /repo/oes/templates/sapor-gate/sapor-gate-secret.yaml
 sed -i 's/^data:/stringData:/' /repo/oes/templates/sapor-gate/sapor-gate-secret.yaml
 sed -i 's/{{ .Values.saporgate.config.password }}/encrypted:saporpassword:saporpassword/' /repo/oes/config/sapor-gate/gate-local.yml
 ####################################################################################################################
-helm template isd /repo/oes/ -f values.yaml --output-dir=/tmp/isd
+helm template ${release} /repo/oes/ -f values.yaml --output-dir=/tmp/isd
 if [ $? -eq 0 ]; then  
      echo "#################################Helm template is sucessfull into isd directory#################################"
 else
@@ -41,7 +42,7 @@ ls -l /tmp/isd/oes/templates/
 rm -rf /tmp/isd/oes/charts/spinnaker/templates/hooks/
 rm -rf /tmp/isd/oes/templates/hooks/cleanup.yaml
 rm -rf /repo/oes/
-rm -rf oes-"$chartversion".tgz
+rm -rf oes-"$chartVersion".tgz
 #####################################committing tempates to github repo################################
 git branch "$version"
 if [ $? -eq 0 ]; then  

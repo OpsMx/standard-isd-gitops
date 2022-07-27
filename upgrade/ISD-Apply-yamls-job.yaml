@@ -39,70 +39,155 @@ spec:
       initContainers:
         - args:
             - >-
-              export namespace="$namespace"
 
-              export gittoken=`kubectl -n "$namespace" get secret gittoken -o yaml | yq
-              e '.data.gittoken' - | base64 -d`
+              create_default_secret()
+              {
+              if [[ $1 == "gittoken" ]]
 
-              export ldappassword=`kubectl -n "$namespace" get secret ldappassword -o
-              yaml | yq e '.data.ldappassword' - | base64 -d`
+              then
 
-              export dbpassword=`kubectl -n "$namespace" get secret dbpassword -o yaml
-              | yq e '.data.dbpassword' - | base64 -d`
+                echo "Error: Cannot create a default gittoken as it is specific to the git-repo. Please create a secret containing the gittoken manually."
 
-              export keystorepassword=`kubectl -n "$namespace" get secret
-              keystorepassword -o yaml | yq e '.data.keystorepassword' - |
-              base64 -d`
+                exit 1
 
-              export rabbitmqpassword=`kubectl -n "$namespace" get secret
-              rabbitmqpassword -o yaml | yq e '.data.rabbitmqpassword' - |
-              base64 -d`
+              fi
 
-              export saporpassword=`kubectl -n "$namespace" get secret saporpassword -o
-              yaml | yq e '.data.saporpassword' - | base64 -d`
+              if [[ $1 == "ldappassword" ]]
 
-              export redispassword=`kubectl -n "$namespace" get secret redispassword -o
-              yaml | yq e '.data.redispassword' - | base64 -d`
+              then
 
-              export miniopassword=`kubectl -n "$namespace" get secret miniopassword -o
-              yaml | yq e '.data.miniopassword' - | base64 -d`
+                kubectl -n $2 create secret generic ldappassword --from-literal ldappassword=opsmxadmin123
 
-              export ldapconfigpassword=`kubectl -n "$namespace" get secret
-              ldapconfigpassword -o yaml | yq e '.data.ldapconfigpassword' - |
-              base64 -d`
+                if [ $?!= 0 ]; then echo "Error creating default secret ldappassword"; exit 1; fi
 
-              #export branch="$version"
+              fi
 
-              git clone https://"$username":"$gittoken"@"$url" -b "$branch"
-              /repo
+              if [[ $1 == "dbpassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic dbpassword --from-literal dbpassword=networks123
+
+                if [ $?!= 0 ]; then echo "Error creating default secret dbpassword"; exit 1; fi
+
+              fi
+
+              if [[ $1 == "keystorepassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic keystorepassword --from-literal keystorepassword=changeit
+
+                if [ $?!= 0 ]; then echo "Error creating default secret keystorepassword"l exit 1; fi
+
+              fi
+
+              if [[ $1 == "rabbitmqpassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic rabbitmqpassword --from-literal rabbitmqpassword=Networks123
+
+                if [ $?!= 0 ]; then echo "Error creating default secret rabbitmqpassword"; exit 1; fi
+
+              fi
+
+              if [[ $1 == "saporpassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic saporpassword --from-literal saporpassword=saporadmin
+
+                if [ $?!= 0 ]; then echo "Error creating default secret saporpassword"; exit 1; fi
+
+              fi
+
+              if [[ $1 == "redispassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic redispassword --from-literal redispassword=password
+
+                if [ $?!= 0 ]; then echo "Error creating default secret redispassword"; exit 1; fi
+
+              fi
+
+              if [[ $1 == "miniopassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic miniopassword --from-literal miniopassword=spinnakeradmin
+
+                if [ $?!= 0 ]; then echo "Error creating default secret miniopassword"; exit 1; fi
+
+              fi
+
+              if [[ $1 == "ldapconfigpassword" ]]
+
+              then
+
+                kubectl -n $2 create secret generic ldapconfigpassword --from-literal ldapconfigpassword=opsmxadmin123
+
+                if [ $?!= 0 ]; then echo "Error creating default secret ldapconfigpassword"; exit 1; fi
+
+              fi
+
+              }
 
 
-              echo "export namespace=$namespace" > /repo/environment
+              for secret in $(echo $secrets | sed "s/,/ /g")
 
-              echo "export gittoken=$gittoken" >> /repo/environment
+              do
 
-              echo "export ldappassword=$ldappassword" >>  /repo/environment
+              echo getting $secret
 
-              echo "export dbpassword=$dbpassword" >> /repo/environment
+              kubectl -n "$namespace" get secret "$secret" 2>/dev/null || { echo "Defaulting secret $secret as it was not found." ; create_default_secret $secret $namespace; }
 
-              echo "export keystorepassword=$keystorepassword" >>
-              /repo/environment
+              kubectl -n "$namespace" get secret "$secret" -o jsonpath='{.data.*}' |
 
-              echo "export rabbitmqpassword=$rabbitmqpassword" >>
-              /repo/environment
+              base64 -d > /secret/"$secret"
 
-              echo "export saporpassword=$saporpassword" >> /repo/environment
+              ls -ltr /secret/"$secret"
 
-              echo "export redispassword=$redispassword" >> /repo/environment
+              done
 
-              echo "export miniopassword=$miniopassword" >>  /repo/environment
+          command:
+            - /bin/bash
+            - +x
+            - '-c'
+          envFrom:
+          - configMapRef:
+              name: upgrade-inputcm
+          image: 'bitnami/kubectl:1.22'
+          imagePullPolicy: IfNotPresent
+          name: get-secrets
+          volumeMounts:
+            - mountPath: /secret
+              name: secret-volume
 
-              echo "export ldapconfigpassword=$ldapconfigpassword" >>
-              /repo/environment
+        - args:
+            - >-
 
-              echo "export version=$version" >> /repo/environment
+              ls -ltr /secret/gittoken || { echo "failed cloning $url" ; exit 1; }
 
-              ls -ltRa /repo
+              #export branch="$branch"
+
+              git clone https://"$username":"$(cat /secret/gittoken)"@"$url" -b "$branch" /repo
+
+              echo "export version=$chartVersion" >> /repo/environment
+
+              if [ $? != 0 ]
+
+              then
+
+                exit 1
+
+              else
+
+                ls -lrt /repo # Show the files cloned, as a success marker
+
+              fi
+
           command:
             - /bin/bash
             - +x
@@ -115,8 +200,12 @@ spec:
           volumeMounts:
             - mountPath: /repo
               name: repo-volume
+            - mountPath: /secret
+              name: secret-volume
       restartPolicy: Never
       serviceAccountName: isd-install
       volumes:
+        - emptyDir: {}
+          name: secret-volume
         - emptyDir: {}
           name: repo-volume

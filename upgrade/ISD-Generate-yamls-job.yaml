@@ -17,13 +17,15 @@ spec:
 
               rm -rf /repo/environment
 
-              chmod +x /repo/$path
+              chmod +x /repo/upgrade/isd-generate-yamls.sh
                    
-              export version="$version"
+              export version="$chartVersion"
+
+              export release="$release"
 
               ls  -ltra /repo/
 
-              /repo/$path
+              /repo/upgrade/isd-generate-yamls.sh
           command:
             - /bin/bash
             - +x
@@ -50,7 +52,9 @@ spec:
 
               echo "export gittoken=$gittoken" >> /repo/environment
 
-              echo "export version=$version" >> /repo/environment
+              echo "export version=$chartVersion" >> /repo/environment
+
+              echo "export release=$release" >> /repo/environment
 
               ls -ltra /repo
           command:

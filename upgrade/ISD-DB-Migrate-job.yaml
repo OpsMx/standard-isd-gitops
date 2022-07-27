@@ -1,10 +1,9 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  generateName: isd-db-migrate
+  name: isd-db-migrate
   labels:
     app: isd-install
-  namespace: '${parameters.namespace}'
 spec:
   backoffLimit: 2
   template:
@@ -14,7 +13,7 @@ spec:
             - |-
               set +x
               source /repo/environment
-              export source=${parameters.currentISDVersion}
+              export source=${currentISDVersion}
               cd /repo/oes-data-migration-scripts/
               ls -ltra 
               if [ "$source" == "3.9" ]; then
@@ -51,7 +50,10 @@ spec:
             - +x
             - '-c'
           image: 'quay.io/opsmxpublic/ubi8-oes-platform:v3.12.5'
-          name: script
+          name: exec-db-upgrade
+          envFrom:
+            - configMapRef:
+                name: upgrade-inputcm
           volumeMounts:
             - mountPath: /repo
               name: repo-volume
@@ -59,7 +61,7 @@ spec:
         - args:
             - |-
 
-              export ns="${parameters.namespace}"
+              export ns="${namespace}"
 
               source /home/opsmx/scripts/db_migration_script.sh
 
@@ -69,7 +71,10 @@ spec:
             - +x
             - '-c'
           image: 'quay.io/opsmxpublic/opsmx-custom-binaries:opsmx-isd-scripts'
-          name: kube
+          name: get-script
+          envFrom:
+            - configMapRef:
+                name: upgrade-inputcm
           volumeMounts:
             - mountPath: /repo
               name: repo-volume
