@@ -29,7 +29,7 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 7. Create namespace, a configmap for inputs and a service account as follows:
 - `kubectl create ns opsmx-isd` 
 - `kubectl -n opsmx-isd apply -f install/inputcm.yaml` 
-- `kubectl -n opsmx-isd apply -f install/c` # **Edit namespace in ISD-DB-Migrate-job.yaml if changed from the default and update the kubectl command**
+- `kubectl -n opsmx-isd apply -f install/ISD-DB-Migrate-job.yaml` # **Edit namespace in ISD-DB-Migrate-job.yaml if changed from the default and update the kubectl command**
 
 ## Create secrets
 *ISD supports multiple secret managers for storing secrets such as DB passwords, SSO authenticatoin details and so on. Using kubernetes secrets is the default.*
