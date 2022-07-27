@@ -16,8 +16,8 @@ Execute these commands, replacing "gitops-repo" with your repo
 - `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 3.12`
 - `cp -r standard-isd-gitops.git/upgrade gitops-repo`  
 - `cd gitops-repo`
-- Copy the existing "values.yaml", that was used for previous installation into this folder. We will call it values-310.yaml
-- diff values-311.yaml values-310.yaml and merge all of your changes into "values.yaml". **NOTE**: In most cases just replacing 3.10.2 with 3.11.1 is enough.
+- Copy the existing "values.yaml", that was used for previous installation into this folder. We will call it values-311.yaml
+- diff values-312.yaml values-311.yaml and merge all of your changes into "values.yaml". **NOTE**: In most cases just replacing 3.11.1 with 3.12.5 is enough.
 - Copy the updated values file as "values.yaml" (file name is important)
 - create gittoken secret. This token will be used to authenticate to the gitops-repo
    - `kubectl -n oes create secret generic gittoken --from-literal gittoken=PUT_YOUR_GITTOKEN_HERE` 
@@ -48,10 +48,10 @@ Upgrade sequence: (3.11 to 3.12)
     enabled: false'
 2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
 3. `cd upgrade`
-4. Update upgradecm.yaml: 
+4. Update upgrade-inputcm.yaml: 
    - url, username and gitemail MUST be updated. TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
    - **If ISD Namespace is different from "oes"**: Update namespace (default is opsmx-isd) to the namespace where ISD is installed
-6. **If ISD Namespace is different from "oes"**: Edit serviceacc.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
+6. **If ISD Namespace is different from "oes"**: Edit serviceaccount.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
 7. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
 8. `kubectl -n oes apply -f upgrade-inputcm.yaml`
 9. `kubectl -n oes apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
