@@ -1,9 +1,9 @@
 apiVersion: v1
 data:
-  url: github.com/ORGANIZATION/REPO_NAME ## e.g github.com/ksrinimba/gitops-repo, url without the leading "https://", the "git-repo" in the documentation
+  url: github.com/ORGANIZATION_OR_USERNAME/GIT-REPO ## e.g github.com/ksrinimba/gitops-repo, url without the leading "https://", the "git-repo" in the documentation
   username: USERNAME_USED_FOR_AUTHENTICATION
-  gitemail: EMAIL_OF_THE_USER
-
+  gitemail: YOUR_EMAIL@COMPANY.COM
+  
   #####################################################################################################
   # Typically, there is no need to change the values below this line, please check the "nameaspace"
   #####################################################################################################
