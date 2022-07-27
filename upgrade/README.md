@@ -48,7 +48,7 @@ Upgrade sequence: (3.10 to 3.11)
     enabled: false'
 2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
 3. `cd upgrade`
-4. Update upgradecm.yaml: 
+4. Update upgrade-inputcm.yaml: 
    - url, username and gitemail MUST be updated. TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
    - **If ISD Namespace is different from "oes"**: Update namespace (default is opsmx-isd) to the namespace where ISD is installed
 6. **If ISD Namespace is different from "oes"**: Edit serviceacc.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
