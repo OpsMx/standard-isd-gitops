@@ -42,10 +42,7 @@ Execute these commands, replacing "gitops-repo" with your repo
 
 ## Common Steps
 Upgrade sequence: (3.10 to 3.11)
-1. Update Values.yaml: Edit as follows:
-  - In the "global:" section, add the following
-  'gitea: 
-    enabled: false'
+1. Update Values.yaml, if required
 2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
 3. `cd upgrade`
 4. Update upgrade-inputcm.yaml: 
