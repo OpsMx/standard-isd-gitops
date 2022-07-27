@@ -75,6 +75,9 @@ Upgrade sequence: (3.11 to 3.12)
 ## If things go wrong during upgrade
 *As we have a gitops installer, recovering from a failed install/upgrade is very easy. In summary, we simply delete all objects are re-apply. Please follow the steps below to recover.*
 
+As a first step. Please try the "Troubleshooting Issues during Installation" section in the Installation document.
+
+### Reinstall ISD
 [Make changes to uppgrade-inputcm and/or values.yaml as required. **Ensure that the changes are pushed to git**]
 1. `kubectl -n oes  delete sts isd-spinnaker-halyard`
 2. `kubectl -n oes  delete deploy --all`
