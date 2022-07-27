@@ -80,7 +80,9 @@ Execute this command:
 
 ## Some of the logs are not coming up
 Check the logs of the isd-install-xxxx pod with the following command
-- `kubectl -n opsmx-isd logs sd-install-xxx #Replacing the name of the pod name correctly
+- `kubectl -n opsmx-isd logs sd-install-xxx` #Replacing the name of the pod name correctly
+
+## ISD not working, e.g UI not reachable
 Most common issues during installation are related to incorrect values in values.yaml. Should you realize that there is a mistake, it is easy to correct it.
 - Update the values.yaml, and push to the git-repo
 - Wait for the helm install to error out, it is best to not break the process
