@@ -51,7 +51,7 @@ Upgrade sequence: (3.10 to 3.11)
 4. Update upgrade-inputcm.yaml: 
    - url, username and gitemail MUST be updated. TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
    - **If ISD Namespace is different from "oes"**: Update namespace (default is opsmx-isd) to the namespace where ISD is installed
-6. **If ISD Namespace is different from "oes"**: Edit serviceacc.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
+6. **If ISD Namespace is different from "oes"**: Edit serviceaccount.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
 7. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
 8. `kubectl -n oes apply -f upgrade-inputcm.yaml`
 9. `kubectl -n oes apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
