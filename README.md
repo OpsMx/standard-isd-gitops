@@ -74,6 +74,13 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 12. Login to the ISD instance with user/password as admin and opsmxadmin123, if using the defaults for build-in LDAP.
 
 # Troubleshooting Issues during installation
+## ISD-Install-Job fails to start, no pod created
+Execute this command:
+- `kubectl -n opsmx-isd describe job isd-install`
+
+## Some of the logs are not coming up
+Check the logs of the isd-install-xxxx pod with the following command
+- `kubectl -n opsmx-isd logs sd-install-xxx #Replacing the name of the pod name correctly
 Most common issues during installation are related to incorrect values in values.yaml. Should you realize that there is a mistake, it is easy to correct it.
 - Update the values.yaml, and push to the git-repo
 - Wait for the helm install to error out, it is best to not break the process
