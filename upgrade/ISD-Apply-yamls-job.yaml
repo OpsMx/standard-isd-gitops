@@ -12,18 +12,28 @@ spec:
         - args:
             - |-
 
-              source /repo/environment
+              for filename in /secret/*
+
+              do
+
+              variable=$(echo $filename | sed 's#/# #g' | awk '{print $2}')
+
+              echo setting env $variable for $filename
+
+              echo "export $variable=$(cat "$filename")" >> /tmp/environment
+
+              done
+
+              source /tmp/environment >/dev/null 2>&1
+
+              cd /repo/
+
+              export version="$chartversion"
 
               chmod +x /repo/upgrade/isd-apply-yamls.sh
 
-              export version="$version"
-              ls -la /repo
-
-              echo "Upgrade folder"
-              ls -la /repo/upgrade
-
               /repo/upgrade/isd-apply-yamls.sh
-                   
+
           command:
             - /bin/bash
             - +x
@@ -36,6 +46,8 @@ spec:
           volumeMounts:
             - mountPath: /repo
               name: repo-volume
+            - mountPath: /secret
+              name: secret-volume
       initContainers:
         - args:
             - >-
@@ -143,9 +155,7 @@ spec:
 
               kubectl -n "$namespace" get secret "$secret" 2>/dev/null || { echo "Defaulting secret $secret as it was not found." ; create_default_secret $secret $namespace; }
 
-              kubectl -n "$namespace" get secret "$secret" -o jsonpath='{.data.*}' |
-
-              base64 -d > /secret/"$secret"
+              kubectl -n "$namespace" get secret "$secret" -o jsonpath='{.data.*}' | base64 -d > /secret/"$secret"
 
               ls -ltr /secret/"$secret"
 
@@ -164,6 +174,8 @@ spec:
           volumeMounts:
             - mountPath: /secret
               name: secret-volume
+            - mountPath: /repo
+              name: repo-volume
 
         - args:
             - >-

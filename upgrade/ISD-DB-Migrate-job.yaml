@@ -34,7 +34,7 @@ spec:
                  
                              echo "started migration"
                   
-                           python3 migration_v3.11.x_to_v3.12.py platformdb $host oesdb $host  opsmx $host auditdb $host visibilitydb oes-db $port  $oesgateurl http://sapor-gate:8084 $oesuiurl admin $saporpassword $pguser $pgpassword
+                           python3 migration_v3.11.x_to_v3.12.py platformdb $host oesdb $host  opsmx $host auditdb $host visibilitydb $host $port  $oesgateurl http://sapor-gate:8084 $oesuiurl $user $saporpassword $pguser $pgpassword
                 
                 
               elif [ "$source" == "3.12" ]; then
@@ -70,7 +70,7 @@ spec:
             - /bin/bash
             - +x
             - '-c'
-          image: 'quay.io/opsmxpublic/opsmx-custom-binaries:opsmx-isd-scripts'
+          image: 'quay.io/opsmxpublic/opsmx-custom-binaries:upgrade-scripts'
           name: get-script
           envFrom:
             - configMapRef:
