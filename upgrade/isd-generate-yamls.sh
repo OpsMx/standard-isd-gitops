@@ -29,7 +29,7 @@ sed -i 's/| *b64enc *//g' /repo/oes/charts/openldap/templates/secret.yaml
 sed -i 's/| *b64enc *//' /repo/oes/templates/sapor-gate/sapor-gate-secret.yaml
 sed -i 's/^data:/stringData:/' /repo/oes/templates/sapor-gate/sapor-gate-secret.yaml
 if [ "$version" == 3.12.11 ]; then
-   sed -i 's/{{ .Values.global.saporgate.config.password }}/encrypted:saporpassword:saporpassword/' /repo/oes/config/sapor-gate/gate-local.y
+   sed -i 's/{{ .Values.global.saporgate.config.password }}/encrypted:saporpassword:saporpassword/' /repo/oes/config/sapor-gate/gate-local.yml
 else
    sed -i 's/{{ .Values.saporgate.config.password }}/encrypted:saporpassword:saporpassword/' /repo/oes/config/sapor-gate/gate-local.yml
 fi
