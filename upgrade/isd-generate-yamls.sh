@@ -28,10 +28,14 @@ sed -i 's/| *b64enc *//g' /repo/oes/charts/redis/templates/secret.yaml
 sed -i 's/| *b64enc *//g' /repo/oes/charts/openldap/templates/secret.yaml
 sed -i 's/| *b64enc *//' /repo/oes/templates/sapor-gate/sapor-gate-secret.yaml
 sed -i 's/^data:/stringData:/' /repo/oes/templates/sapor-gate/sapor-gate-secret.yaml
-sed -i 's/{{ .Values.saporgate.config.password }}/encrypted:saporpassword:saporpassword/' /repo/oes/config/sapor-gate/gate-local.yml
+if [ "$version" == 3.12.11 ]; then
+   sed -i 's/{{ .Values.global.saporgate.config.password }}/encrypted:saporpassword:saporpassword/' /repo/oes/config/sapor-gate/gate-local.y
+else
+   sed -i 's/{{ .Values.saporgate.config.password }}/encrypted:saporpassword:saporpassword/' /repo/oes/config/sapor-gate/gate-local.yml
+fi
 ####################################################################################################################
 helm template ${release} /repo/oes/ -f values.yaml --output-dir=/tmp/isd
-if [ $? -eq 0 ]; then  
+if [ $? -eq 0 ]; then
      echo "#################################Helm template is sucessfull into isd directory#################################"
 else
    echo "#################################Helm template failed to isd directory#################################"
@@ -43,9 +47,10 @@ rm -rf /tmp/isd/oes/charts/spinnaker/templates/hooks/
 rm -rf /tmp/isd/oes/templates/hooks/cleanup.yaml
 rm -rf /repo/oes/
 rm -rf oes-"$chartVersion".tgz
+sed -i 's/opsmxadmin123/encrypted:ldappassword:ldappassword/g' /tmp/isd/oes/templates/secrets/oes-gate-configmap.yaml
 #####################################committing tempates to github repo################################
 git branch "$version"
-if [ $? -eq 0 ]; then  
+if [ $? -eq 0 ]; then
      echo "#################################Sucesfully created a branch in github#################################"
 else
    echo "#################################Failed to created a branch in github#################################"
@@ -60,7 +65,7 @@ git config --global user.email "${gitemail}"
 git config --global user.name "${username}"
 git commit -m "Manifest file dir of helm chart with ISD ${version}"
 git push origin "$version" --force
-if [ $? -eq 0 ]; then  
+if [ $? -eq 0 ]; then
      echo "#################################Sucesfully pushed helm template to github#################################"
 else
    echo "#################################Failed to pushed helm template to github#################################"
