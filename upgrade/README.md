@@ -63,8 +63,8 @@ Upgrade sequence: (3.10 to 3.11)
    Wait for isd-yaml-update-* pod to complete, and all pods to stabilize
 14 isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this: `kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0`
 15. Restart all pods:
-   - `kubectl -n oes scale deploy -l app=oes --relicas=0` Wait for a min or two
-   - `kubectl -n oes scale deploy -l app=oes --relicas=1` Wait for all pods to come to ready state   ˘
+   - `kubectl -n oes scale deploy -l app=oes --replicas=0` Wait for a min or two
+   - `kubectl -n oes scale deploy -l app=oes --replicas=1` Wait for all pods to come to ready state   ˘
 16. Go to ISD UI and check that version number has changed in the bottom-left corner
 
 ## If things go wrong during upgrade
