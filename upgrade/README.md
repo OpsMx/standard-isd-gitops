@@ -67,9 +67,10 @@ Upgrade sequence: (3.10 to 3.11)
    - `kubectl -n oes scale deploy -l app=oes --replicas=0` Wait for a min or two
    - `kubectl -n oes scale deploy -l app=oes --replicas=1` Wait for all pods to come to ready state   ˘
 16. Go to ISD UI and check that version number has changed in the bottom-left corner
-17. If required: a) Connect Spinnaker again b) Configure pipeline-promotion again. To do this, in the ISD UI:
+17. Wait for about 5 min for autoconfiguration to take place.
+18. If required: a) Connect Spinnaker again b) Configure pipeline-promotion again. To do this, in the ISD UI:
    - Click setup
-   - Click Spinnaker tab at the top
+   - Click Spinnaker tab at the top. Check if "External Accounts" and "Pipeline-promotion" columns show "yes". If any of them is "no":
    - Check the values already filled in, make changes if required and click "update".
    - Restart the halyard pod by clicking "Sync Accounts to Spinnaker" in the Cloud Accounts tab or simply delete the halayard pod
 
