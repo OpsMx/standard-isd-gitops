@@ -52,7 +52,7 @@ Upgrade sequence: (3.10 to 3.11)
 6. **If ISD Namespace is different from "oes"**: Edit serviceaccount.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
 7. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
 8. `kubectl -n oes apply -f upgrade-inputcm.yaml`
-9. `kubectl -n oes apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
+9. `kubectl -n oes apply -f serviceaccount.yaml` # Edit namespace if changed from the default "oes"
 10. Upgrade DB:
    - `kubectl -n oes replace --force -f create-sample-job.yaml` , please wait for 5 min for the job to complete
    - Execute the DB-Migrate310to311 pipeline in opsmx-gitops application: **Ensure that you select the correct namespace and current ISD version.**
