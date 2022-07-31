@@ -9,7 +9,7 @@ data:
   #####################################################################################################
   branch: master         # Gitrepo branch, MUST be the default branch
   chartVersion: 3.12.9     # Helm Chart Version
-  release: oes         # ISD helm-release version, default is ISD
+  release: oes         # ISD helm-release version, default is oes
   currentISDVersion: "3.11"
   namespace: oes # Namespace to install ISD, best not to change 
   secrets: gittoken,ldappassword,dbpassword,keystorepassword,rabbitmqpassword,saporpassword,redispassword,miniopassword,ldapconfigpassword
