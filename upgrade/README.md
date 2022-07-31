@@ -14,7 +14,7 @@ Use these instructions if:
 Execute these commands, replacing "gitops-repo" with your repo
 - `git clone `**https://github.com/.../gitops-repo**
 - `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 3.12`
-- `cp -r standard-isd-gitops.git/upgrade gitops-repo`  
+- `cp -r standard-isd-gitops/upgrade gitops-repo`  
 - `cd gitops-repo`
 - Copy the existing "values.yaml", that was used for previous installation into this folder. We will call it values-311.yaml
 - diff values-312.yaml values-311.yaml and merge all of your changes into "values.yaml". **NOTE**: In most cases just replacing 3.11.1 with 3.12.5 is enough.
@@ -45,10 +45,12 @@ Execute these commands, replacing "gitops-repo" with your repo
 
 ## Common Steps
 Upgrade sequence: (3.11 to 3.12)
-1. Update Values.yaml: Edit as follows:
+1. Ensure that "default" account is configured to deploy to the ISD namespace (e.g. oes)
+2. Update Values.yaml: Edit as follows:
   - In the "global:" section, add the following
   'gitea: 
     enabled: false'
+  - In the global section, set commonGate.enabled to "true"
 2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
 3. `cd upgrade`
 4. Update upgrade-inputcm.yaml: 
@@ -71,9 +73,14 @@ Upgrade sequence: (3.11 to 3.12)
    Wait for isd-yaml-update-* pod to complete, and all pods to stabilize
 14 isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this: `kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0`
 15. Restart all pods:
-   - `kubectl -n oes scale deploy -l app=oes --relicas=0` Wait for a min or two
-   - `kubectl -n oes scale deploy -l app=oes --relicas=1` Wait for all pods to come to ready state   
+   - `kubectl -n oes scale deploy -l app=oes --replicas=0` Wait for a min or two
+   - `kubectl -n oes scale deploy -l app=oes --replicas=1` Wait for all pods to come to ready state   
 16. Go to ISD UI and check that version number has changed in the bottom-left corner
+17. If required: a) Connect Spinnaker again b) Configure pipeline-promotion again. To do this, in the ISD UI:
+   - Click setup
+   - Click Spinnaker tab at the top
+   - Check the values already filled in, make changes if required and click "update".
+   - Restart the halyard pod by clicking "Sync Accounts to Spinnaker" in the Cloud Accounts tab or simply delete the halayard pod
 
 ## If things go wrong during upgrade
 *As we have a gitops installer, recovering from a failed install/upgrade is very easy. In summary, we simply delete all objects are re-apply. Please follow the steps below to recover.*
