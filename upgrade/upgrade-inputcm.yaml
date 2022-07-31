@@ -9,7 +9,7 @@ data:
   #####################################################################################################
   branch: master         # Gitrepo branch, MUST be the default branch
   chartVersion: 3.11.4      # Helm Chart Version
-  release: oes         # ISD helm-release version, default is ISD
+  release: oes         # ISD helm-release version, default is oes
   currentISDVersion: "3.10"
   namespace: oes # Namespace to install ISD, best not to change 
   #path: upgrade/isd-generate-yamls.sh  # Script to execute for installation, should not be changed
