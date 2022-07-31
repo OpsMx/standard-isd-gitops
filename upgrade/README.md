@@ -14,7 +14,7 @@ Use these instructions if:
 Execute these commands, replacing "gitops-repo" with your repo
 - `git clone `**https://github.com/.../gitops-repo**
 - `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 3.11`
-- `cp -r standard-isd-gitops.git/upgrade gitops-repo`  
+- `cp -r standard-isd-gitops/upgrade gitops-repo`  
 - `cd gitops-repo`
 - Copy the existing "values.yaml", that was used for previous installation into this folder. We will call it values-310.yaml
 - diff values-311.yaml values-310.yaml and merge all of your changes into "values.yaml". **NOTE**: In most cases just replacing 3.10.2 with 3.11.1 is enough.
@@ -42,7 +42,7 @@ Execute these commands, replacing "gitops-repo" with your repo
 
 ## Common Steps
 Upgrade sequence: (3.10 to 3.11)
-1. Update Values.yaml, if required
+1. Update Values.yaml. Please set global.commonGate.enabled to "true".
 2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
 3. `cd upgrade`
 4. Update upgrade-inputcm.yaml: 
@@ -54,7 +54,7 @@ Upgrade sequence: (3.10 to 3.11)
 9. `kubectl -n oes apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
 10. Upgrade DB:
    - `kubectl -n oes replace --force -f create-sample-job.yaml` , please wait for 5 min for the job to complete
-   - Execute the DB-Migrate310to311 pipeline in opsmx-gitops application
+   - Execute the DB-Migrate310to311 pipeline in opsmx-gitops application: **Ensure that you select the correct namespace and current ISD version.**
    - In the unlikely even that the pipeline is not present(job failed), please copy paste the pipeline-json available in upgrade folder.
 11. `kubectl -n oes replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
