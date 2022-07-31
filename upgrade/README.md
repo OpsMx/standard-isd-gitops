@@ -79,8 +79,8 @@ Upgrade sequence: (3.11 to 3.12)
 17. Wait for about 5 min for autoconfiguration to take place.
 18. If required: a) Connect Spinnaker again b) Configure pipeline-promotion again. To do this, in the ISD UI:
    - Click setup
-   - Click Spinnaker tab at the top
-   - Check the values already filled in, make changes if required and click "update".
+   - Click Spinnaker tab at the top. Check if "External Accounts" and "Pipeline-promotion" columns show "yes". If any of them is "no":
+   - Click "edit" on the 3 dots on the far right. Check the values already filled in, make changes if required and click "update".
    - Restart the halyard pod by clicking "Sync Accounts to Spinnaker" in the Cloud Accounts tab or simply delete the halayard pod
 
 ## If things go wrong during upgrade
