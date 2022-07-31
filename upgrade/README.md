@@ -42,10 +42,11 @@ Execute these commands, replacing "gitops-repo" with your repo
 
 ## Common Steps
 Upgrade sequence: (3.10 to 3.11)
-1. Update Values.yaml. Please set global.commonGate.enabled to "true".
-2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
-3. `cd upgrade`
-4. Update upgrade-inputcm.yaml: 
+1. Ensure that "default" account is configured to deploy to the ISD namespace (e.g. oes)
+2. Update Values.yaml. Please set global.commonGate.enabled to "true".
+3. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
+4. `cd upgrade`
+5. Update upgrade-inputcm.yaml: 
    - url, username and gitemail MUST be updated. TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
    - **If ISD Namespace is different from "oes"**: Update namespace (default is opsmx-isd) to the namespace where ISD is installed
 6. **If ISD Namespace is different from "oes"**: Edit serviceaccount.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
