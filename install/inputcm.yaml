@@ -8,7 +8,7 @@ data:
   # Typically, there is no need to change the values below this line
   #####################################################################################################
   branch: main         # Gitrepo branch, MUST be the default branch
-  version: 3.12.6      # ISD version
+  version: 3.12.13      # ISD Chart version
   namespace: opsmx-isd # Namespace to install ISD, best not to change 
   path: install/isd-install.sh  # Script to execute for installation, should not be changed
 
