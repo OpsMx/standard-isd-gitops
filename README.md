@@ -74,13 +74,14 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 12. Login to the ISD instance with user/password as admin and opsmxadmin123, if using the defaults for build-in LDAP.
 
 # Troubleshooting Issues during installation
-## ISD-Install-Job fails to start, no pod created
+## ISD-Install-Job fails to start, no pod created or it errors
 Execute this command:
 - `kubectl -n opsmx-isd describe job isd-install`
 
-## Some of the logs are not coming up
+## Some of the pods are not coming up
 Check the logs of the isd-install-xxxx pod with the following command
-- `kubectl -n opsmx-isd logs isd-install-xxx` #Replacing the name of the pod name correctly
+- `kubectl -n opsmx-isd logs isd-install-xxx -c git-clone` #Replacing the name of the pod name correctly, check if your gitops-repo is cloned correctly
+- `kubectl -n opsmx-isd logs isd-install-xxx` #Replacing the name of the pod name correctly, check the log of the script that pushes the yamls and applies them
 
 ## ISD not working, e.g UI not reachable
 Most common issues during installation are related to incorrect values in values.yaml. Should you realize that there is a mistake, it is easy to correct it.
