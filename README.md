@@ -20,7 +20,7 @@ Instructions basic requirements of a laptop and cluster can be found [here](http
 *The installation process requires inputs such as the application version, git-repo details and so on.*
 
 4. In the gitops-repo cloned to disk and edit install/inputcm.yaml. This should be updated, at a **minimum**, with gitrepo and username.
-5. **Update Values.yaml as required**, specifically: At at **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated
+5. **Update Values.yaml as required**, specifically: At at **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/master/charts/oes
 
 NOTE: We recommend that we start with the defaults, updating just the URL and gitopsHalyard details and gradually adding SSO, external DBs, etc. while updating the installed instance
 
