@@ -1,3 +1,6 @@
+kubernetes:
+  enabled: true
+  accounts:
   - name: "default"
     liveManifestCalls: true
     requiredGroupMembership: []
