@@ -5,7 +5,7 @@ kubernetes:
     liveManifestCalls: true
     requiredGroupMembership: []
     providerVersion: "v2"
-    permissions: []
+    #permissions: []
     dockerRegistries: []
     configureImagePullSecrets: true
     serviceAccount: true
