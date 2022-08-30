@@ -168,7 +168,7 @@ spec:
           envFrom:
           - configMapRef:
               name: upgrade-inputcm
-          image: 'bitnami/kubectl:1.22'
+          image: 'quay.io/opsmxpublic/opsmx-custom-binaries:kubectl-spin-cli-git-bash-jq-yq'
           imagePullPolicy: IfNotPresent
           name: get-secrets
           volumeMounts:
