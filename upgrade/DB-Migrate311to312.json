@@ -1,0 +1,429 @@
+{
+  "appConfig": {},
+  "application": "opsmx-gitops",
+  "keepWaitingPipelines": false,
+  "lastModifiedBy": "adminchange",
+  "limitConcurrent": true,
+  "name": "DB-Migrate311to312",
+  "parameterConfig": [
+    {
+      "default": "",
+      "description": "",
+      "hasOptions": true,
+      "label": "",
+      "name": "commongate",
+      "options": [
+        {
+          "value": "Yes"
+        },
+        {
+          "value": "No"
+        }
+      ],
+      "pinned": false,
+      "required": false
+    },
+    {
+      "default": "upg-interswitch",
+      "description": "",
+      "hasOptions": false,
+      "label": "",
+      "name": "namespace",
+      "options": [
+        {
+          "value": ""
+        }
+      ],
+      "pinned": false,
+      "required": false
+    }
+  ],
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "account": "old",
+      "alias": "runJob",
+      "application": "byos",
+      "cloudProvider": "kubernetes",
+      "consumeArtifactSource": "none",
+      "credentials": "old",
+      "manifest": {
+        "apiVersion": "batch/v1",
+        "kind": "Job",
+        "metadata": {
+          "generateName": "isd-db-migrate",
+          "labels": {
+            "app": "isd-install"
+          },
+          "namespace": "${parameters.namespace}"
+        },
+        "spec": {
+          "backoffLimit": 2,
+          "template": {
+            "spec": {
+              "containers": [
+                {
+                  "args": [
+                    "set +x\n\n\nkubectl delete secret oes-gate-sapor-config\n\n export port=$(kubectl get secret oes-platform-config -o yaml | yq e '.data.\"platform-local.yml\"' - | base64 -d  | yq e '.spring.datasource.url' -  | sed 's|://| |g' | sed 's|:| |g' |sed 's|/| |g'| awk '{print $4}')\n\n export username=$(kubectl get secret oes-platform-config -o yaml | yq e '.data.\"platform-local.yml\"' - | base64 -d  | yq e '.spring.datasource.username' -)\n \n export password=$(kubectl get secret oes-platform-config -o yaml | yq e '.data.\"platform-local.yml\"' - | base64 -d  | yq e '.spring.datasource.password' -)\n\n echo SPINNAKER_PROPERTY_PORT=$port\n \n echo SPINNAKER_PROPERTY_USERNAME=$username\n \n echo SPINNAKER_PROPERTY_PASSWORD=$password\n \n kubectl get secret oes-gate-config -o yaml | yq eval '.data.\"gate.yml\"' -| base64 -d | yq eval '.\"security\"={\"basicform\": {\"enabled\": true}}' - | yq eval '.\"security\" += {\"user\": {\"name\":\"admin\",\"password\": \"saporadmin\"}}' - | yq eval  '.ldap.enabled = false' - | yq eval '.\"redis\" += {\"configuration\": {\"secure\": true}}' - |  yq eval '. += {\"rbac\": {\"feature\": {\"application\": {\"enabled\": false}}}}' - > /tmp/gate.yml\n\n #kubectl get secret oes-gate-config -o yaml | yq eval '.data.\"gate.yml\"' -| base64 -d | yq eval '.\"security\"={\"basic\": {\"enabled\": true}}' - | yq eval '.\"security\" += {\"user\": {}}' - | yq eval  '.ldap.enabled = false' - | yq eval '.\"redis\" += {\"configuration\": {\"secure\": true}}' - > /tmp/gate.yml\n\n kubectl create secret generic oes-gate-sapor-config --from-file=/tmp/gate.yml\n \n kubectl label secret oes-gate-sapor-config component=sapor-gate1 --overwrite\n \n export host=$(kubectl get secret oes-platform-config -o yaml | yq e '.data.\"platform-local.yml\"' - | base64 -d  | yq e '.spring.datasource.url' -  | sed 's|://| |g' | sed 's|:| |g' |sed 's|/| |g'| awk '{print $3}')\n\n echo SPINNAKER_PROPERTY_HOST=$host        "
+                  ],
+                  "command": [
+                    "/bin/bash",
+                    "+x",
+                    "-c"
+                  ],
+                  "envFrom": [
+                    {
+                      "configMapRef": {
+                        "name": "upgrade-inputcm"
+                      }
+                    }
+                  ],
+                  "image": "quay.io/opsmxpublic/opsmx-custom-binaries:opsmx-isd-scripts2",
+                  "name": "exec-db-upgrade",
+                  "volumeMounts": [
+                    {
+                      "mountPath": "/repo",
+                      "name": "repo-volume"
+                    }
+                  ]
+                }
+              ],
+              "restartPolicy": "Never",
+              "volumes": [
+                {
+                  "emptyDir": {},
+                  "name": "repo-volume"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "name": "patch",
+      "refId": "1",
+      "requisiteStageRefIds": [],
+      "source": "text",
+      "stageEnabled": {
+        "expression": "${ parameters.commongate == \"No\" }",
+        "type": "expression"
+      },
+      "type": "runJobManifest"
+    },
+    {
+      "account": "old",
+      "app": "opsmx-gitops",
+      "cloudProvider": "kubernetes",
+      "kinds": [
+        "deployment",
+        "service",
+        "secret"
+      ],
+      "labelSelectors": {
+        "selectors": [
+          {
+            "key": "component",
+            "kind": "EQUALS",
+            "values": [
+              "sapor-gate1"
+            ]
+          }
+        ]
+      },
+      "location": "old",
+      "mode": "label",
+      "name": "Delete-sapornewdeployments",
+      "options": {
+        "cascading": true
+      },
+      "refId": "2",
+      "requisiteStageRefIds": [
+        "4"
+      ],
+      "stageEnabled": {
+        "expression": "${ parameters.commongate == \"No\" }",
+        "type": "expression"
+      },
+      "type": "deleteManifest"
+    },
+    {
+      "account": "old",
+      "cloudProvider": "kubernetes",
+      "manifests": [
+        {
+          "apiVersion": "apps/v1",
+          "kind": "Deployment",
+          "metadata": {
+            "labels": {
+              "app": "oes",
+              "component": "sapor-gate1"
+            },
+            "name": "sapor-gate-new"
+          },
+          "spec": {
+            "progressDeadlineSeconds": 600,
+            "replicas": 1,
+            "revisionHistoryLimit": 10,
+            "selector": {
+              "matchLabels": {
+                "app": "oes",
+                "component": "sapor-gate1"
+              }
+            },
+            "strategy": {
+              "rollingUpdate": {
+                "maxSurge": "25%",
+                "maxUnavailable": "25%"
+              },
+              "type": "RollingUpdate"
+            },
+            "template": {
+              "metadata": {
+                "annotations": {
+                  "prometheus.io/scrape": "true",
+                  "prometheus_io_path": "/prometheus",
+                  "prometheus_io_port": "8084"
+                },
+                "labels": {
+                  "app": "oes",
+                  "component": "sapor-gate1"
+                }
+              },
+              "spec": {
+                "containers": [
+                  {
+                    "env": [
+                      {
+                        "name": "spring_profiles_active",
+                        "value": "vault,local"
+                      }
+                    ],
+                    "image": "quay.io/opsmxpublic/ubi8-gate:v3.12.6",
+                    "imagePullPolicy": "IfNotPresent",
+                    "livenessProbe": {
+                      "failureThreshold": 3,
+                      "httpGet": {
+                        "path": "/health",
+                        "port": 8084,
+                        "scheme": "HTTP"
+                      },
+                      "initialDelaySeconds": 60,
+                      "periodSeconds": 60,
+                      "successThreshold": 1,
+                      "timeoutSeconds": 1
+                    },
+                    "name": "sapor-gate-1",
+                    "ports": [
+                      {
+                        "containerPort": 8084,
+                        "protocol": "TCP"
+                      }
+                    ],
+                    "readinessProbe": {
+                      "failureThreshold": 3,
+                      "initialDelaySeconds": 60,
+                      "periodSeconds": 30,
+                      "successThreshold": 1,
+                      "tcpSocket": {
+                        "port": 8084
+                      },
+                      "timeoutSeconds": 1
+                    },
+                    "resources": {},
+                    "terminationMessagePath": "/dev/termination-log",
+                    "terminationMessagePolicy": "File",
+                    "volumeMounts": [
+                      {
+                        "mountPath": "/opt/spinnaker/config/gate.yml",
+                        "name": "gate-volume",
+                        "subPath": "gate.yml"
+                      },
+                      {
+                        "mountPath": "/opt/spinnaker/config/bootstrap.yml",
+                        "name": "bootstrap-volume",
+                        "subPath": "bootstrap.yml"
+                      }
+                    ]
+                  }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {},
+                "terminationGracePeriodSeconds": 30,
+                "volumes": [
+                  {
+                    "name": "gate-volume",
+                    "secret": {
+                      "defaultMode": 420,
+                      "secretName": "oes-gate-sapor-config"
+                    }
+                  },
+                  {
+                    "name": "bootstrap-volume",
+                    "secret": {
+                      "defaultMode": 420,
+                      "items": [
+                        {
+                          "key": "bootstrap.yml",
+                          "path": "bootstrap.yml"
+                        }
+                      ],
+                      "secretName": "bootstrap"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "apiVersion": "v1",
+          "kind": "Service",
+          "metadata": {
+            "labels": {
+              "app": "oes",
+              "component": "sapor-gate1"
+            },
+            "name": "sapor-gate-new"
+          },
+          "spec": {
+            "ports": [
+              {
+                "name": "sapor-gate-service-oes",
+                "port": 8084,
+                "protocol": "TCP",
+                "targetPort": 8084
+              }
+            ],
+            "selector": {
+              "app": "oes",
+              "component": "sapor-gate1"
+            },
+            "sessionAffinity": "None",
+            "type": "ClusterIP"
+          },
+          "status": {
+            "loadBalancer": {}
+          }
+        }
+      ],
+      "moniker": {
+        "app": "opsmx-gitops"
+      },
+      "name": "Deploy (Manifest)",
+      "namespaceOverride": "old",
+      "refId": "3",
+      "requisiteStageRefIds": [
+        "1"
+      ],
+      "skipExpressionEvaluation": false,
+      "source": "text",
+      "stageEnabled": {
+        "expression": "${ parameters.commongate == \"No\" }",
+        "type": "expression"
+      },
+      "trafficManagement": {
+        "enabled": false,
+        "options": {
+          "enableTraffic": false
+        }
+      },
+      "type": "deployManifest"
+    },
+    {
+      "account": "old",
+      "alias": "runJob",
+      "application": "opsmx-gitops",
+      "cloudProvider": "kubernetes",
+      "credentials": "old",
+      "manifest": {
+        "apiVersion": "batch/v1",
+        "kind": "Job",
+        "metadata": {
+          "generateName": "isd-db-migrate",
+          "labels": {
+            "app": "isd-install"
+          },
+          "namespace": "${parameters.namespace}"
+        },
+        "spec": {
+          "backoffLimit": 2,
+          "template": {
+            "spec": {
+              "containers": [
+                {
+                  "args": [
+                    "set +x\nsource /repo/environment\n#export source=${parameters.currentISDVersion}\n\nexport source=\"3.11\"\ncd /repo/oes-data-migration-scripts/\nls -ltra\n\n\nif [ \"$source\" == \"3.11\" ]; then\n\n             echo \"upgrading  v3.11 to v3.12\"\n\n          if [ \"${parameters.commongate}\" == \"Yes\" ]; then\n              \n             python3 migration_v3.11.x_to_v3.12.py platformdb $host oesdb $host  opsmx $host auditdb $host visibilitydb $host $port $oesgateurl http://sapor-gate:8084 $oesuiurl $user $saporpassword $pguser $pgpassword\n\n              else\n              \n              cat migration_v3.11.x_to_v3.12.py\n              \n              \n              #python3 migration_v3.11.x_to_v3.12.py platformdb $host oesdb $host  opsmx $host auditdb $host visibilitydb $host $port http://sapor-gate-new:8084 http://sapor-gate:8084 $oesgateurl $user $saporpassword $pguser $pgpassword\n              \n              \n              echo $host\n              \n              echo $port\n              \n              echo $oesuiurl\n              \n              \n              echo $saporpassword\n              \n              echo $user\n              \n              \n              echo $pgpassword\n              \n              echo $pguser\n              \n              \n              python3 migration_v3.11.x_to_v3.12.py platformdb $host oesdb $host  opsmx $host auditdb $host visibilitydb $host $port http://sapor-gate-new:8084 http://sapor-gate:8084 $oesuiurl $user $saporpassword $pguser $pgpassword\n              \n              \n              \n              \n              fi\n\nelse\n\n   echo \"Some went wrong in mapping Migration script\"\n\nfi"
+                  ],
+                  "command": [
+                    "/bin/bash",
+                    "+x",
+                    "-c"
+                  ],
+                  "envFrom": [
+                    {
+                      "configMapRef": {
+                        "name": "upgrade-inputcm"
+                      }
+                    }
+                  ],
+                  "image": "quay.io/opsmxpublic/ubi8-oes-platform:v3.12.5",
+                  "name": "exec-db-upgrade",
+                  "volumeMounts": [
+                    {
+                      "mountPath": "/repo",
+                      "name": "repo-volume"
+                    }
+                  ]
+                }
+              ],
+              "initContainers": [
+                {
+                  "args": [
+                    "\nexport ns=\"${parameters.namespace}\"\n\nsource /home/opsmx/scripts/db_migration_script.sh\n\nls -ltra  /repo/"
+                  ],
+                  "command": [
+                    "/bin/bash",
+                    "+x",
+                    "-c"
+                  ],
+                  "envFrom": [
+                    {
+                      "configMapRef": {
+                        "name": "upgrade-inputcm"
+                      }
+                    }
+                  ],
+                  "image": "quay.io/opsmxpublic/opsmx-custom-binaries:opsmx-isd-scripts2",
+                  "name": "get-script",
+                  "volumeMounts": [
+                    {
+                      "mountPath": "/repo",
+                      "name": "repo-volume"
+                    }
+                  ]
+                }
+              ],
+              "restartPolicy": "Never",
+              "serviceAccountName": "isd-install",
+              "volumes": [
+                {
+                  "emptyDir": {},
+                  "name": "repo-volume"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "name": "Dbmigrate",
+      "refId": "4",
+      "requisiteStageRefIds": [
+        "3"
+      ],
+      "source": "text",
+      "type": "runJobManifest"
+    }
+  ],
+  "triggers": []
+}

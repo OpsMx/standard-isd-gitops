@@ -8,7 +8,7 @@ Instructions basic requirements of a laptop and cluster can be found [here](http
 
 1. Create an empty-repo (called the "gitops-repo" in the document),  "main" branch should be the default, and clone it locally
 2. Clone https://github.com/OpsMx/standard-isd-gitops, selecting the appropriate branch:
-- `git clone https://github.com/OpsMx/standard-isd-gitops  -b 3.12`
+- `git clone https://github.com/OpsMx/standard-isd-gitops  -b 4.0`
 
 3. Copy contents of the standard-isd-repo to the gitops-repo created above using:
    
@@ -20,7 +20,7 @@ Instructions basic requirements of a laptop and cluster can be found [here](http
 *The installation process requires inputs such as the application version, git-repo details and so on.*
 
 4. In the gitops-repo cloned to disk and edit install/inputcm.yaml. This should be updated, at a **minimum**, with gitrepo and username.
-5. Update Values.yaml as required, specifically: At at **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated
+5. **Update Values.yaml as required**, specifically: At at **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/v3.12/charts/oes
 
 NOTE: We recommend that we start with the defaults, updating just the URL and gitopsHalyard details and gradually adding SSO, external DBs, etc. while updating the installed instance
 
@@ -29,7 +29,7 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 7. Create namespace, a configmap for inputs and a service account as follows:
 - `kubectl create ns opsmx-isd` 
 - `kubectl -n opsmx-isd apply -f install/inputcm.yaml` 
-- `kubectl -n opsmx-isd apply -f install/serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
+- `kubectl -n opsmx-isd apply -f install/serviceaccount.yaml` # Edit namespace in the yaml if changed from the default and update the kubectl command
 
 ## Create secrets
 *ISD supports multiple secret managers for storing secrets such as DB passwords, SSO authenticatoin details and so on. Using kubernetes secrets is the default.*
@@ -74,6 +74,16 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 12. Login to the ISD instance with user/password as admin and opsmxadmin123, if using the defaults for build-in LDAP.
 
 # Troubleshooting Issues during installation
+## ISD-Install-Job fails to start, no pod created or it errors
+Execute this command:
+- `kubectl -n opsmx-isd describe job isd-install`
+
+## Some of the pods are not coming up
+Check the logs of the isd-install-xxxx pod with the following command
+- `kubectl -n opsmx-isd logs isd-install-xxx -c git-clone` #Replacing the name of the pod name correctly, check if your gitops-repo is cloned correctly
+- `kubectl -n opsmx-isd logs isd-install-xxx` #Replacing the name of the pod name correctly, check the log of the script that pushes the yamls and applies them
+
+## ISD not working, e.g UI not reachable
 Most common issues during installation are related to incorrect values in values.yaml. Should you realize that there is a mistake, it is easy to correct it.
 - Update the values.yaml, and push to the git-repo
 - Wait for the helm install to error out, it is best to not break the process

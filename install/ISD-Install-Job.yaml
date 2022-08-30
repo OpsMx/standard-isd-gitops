@@ -168,7 +168,7 @@ spec:
           envFrom:
           - configMapRef:
               name: inputcm
-          image: 'bitnami/kubectl:1.22'
+          image: 'quay.io/opsmxpublic/opsmx-custom-binaries:kubectl-spin-cli-git-bash-jq-yq'
           imagePullPolicy: IfNotPresent
           name: get-secrets
           volumeMounts:
@@ -200,7 +200,7 @@ spec:
           envFrom:
           - configMapRef:
               name: inputcm
-          image: 'bitnami/kubectl:1.22'
+          image: 'quay.io/opsmxpublic/opsmx-custom-binaries:kubectl-spin-cli-git-bash-jq-yq'
           imagePullPolicy: IfNotPresent
           name: git-clone
           volumeMounts:
@@ -208,8 +208,8 @@ spec:
               name: secret-volume
             - mountPath: /repo
               name: repo-volume
-      serviceAccount: byos
-      serviceAccountName: byos
+      serviceAccount: isd-install
+      serviceAccountName: isd-install
       restartPolicy: "Never"
       volumes:
         - emptyDir: {}
