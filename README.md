@@ -3,7 +3,7 @@
 ## Cluster and Laptop set-up
 - Infrastructure requires for a non-prod installation can be found [here](https://docs.google.com/document/d/1nIJ__SWrh3iJIE7mKot5QuiE7dSkrB2m9uPYHg-h8CI/edit?usp=sharing)
 - Infrastructure requires for a Production Setup can be found [here](https://docs.google.com/document/d/127q5y5ROr_Mb17hdOOz9eP_CuFxrH56R4qlplnCbsMA/edit?usp=sharing)
-- Instructions basic requirements of a laptop and cluster can be found [here](https://docs.google.com/document/d/1SeQ53Ve3xHA9nBBf7C47_Qk4tcd4qxzyq4w2gFMAq28/edit#heading=h.gaiml9joopel).
+- Basic requirements of a laptop and kubenetes cluster can be found [here](https://docs.google.com/document/d/1SeQ53Ve3xHA9nBBf7C47_Qk4tcd4qxzyq4w2gFMAq28/edit#heading=h.gaiml9joopel).
 
 ## Create your git-repo
 *ISD stores all the configuration in a repo, typically a 'git repo', though bitbucket, S3 and others are supported.*
