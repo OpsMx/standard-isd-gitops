@@ -5,7 +5,7 @@
 - Infrastructure requires for a Production Setup can be found [here](https://docs.google.com/document/d/127q5y5ROr_Mb17hdOOz9eP_CuFxrH56R4qlplnCbsMA/edit?usp=sharing)
 - Basic requirements of a laptop and kubenetes cluster can be found [here](https://docs.google.com/document/d/1SeQ53Ve3xHA9nBBf7C47_Qk4tcd4qxzyq4w2gFMAq28/edit#heading=h.gaiml9joopel).
 
-Should have different infrastructure requirements, please contact OpsMx.
+Should we have different infrastructure requirements, please contact OpsMx.
 
 ## Create your git-repo
 *ISD stores all the configuration in a repo, typically a 'git repo', though bitbucket, S3 and others are supported.*
