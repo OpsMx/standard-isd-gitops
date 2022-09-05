@@ -30,11 +30,11 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 
 6. Edit namespace in the install/services.yaml file, if changed from default (i.e. "opsmx-isd")
 7. Push all changes in the gitops-repo to git (e.g `git add -A; git commit -m"my changes";git push`)
-8. Create namespace, a configmap for inputs and a service account as follows:
+8. Create namespace, a configmap for inputs and a service account as follows [edit namespace (i.e. opsmx-isd) as appropriate]:
 - `kubectl create ns opsmx-isd` 
 - `kubectl -n opsmx-isd apply -f install/inputcm.yaml` 
-- `kubectl -n opsmx-isd apply -f install/serviceaccount.yaml` # Edit namespace in the yaml if changed from the default and update the kubectl command
-
+- `kubectl -n opsmx-isd apply -f install/serviceaccount.yaml`
+-
 ## Create secrets
 *ISD supports multiple secret managers for storing secrets such as DB passwords, SSO authenticatoin details and so on. Using kubernetes secrets is the default.*
 
