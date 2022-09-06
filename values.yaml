@@ -40,7 +40,6 @@ spinnaker:
       organization: YOUR_ORG_NAME_OR_YOUR_USER_NAME_IF_NO_ORG
       repository: YOUR_REPO_NAME # repo name for GitOps Halyard, will be created if "githubcreationHook" is set to true
       username: YOUR_USER_NAME  # Username to authenticate with git/stash repo
-      token: encrypted:gittoken:gittoken  # Token corresponding to above username
       dynamicAccRepository: SAME_AS_REPOSITORY_ABOVE # Repo name of the GitOps Dynamic Accounts Directory, Can be same as "repository"
 
       ########################################################################################
@@ -54,6 +53,7 @@ spinnaker:
       halConfigBranch: main        # Branch for the "repository", recommend to keep "main"
       halConfigPath: /               #relative path from repository root folder
       dynAccntConfigPath: /          #relative path from repository root folder
+      token: encrypted:gittoken:gittoken  # Token corresponding to spinnaker.gitopsHalyard.repo.username
       
   ########################################################################################
   # Lines below this do not need to be changed except where external SSO and DBs are used
