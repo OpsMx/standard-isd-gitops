@@ -1,0 +1,87 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: isd-db-migrate
+  labels:
+    app: isd-install
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      containers:
+        - args:
+            - |-
+              set +x
+              
+              source /repo/environment
+              
+              cd /repo/oes-data-migration-scripts/
+              
+              export source=4.0
+
+              cd /repo/oes-data-migration-scripts/
+
+              ls -ltra 
+
+              echo "upgrading v3.12.6 to v4.0.0"
+                
+              export cmd="python3 migration_v3.12.x_to_v4.0.x.py platformdb
+              $host oesdb $host opsmx $host auditdb oes-db visibilitydb $host
+              $port $pguser $pgpassword $oesuiurl $saporusername $ldappassword
+              http://oes-sapor:8085 http://oes-audit:8097"
+                   
+              echo $cmd
+                   
+              export source="4.0"
+
+              $cmd
+
+              if [ $? -eq 0 ]; then  
+
+              echo "Migration of Postgress DB is sucessfull into your Database"
+
+              else
+
+              echo "Migration of Postgress DB failed"
+
+              exit 1
+
+              fi
+          command:
+            - /bin/bash
+            - +x
+            - '-c'
+          image: 'quay.io/opsmxpublic/ubi8-oes-platform:v3.12.5'
+          name: exec-db-upgrade
+          envFrom:
+            - configMapRef:
+                name: upgrade-inputcm
+          volumeMounts:
+            - mountPath: /repo
+              name: repo-volume
+      initContainers:
+        - args:
+            - |-
+
+              export ns="${namespace}"
+
+              source /home/opsmx/scripts/db_migration_script.sh
+
+              ls -ltra  /repo/
+          command:
+            - /bin/bash
+            - +x
+            - '-c'
+          image: 'quay.io/opsmxpublic/opsmx-custom-binaries:opsmx-isd-scripts2'
+          name: get-script
+          envFrom:
+            - configMapRef:
+                name: upgrade-inputcm
+          volumeMounts:
+            - mountPath: /repo
+              name: repo-volume
+      restartPolicy: Never
+      serviceAccountName: isd-install
+      volumes:
+        - emptyDir: {}
+          name: repo-volume
