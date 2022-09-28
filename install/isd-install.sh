@@ -72,7 +72,7 @@ echo secret and are $keyName
 #eval "value=\$$keyName"
 value=$(kubectl -n $namespace  get secret $keyName -o jsonpath="{.data.$keyName}" )
 sed -i "s/encrypted:$keyName:$keyName/$value/g" $file
-echo value is $value
+#echo value is $value
 done < secret-strings.list
 echo $file is secret and has data
 fi
@@ -89,7 +89,7 @@ echo secret and are $keyName
 value=$(kubectl -n $namespace  get secret $keyName -o jsonpath="{.data.$keyName}" | base64 -d)
 #eval "value=\$$keyName"
 sed -i "s/encrypted:$keyName:$keyName/$value/g" $file
-echo value is $value
+#echo value is $value
 done < secret-strings.list
 done < tmp1.list
 sed -i "s/encrypted%3Agittoken%3Agittoken/$gittoken/g" isd/oes/templates/secrets/opsmx-gitops-secret.yaml
