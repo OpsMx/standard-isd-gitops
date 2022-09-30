@@ -134,7 +134,7 @@ job:
             mapping: 'manifest.spec.template.spec.containers[0].env[1].value'
             name: spinnaker_pipelines
           - defaultValue: ""
-            description: "Please enter the Specific branch to download APP/pipeline data from github repo, It is optional if not specified default branch is taken from the configmap"
+            description: "Please enter the Specific branch to download APP/pipeline data from github repo, It is optional if not specified default branch is taken from the configmap" 
             label: Branch
             mapping: 'manifest.spec.template.spec.containers[0].env[2].value'
             name: branch_ui
@@ -226,17 +226,17 @@ job:
         type: customPRStage
         waitForCompletion: true
         parameters:
-          - defaultValue: ""
+          - defaultValue: "" 
             description: Please enter the webhook url.
             label: Webhook URL
             mapping: 'manifest.spec.template.spec.containers[0].env[0].value'
             name: url
-          - defaultValue: ""
+          - defaultValue: "" 
             description: Please enter method.
             label: Method
             mapping: 'manifest.spec.template.spec.containers[0].env[1].value'
             name: method
-          - defaultValue: ""
+          - defaultValue: "" 
             description: Please enter payload.
             label: Payload
             mapping: 'manifest.spec.template.spec.containers[0].env[2].value'
@@ -254,17 +254,17 @@ job:
             backoffLimit: 0
             template:
               spec:
-                containers:
+                containers: 
                   - command:
                       - sh
                       - /tmp/initscript/run.sh
                     env:
                       - name: url
-                        value:
+                        value: 
                       - name: method
                         value:
                       - name: payload
-                        value:
+                        value: 
                       - name: accesstoken
                         valueFrom:
                          secretKeyRef:
@@ -291,7 +291,7 @@ job:
         type: customnotification
         waitForCompletion: true
         parameters:
-          - defaultValue: ""
+          - defaultValue: "" 
             description: Please enter the Email address
             label: Email
             mapping: 'manifest.spec.template.spec.containers[0].env[0].value'
@@ -330,22 +330,22 @@ job:
                       - /tmp/initscript/run.sh
                     env:
                       - name: email
-                        value:
+                        value: 
                       - name: ccmail
                         value:
                       - name: subject
                         value:
                       - name: body
                         value:
-                      - name: ssmtpemail
-                        valueFrom:
-                         secretKeyRef:
-                          key: ssmtpemail
+                      - name: ssmtpemail                                  
+                        valueFrom:                                           
+                         secretKeyRef:                                       
+                          key: ssmtpemail                                   
                           name: ssmtp-secrets
-                      - name: emailpassword
-                        valueFrom:
-                         secretKeyRef:
-                          key: emailpassword
+                      - name: emailpassword                                    
+                        valueFrom:                                           
+                         secretKeyRef:                                       
+                          key: emailpassword                                  
                           name: ssmtp-secrets
                     image: 'opsmxdev/apline-with-curl'
                     imagePullPolicy: Always
@@ -363,22 +363,22 @@ job:
         cloudProvider: kubernetes
         credentials: default
         application: "${execution.application}"
-        description: Run playbooks to a single VM node
+        description: Run playbooks to a single VM node 
         account: default
         type: customAnsibleStage
         waitForCompletion: true
         parameters:
-          - defaultValue: ""
+          - defaultValue: "" 
             description: Please enter the  Git repo url with out https://
             label: Git repo
             mapping: 'manifest.spec.template.spec.containers[0].env[0].value'
             name: gitrepo
-          - defaultValue: ""
+          - defaultValue: "" 
             description: Please enter ansiblefile location.
             label: Ansible file
             mapping: 'manifest.spec.template.spec.containers[0].env[1].value'
             name: ansiblefileepo
-          - defaultValue: ""
+          - defaultValue: "" 
             description: Please enter override inventoryfile.
             label: Inventory file
             mapping: 'manifest.spec.template.spec.containers[0].env[2].value'
@@ -402,11 +402,11 @@ job:
                       - /tmp/initscript/run.sh
                     env:
                       - name: gitrepo
-                        value:
+                        value: 
                       - name: ansiblefile
                         value:
                       - name: inventoryfile
-                        value:
+                        value: 
                       - name: gitusername
                         valueFrom:
                          secretKeyRef:
@@ -417,15 +417,15 @@ job:
                          secretKeyRef:
                           key: gitpassword
                           name: ansible-secrets
-                      - name: nodeuser
-                        valueFrom:
-                         secretKeyRef:
-                          key: nodeuser
+                      - name: nodeuser                                    
+                        valueFrom:                                           
+                         secretKeyRef:                                       
+                          key: nodeuser                                   
                           name: ansible-secrets
-                      - name: userpassword
-                        valueFrom:
-                         secretKeyRef:
-                          key: userpassword
+                      - name: userpassword                                    
+                        valueFrom:                                           
+                         secretKeyRef:                                       
+                          key: userpassword                                  
                           name: ansible-secrets
                     image: 'opsmx11/ansible-job-image:v2'
                     imagePullPolicy: Always
@@ -462,17 +462,17 @@ job:
             label: Tf script account
             mapping: 'manifest.spec.template.spec.containers[0].env[2].value'
             name: scriptaccount
-          - defaultValue: ""
+          - defaultValue: "" 
             description: "Please enter the Git Repo Account of TF script."
             label: Tf Plan script Repo
             mapping: 'manifest.spec.template.spec.containers[0].env[3].value'
             name: repo
-          - defaultValue: ""
+          - defaultValue: "" 
             description: Please enter Location of terraform script in the repo.
             label: Tf Location
             mapping: 'manifest.spec.template.spec.containers[0].env[4].value'
             name: location
-          - defaultValue: ""
+          - defaultValue: "" 
             description: Please enter overrideVariableFile path if you want to override variables.
             label: Override file
             mapping: 'manifest.spec.template.spec.containers[0].env[5].value'
@@ -496,8 +496,8 @@ job:
             template:
               spec:
                 containers:
-                  - command:
-                      - role.sh
+                  - command: 
+                      - role.sh 
                     env:
                       - name: awsrole
                         value:
@@ -506,13 +506,13 @@ job:
                       - name: scriptaccount
                         value:
                       - name: repo
-                        value:
+                        value: 
                       - name: location
-                        value:
+                        value: 
                       - name: overridefile
-                        value:
+                        value: 
                       - name: TF_WORKSPACE
-                        value:
+                        value:  
                       - name: command
                         value: plan
                     image: 'quay.io/opsmxpublic/customterraformstage:terraform-1.1.7-isd-backendconfig'
@@ -549,17 +549,17 @@ job:
             label: Tf script account
             mapping: 'manifest.spec.template.spec.containers[0].env[2].value'
             name: scriptaccount
-          - defaultValue: ""
+          - defaultValue: "" 
             description: "Please enter the Git Repo Account of TF script."
             label: Tf Plan script Repo
             mapping: 'manifest.spec.template.spec.containers[0].env[3].value'
             name: repo
-          - defaultValue: ""
+          - defaultValue: "" 
             description: Please enter Location of terraform script in the repo.
             label: Tf Location
             mapping: 'manifest.spec.template.spec.containers[0].env[4].value'
             name: location
-          - defaultValue: ""
+          - defaultValue: "" 
             description: Please enter overrideVariableFile path if you want to override variables.
             label: Override file
             mapping: 'manifest.spec.template.spec.containers[0].env[5].value'
@@ -568,7 +568,7 @@ job:
             description: Please enter terraform workspace name.
             label: Terraform Workspace
             mapping: 'manifest.spec.template.spec.containers[0].env[6].value'
-            name: TF_WORKSPACE
+            name: TF_WORKSPACE  
         manifest:
           apiVersion: batch/v1
           kind: Job
@@ -593,13 +593,13 @@ job:
                       - name: scriptaccount
                         value:
                       - name: repo
-                        value:
+                        value: 
                       - name: location
-                        value:
+                        value: 
                       - name: overridefile
-                        value:
+                        value: 
                       - name: TF_WORKSPACE
-                        value:
+                        value:          
                       - name: command
                         value: apply
                     image: 'quay.io/opsmxpublic/customterraformstage:terraform-1.1.7-isd-backendconfig'
@@ -637,17 +637,17 @@ job:
             label: Tf script account
             mapping: 'manifest.spec.template.spec.containers[0].env[2].value'
             name: scriptaccount
-          - defaultValue: ""
+          - defaultValue: "" 
             description: "Please enter the Git Repo Account of TF script."
             label: Tf Plan script Repo
             mapping: 'manifest.spec.template.spec.containers[0].env[3].value'
             name: repo
-          - defaultValue: ""
+          - defaultValue: "" 
             description: Please enter Location of terraform script in the repo.
             label: Tf Location
             mapping: 'manifest.spec.template.spec.containers[0].env[4].value'
             name: location
-          - defaultValue: ""
+          - defaultValue: "" 
             description: Please enter overrideVariableFile path if you want to override variables.
             label: Override file
             mapping: 'manifest.spec.template.spec.containers[0].env[5].value'
@@ -681,13 +681,13 @@ job:
                       - name: scriptaccount
                         value:
                       - name: repo
-                        value:
+                        value: 
                       - name: location
-                        value:
+                        value: 
                       - name: overridefile
-                        value:
+                        value: 
                       - name: TF_WORKSPACE
-                        value:
+                        value: 
                       - name: command
                         value: destroy
                     image: 'quay.io/opsmxpublic/customterraformstage:terraform-1.1.7-isd-backendconfig'
@@ -779,7 +779,7 @@ webhook:
     parameters:
     - label: Assignment Group
       name: assignmentgroup
-      description: Assignment group to approval the state change Eg- CAB Approval
+      description: Assignment group to approval the state change Eg- CAB Approval 
       type: string
     - label: State
       name: state
@@ -805,59 +805,59 @@ webhook:
     parameters:
     - label: Work Notes
       name: worknotes
-      description: Add work notes to the request
+      description: Add work notes to the request 
       type: string
     - label: sys_id
       name: sysid
       description: Sys id of the request. Can get from url of the request Eg-7067852307303010268affa08c1ed0a6
       type: string
-  - label: "ServiceNow: Wait for state-OpsMx"
-    type: waitServiceNowState
-    enabled: true
+  - label: "ServiceNow: Wait for state-OpsMx"    
+    type: waitServiceNowState          
+    enabled: true                    
     description: Waits for a specific state on a ServiceNow issue
-    method: GET
+    method: GET                                                              
     url: SERVICENOW_URL/api/sn_chg_rest/change/${parameterValues['sysid']}
-    customHeaders:
+    customHeaders:                                                                       
       Authorization: Basic SERVICENOW_BASE64_USR_PASSWD
-      Content-Type: application/json
-    failPipeline: true
-    progressJsonPath: "result.state.display_value"
-    payload: ""
-    retryStatusCodes:
-      - 200
-    statusJsonPath: "result.state.display_value"
-    statusUrlResolution: "getMethod"
-    successStatuses: ${parameterValues['success']}
-    retryStatuses: ${parameterValue['retry']}
-    terminalStatuses: ${parameterValues['terminate']}
-    canceledStatuses: ${parameterValues['cancel']}
-    waitBeforeMonitor: "1"
-    waitForCompletion: true
-    parameters:
-    - label: Sys id
-      name: sysid
+      Content-Type: application/json                                                     
+    failPipeline: true                                                                   
+    progressJsonPath: "result.state.display_value"                                               
+    payload: ""                                                                          
+    retryStatusCodes:                                                                    
+      - 200                                                                              
+    statusJsonPath: "result.state.display_value"                                                 
+    statusUrlResolution: "getMethod"                                                   
+    successStatuses: ${parameterValues['success']}                                       
+    retryStatuses: ${parameterValue['retry']}                                            
+    terminalStatuses: ${parameterValues['terminate']}                                    
+    canceledStatuses: ${parameterValues['cancel']}                                       
+    waitBeforeMonitor: "1"                                                             
+    waitForCompletion: true                                                            
+    parameters:                                                                          
+    - label: Sys id                            
+      name: sysid                                                                        
       description: "sys id of the request"
-      type: string
-      defaultValue: ""
-    - label: Service Now Success States
-      name: success
+      type: string                                                                     
+      defaultValue: ""                                                
+    - label: Service Now Success States              
+      name: success                                                              
       description: "Service Now issue States that progress the pipeline, e.g,: In Verificaiton etc."
       type: string
-      defaultValue: ""
-    - label: Service Now Retry States
-      name: retry
+      defaultValue: ""  
+    - label: Service Now Retry States                                                     
+      name: retry                                                                  
       description: "Service Now issue states that Retry the stage e.g,: New etc. Can give multiple states coma seperated"
-      type: string
+      type: string                                                                        
       defaultValue: ""
-    - label: Service Now Termination States
-      name: terminate
-      description: "Service Now issue states that terminates the pipeline, e.g,: Done etc."
-      type: string
-      defaultValue: ""
-    - label: Service Now Canceled States
-      name: cancel
-      description: "Service Now issue states that cancel the pipeline e.g,: Closed, etc."
-      type: string
+    - label: Service Now Termination States                                                          
+      name: terminate           
+      description: "Service Now issue states that terminates the pipeline, e.g,: Done etc."    
+      type: string                                                                        
+      defaultValue: ""                                                             
+    - label: Service Now Canceled States                                                         
+      name: cancel                                                                           
+      description: "Service Now issue states that cancel the pipeline e.g,: Closed, etc."             
+      type: string                                                                           
       defaultValue: Closed 
   - label: "JIRA: Wait for state-OpsMx"
     type: waitJiraState
@@ -1077,7 +1077,7 @@ webhook:
       type: string
     - label: Request Type Id
       name: requesttypeid
-      description: Request type like id "25" for IT HELP
+      description: Request type like id "25" for IT HELP 
       type: string
     - label: Summary
       name: summary
@@ -1140,7 +1140,7 @@ webhook:
       name: issue
       description: "The ServiceDesk issue, the default relies on ServiceDesk issue ID extraction"
       type: string
-      defaultValue:
+      defaultValue: 
     - label: ServiceDesk Retry States
       name: retry
       description: "ServiceDesk issue states that Retry the stage e.g,: To Do, In Progress, etc."
@@ -1184,7 +1184,7 @@ webhook:
       type: string
     - label: Body
       name: body
-      description: Current status as a comment to change the transition
+      description: Current status as a comment to change the transition 
       type: string
 spinnaker:
   extensibility:
@@ -1213,7 +1213,3 @@ policy:
   opa:
     enabled: true
     url: http://oes-sapor:8085
-
-isd:
-  gate:
-     url: PROTOCOL://OVERRIDE_API_URL
