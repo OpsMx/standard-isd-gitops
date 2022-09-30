@@ -28,7 +28,7 @@ Should we have different infrastructure requirements, please contact OpsMx.
 
 NOTE: We recommend that we start with the defaults, updating just the URL and gitopsHalyard details and gradually adding SSO, external DBs, etc. while updating the installed instance
 
-6. Edit namespace in the install/services.yaml file, if changed from default (i.e. "opsmx-isd")
+6. Edit namespace in the install/inputcm.yaml file, if changed from default (i.e. "opsmx-isd")
 7. Push all changes in the gitops-repo to git (e.g `git add -A; git commit -m"my changes";git push`)
 8. Create namespace, a configmap for inputs and a service account as follows [edit namespace (i.e. opsmx-isd) as appropriate]:
 - `kubectl create ns opsmx-isd` 
