@@ -1,23 +1,23 @@
 
 # Upgrade Instructions
 
-Please follow these instructions if you are upgrading from 3.11 (to 3.12). The current installtion (3.11) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
+Please follow these instructions if you are upgrading from 3.12 (to 4.0). The current installtion (3.12) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
 
 **WARNING**: Please backup all the databases, in particualr the Posgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration. 
 
 ## Scenario A
 Use these instructions if:
-- You have a 3.11.1 installed using the helm installer (installated prio to Feb 2022) and
+- You have a 3.12.x installed using the helm installer and
 - Already have a "gitops-repo" for Spinnaker Configuration
 - Have values.yaml that was used for helm installation
 
 Execute these commands, replacing "gitops-repo" with your repo
 - `git clone `**https://github.com/.../gitops-repo**
-- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 3.12`
+- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 4.0`
 - `cp -r standard-isd-gitops/upgrade gitops-repo`  
 - `cd gitops-repo`
-- Copy the existing "values.yaml", that was used for previous installation into this folder. We will call it values-311.yaml
-- diff values-312.yaml values-311.yaml and merge all of your changes into "values.yaml". **NOTE**: In most cases just replacing 3.11.1 with 3.12.5 is enough.
+- Copy the existing "values.yaml", that was used for previous installation into this folder. We will call it values-312.yaml
+- diff values-40.yaml values-312.yaml and merge all of your changes into "values.yaml". **NOTE**: In most cases just replacing images v3.12.6.1 with v4.0.0-ga is enough.
 - Copy the updated values file as "values.yaml" (file name is important)
 - create gittoken secret. This token will be used to authenticate to the gitops-repo
    - `kubectl -n oes create secret generic gittoken --from-literal gittoken=PUT_YOUR_GITTOKEN_HERE` 
@@ -32,25 +32,24 @@ Execute these commands, replacing "gitops-repo" with your repo
 
 ## Scenario B
 Use this set if instructions if:
-a) You have a 3.11 installed using gitops installer
+a) You have a 3.12 installed using gitops installer
 b) Already have a gitops-repo for ISD (AP and Spinnaker) Configuration
 
 Execute these commands, replacing "gitops-repo" with your repo
 Execute these commands, replacing "gitops-repo" with your repo
 - `git clone `**https://github.com/.../gitops-repo**
-- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 3.12`
-- `cp -r standard-isd-gitops.git/upgrade gitops-repo`  
+- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 4.0`
+- `cp -r standard-isd-gitops.git/upgrade gitops-repo` 
 - `cd gitops-repo`
+-  Update the halyard version in config file i.e deploymentConfigurations.version 1.27.0
+-  If there are any custom settings done for spinnaker please update those changes accordingly in gitops-repo/default/profiles and gitops-repo/default/service-settings.
+- If there are no custom settings for spinnaker please execute below commands
+  `cp -r standard-isd-gitops.git/default gitops-repo/`
 - Check that a "values.yaml" file exists in this directory (root of the gitops-repo)
 
 ## Common Steps
-Upgrade sequence: (3.11 to 3.12)
+Upgrade sequence: (3.12 to 4.0)
 1. Ensure that "default" account is configured to deploy to the ISD namespace (e.g. oes)
-2. Update Values.yaml: Edit as follows:
-  - In the "global:" section, add the following
-  'gitea: 
-    enabled: false'
-  - In the global section, set commonGate.enabled to "true"
 2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
 3. `cd upgrade`
 4. Update upgrade-inputcm.yaml: 
@@ -62,10 +61,8 @@ Upgrade sequence: (3.11 to 3.12)
 9. `kubectl -n oes apply -f serviceaccount.yaml` # Edit namespace if changed from the default "oes"
 10. Upgrade DB:
    - `kubectl -n oes replace --force -f create-sample-job.yaml`
-   - Execute the DB-Migrate310to311 pipeline in opsmx-gitops application. **Ensure that you select the correct namespace and current ISD version.**
-   - In the unlikely even that the pipeline is not present(job failed), please copy paste the pipeline-json available in upgrade folder.
    - This can also be executed as a kubenetes job by executing
-     - `kubectl -n oes apply -f ISD-DB-Migrate-job.yaml`  TOBE TESTED
+     - `kubectl -n oes apply -f ISD-DB-Migrate-job.yaml`  TO BE TESTED
 11. `kubectl -n oes replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
 12. Compare and merge branch: This job should have created a branch on the gitops-repo with the helmchart version number specified in upgrade-inputcm.yaml. Raise a PR and check what changes are being made. Once satisfied, merge the PR.
@@ -94,7 +91,7 @@ As a first step. Please try the "Troubleshooting Issues during Installation" sec
 2. `kubectl -n oes  delete deploy --all`
 3. `kubectl -n oes delete svc --all`
 4. `kubectl -n oes replace --force -f ISD-Apply-yamls-job.yaml`
-5.  Wait for all the pods to come up: How do we KNOW if it has ended?
+5.  Wait for all the pods to come up
 
 ## Recovering from a failed "Upgrade DB" job
 1. Restore PostgresDB from backup
