@@ -44,7 +44,7 @@ Execute these commands, replacing "gitops-repo" with your repo
 -  Update the halyard version in config file i.e deploymentConfigurations.version 1.28.1
 -  If there are any custom settings done for spinnaker please update those changes accordingly in gitops-repo/default/profiles and gitops-repo/default/service-settings.
 - If there are no custom settings for spinnaker please execute below commands
-  `cp -r standard-isd-gitops.git/default gitops-repo/`
+      `cp -r standard-isd-gitops.git/default gitops-repo/`
 - Check that a "values.yaml" file exists in this directory (root of the gitops-repo)
 
 ## Common Steps
@@ -54,20 +54,20 @@ Upgrade sequence: (4.0 to 4.0.1)
 3. `cd upgrade`
 4. Update upgrade-inputcm.yaml: 
    - url, username and gitemail MUST be updated. TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
-   - **If ISD Namespace is different from "oes"**: Update namespace (default is opsmx-isd) to the namespace where ISD is installed
-6. **If ISD Namespace is different from "oes"**: Edit serviceaccount.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
+   - **If ISD Namespace is different from "opsmx-isd"**: Update namespace (default is opsmx-isd) to the namespace where ISD is installed
+6. **If ISD Namespace is different from "opsmx-isd"**: Edit serviceaccount.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
 7. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
-8. `kubectl -n oes apply -f upgrade-inputcm.yaml`
-9. `kubectl -n oes apply -f serviceaccount.yaml` # Edit namespace if changed from the default "oes"
-10. `kubectl -n oes replace --force -f ISD-Generate-yamls-job.yaml`
+8. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
+9. `kubectl -n opsmx-isd apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
+10. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
 11. Compare and merge branch: This job should have created a branch on the gitops-repo with the helmchart version number specified in upgrade-inputcm.yaml. Raise a PR and check what changes are being made. Once satisfied, merge the PR.
-12. `kubectl -n oes replace --force -f ISD-Apply-yamls-job.yaml`
+12. `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
    Wait for isd-yaml-update-* pod to complete, and all pods to stabilize
 13 isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this: `kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0`
 14. Restart all pods:
-   - `kubectl -n oes scale deploy -l app=oes --replicas=0` Wait for a min or two
-   - `kubectl -n oes scale deploy -l app=oes --replicas=1` Wait for all pods to come to ready state   
+   - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=0` Wait for a min or two
+   - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=1` Wait for all pods to come to ready state   
 15. Go to ISD UI and check that version number has changed in the bottom-left corner
 16. Wait for about 5 min for autoconfiguration to take place.
 17. If required: a) Connect Spinnaker again b) Configure pipeline-promotion again. To do this, in the ISD UI:
