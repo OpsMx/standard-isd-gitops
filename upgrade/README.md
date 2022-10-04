@@ -62,7 +62,7 @@ Upgrade sequence: (3.12 to 4.0)
 10. Upgrade DB:
    - `kubectl -n oes replace --force -f create-sample-job.yaml`
    - This can also be executed as a kubenetes job by executing
-     - `kubectl -n oes apply -f ISD-DB-Migrate-job.yaml`  TO BE TESTED
+     - `kubectl -n oes apply -f ISD-DB-Migrate-job.yaml`
 11. `kubectl -n oes replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
 12. Compare and merge branch: This job should have created a branch on the gitops-repo with the helmchart version number specified in upgrade-inputcm.yaml. Raise a PR and check what changes are being made. Once satisfied, merge the PR.
