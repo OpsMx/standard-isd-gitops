@@ -17,7 +17,7 @@ Execute these commands, replacing "gitops-repo" with your repo
 - `cp -r standard-isd-gitops/upgrade gitops-repo`  
 - `cd gitops-repo`
 - Copy the existing "values.yaml", that was used for previous installation into this folder. We will call it values-312.yaml
-- diff values-312.yaml values-40.yaml and merge all of your changes into "values.yaml". **NOTE**: In most cases just replacing images v3.12.x with v4.0.x is enough.
+- diff values-40.yaml values-312.yaml and merge all of your changes into "values.yaml". **NOTE**: In most cases just replacing images v3.12.x with v4.0.x is enough.
 - Copy the updated values file as "values.yaml" (file name is important)
 - create gittoken secret. This token will be used to authenticate to the gitops-repo
    - `kubectl -n oes create secret generic gittoken --from-literal gittoken=PUT_YOUR_GITTOKEN_HERE` 
@@ -32,7 +32,7 @@ Execute these commands, replacing "gitops-repo" with your repo
 
 ## Scenario B
 Use this set if instructions if:
-a) You have a 3.12.x installed using gitops installer
+a) You have a 3.12 installed using gitops installer
 b) Already have a gitops-repo for ISD (AP and Spinnaker) Configuration
 
 Execute these commands, replacing "gitops-repo" with your repo
