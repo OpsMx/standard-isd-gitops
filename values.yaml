@@ -16,7 +16,7 @@ global:
   createIngress: true
 
   #Only for trial purposes, pod-baesd git is installed and automatically configured
-  gitea: 
+  gitea:
     enabled: false # Set to true for trial-install only
 
   ###############################################################################
@@ -27,6 +27,18 @@ global:
   ## ldap configuration used in oes-gate, oes-platform and spinnaker gate for authentication and authorization
   ldap:
     managerPassword: encrypted:ldappassword:ldappassword
+
+  # Set it to true only if gate.config.saml.enabled to true
+  auth:
+    saml: false
+
+   ## Valid admin details for ISD authorization
+  saporgate:
+    config:
+      username: admin       #Name of the valid user in your service provider
+      adminGroups: admin    #Name of the valid admin group in your service provider
+      password: encrypted:saporpassword:saporpassword  #password for the saporgate
+
   minio:
     accessKey: encrypted:miniopassword:miniopassword
     secretKey: encrypted:miniopassword:miniopassword
@@ -54,7 +66,7 @@ spinnaker:
       halConfigPath: /               #relative path from repository root folder
       dynAccntConfigPath: /          #relative path from repository root folder
       token: encrypted:gittoken:gittoken  # Token corresponding to spinnaker.gitopsHalyard.repo.username
-      
+
   ########################################################################################
   # Lines below this do not need to be changed except where external SSO and DBs are used
   ########################################################################################
@@ -122,12 +134,6 @@ gate:
 rabbitmq:
   username: rabbitmq
   password: encrypted:rabbitmqpassword:rabbitmqpassword
-
-###############################################################################
-saporgate:
-  config:
-    username: admin      # User name with admin permissions and belonging to admin groups defined in platform service
-    password: encrypted:saporpassword:saporpassword # Any generic String, need not be the real password
 
 ###############################################################################
 ## Details of redis-master image for OES

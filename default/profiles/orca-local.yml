@@ -760,7 +760,7 @@ webhook:
       type: string
     - label: Type
       name: type
-      description: Emergency, Normal etc 
+      description: Emergency, Normal etc
       type: string
   - label: "ServiceNow: Change request Status-OpsMx"
     type: ChangeStateofChangeRequest
@@ -783,7 +783,7 @@ webhook:
       type: string
     - label: State
       name: state
-      description: Change to which state? Eg- Assess 
+      description: Change to which state? Eg- Assess
       type: string
     - label: sys_id
       name: sysid
@@ -858,7 +858,7 @@ webhook:
       name: cancel
       description: "Service Now issue states that cancel the pipeline e.g,: Closed, etc."
       type: string
-      defaultValue: Closed 
+      defaultValue: Closed
   - label: "JIRA: Wait for state-OpsMx"
     type: waitJiraState
     enabled: true
@@ -1071,7 +1071,7 @@ webhook:
         ]
       }
     parameters:
-    - label: Project ID 
+    - label: Project ID
       name: projectid
       description: Which Servicedesk project do you want to create an item in?
       type: string
@@ -1090,7 +1090,7 @@ webhook:
     - label: Description
       name: description
       description: Description of the request
-      type: string   
+      type: string
   - label: "ServiceDesk: Comment on issue-OpsMx"
     type: Coment ServiceDesk Issue
     enabled: true
@@ -1159,7 +1159,7 @@ webhook:
   - label: "ServiceDesk: Transition issue-OpsMx"
     type: transservicedesk issue status
     enabled: true
-    description: Stage that transitions an Servicedesk request status 
+    description: Stage that transitions an Servicedesk request status
     method: POST
     url: https://<URL>/rest/servicedeskapi/request/${parameterValues['issue']}/transition
     customHeaders:
@@ -1213,7 +1213,3 @@ policy:
   opa:
     enabled: true
     url: http://oes-sapor:8085
-
-isd:
-  gate:
-     url: PROTOCOL://OVERRIDE_API_URL
