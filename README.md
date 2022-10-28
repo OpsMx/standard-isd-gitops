@@ -12,7 +12,7 @@ Should we have different infrastructure requirements, please contact OpsMx.
 
 1. Create an empty-repo (called the "gitops-repo" in the document),  "main" branch should be the default, and clone it locally
 2. Clone https://github.com/OpsMx/standard-isd-gitops, selecting the appropriate branch:
-- `git clone https://github.com/OpsMx/standard-isd-gitops  -b 4.0.1`
+- `git clone https://github.com/OpsMx/standard-isd-gitops  -b 4.0`
 
 3. Copy contents of the standard-isd-repo to the gitops-repo created above using:
    
@@ -24,7 +24,7 @@ Should we have different infrastructure requirements, please contact OpsMx.
 *The installation process requires inputs such as the application version, git-repo details and so on.*
 
 4. In the gitops-repo cloned to disk and edit install/inputcm.yaml. This should be updated, at a **minimum**, with gitrepo and username.
-5. **Update Values.yaml as required**, specifically: At at **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/v4.0.1/charts/oes
+5. **Update Values.yaml as required**, specifically: At at **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/v4.0/charts/oes
 
 NOTE: We recommend that we start with the defaults, updating just the URL and gitopsHalyard details and gradually adding SSO, external DBs, etc. while updating the installed instance
 
