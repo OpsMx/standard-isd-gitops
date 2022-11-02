@@ -59,7 +59,10 @@ Upgrade sequence: (3.12 to 4.0)
 7. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
 8. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
 9. `kubectl -n opsmx-isd apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
-10. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
+10. Upgrade DB:
+      This can be be executed as a kubenetes job
+    - `kubectl -n opsmx-isd apply -f ISD-DB-Migrate-job.yaml`
+11. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
 11. Compare and merge branch: This job should have created a branch on the gitops-repo with the helmchart version number specified in upgrade-inputcm.yaml. Raise a PR and check what changes are being made. Once satisfied, merge the PR.
 12. `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
