@@ -59,18 +59,21 @@ Upgrade sequence: (3.12 to 4.0)
 7. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
 8. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
 9. `kubectl -n opsmx-isd apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
-10. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
+10. Upgrade DB:
+      This can be be executed as a kubenetes job
+    - `kubectl -n opsmx-isd apply -f ISD-DB-Migrate-job.yaml`
+11. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
-11. Compare and merge branch: This job should have created a branch on the gitops-repo with the helmchart version number specified in upgrade-inputcm.yaml. Raise a PR and check what changes are being made. Once satisfied, merge the PR.
-12. `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
+12. Compare and merge branch: This job should have created a branch on the gitops-repo with the helmchart version number specified in upgrade-inputcm.yaml. Raise a PR and check what changes are being made. Once satisfied, merge the PR.
+13. `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
    Wait for isd-yaml-update-* pod to complete, and all pods to stabilize
-13 isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this: `kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0`
-14. Restart all pods:
+14 isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this: `kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0`
+15. Restart all pods:
    - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=0` Wait for a min or two
    - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=1` Wait for all pods to come to ready state   
-15. Go to ISD UI and check that version number has changed in the bottom-left corner
-16. Wait for about 5 min for autoconfiguration to take place.
-17. If required: a) Connect Spinnaker again b) Configure pipeline-promotion again. To do this, in the ISD UI:
+16. Go to ISD UI and check that version number has changed in the bottom-left corner
+17. Wait for about 5 min for autoconfiguration to take place.
+18. If required: a) Connect Spinnaker again b) Configure pipeline-promotion again. To do this, in the ISD UI:
    - Click setup
    - Click Spinnaker tab at the top. Check if "External Accounts" and "Pipeline-promotion" columns show "yes". If any of them is "no":
    - Click "edit" on the 3 dots on the far right. Check the values already filled in, make changes if required and click "update".
