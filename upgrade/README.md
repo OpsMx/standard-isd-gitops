@@ -1,7 +1,7 @@
 
 # Upgrade Instructions
 
-Please follow these instructions if you are upgrading from 3.12 (to 4.0). The current installtion (3.12) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
+Please follow these instructions if you are upgrading from 3.12 (to 4.0.x). The current installtion (3.12) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
 
 **WARNING**: Please backup all the databases, in particualr the Posgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration. 
 
