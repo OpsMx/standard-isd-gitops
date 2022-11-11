@@ -1,7 +1,7 @@
 
 # Upgrade Instructions
 
-Please follow these instructions if you are upgrading from 3.12 (to 4.0.x). The current installtion (3.12) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
+Please follow these instructions if you are upgrading from 3.12 (to 4.0.2). The current installtion (3.12) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
 
 **WARNING**: Please backup all the databases, in particualr the Posgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration. 
 
@@ -17,7 +17,7 @@ Execute these commands, replacing "gitops-repo" with your repo
 - `cp -r standard-isd-gitops/upgrade gitops-repo`  
 - `cd gitops-repo`
 - Copy the existing "values.yaml", that was used for previous installation into this folder. We will call it values-312.yaml
-- diff values-40.yaml values-312.yaml and merge all of your changes into "values.yaml". **NOTE**: In most cases just replacing images v3.12.x with v4.0.x is enough.
+- diff values-402.yaml values-312.yaml and merge all of your changes into "values.yaml". **NOTE**: In most cases just replacing images v3.12.x with v4.0.2 is enough.
 - Copy the updated values file as "values.yaml" (file name is important)
 - create gittoken secret. This token will be used to authenticate to the gitops-repo
    - `kubectl -n oes create secret generic gittoken --from-literal gittoken=PUT_YOUR_GITTOKEN_HERE` 
@@ -48,7 +48,7 @@ Execute these commands, replacing "gitops-repo" with your repo
 - Check that a "values.yaml" file exists in this directory (root of the gitops-repo)
 
 ## Common Steps
-Upgrade sequence: (3.12 to 4.0)
+Upgrade sequence: (3.12 to 4.0.2)
 1. Ensure that "default" account is configured to deploy to the ISD namespace (e.g. oes)
 2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
 3. `cd upgrade`
