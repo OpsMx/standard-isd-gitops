@@ -60,21 +60,33 @@ Upgrade sequence: (3.12 to 4.0.2)
 10. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
 11. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
 12. `kubectl -n opsmx-isd apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
-13. Upgrade DB:
+
+13.  Scale down the oes-audit-service deployment by using the below command 
+   - `kubectl scale deploy oes-audit-deploy --replicas=0 -n opsmx-isd` # Edit namespace if changed from the default "opsmx-isd"
+
+14. Upgrade DB:
       This can be be executed as a kubenetes job
-    - `kubectl -n opsmx-isd apply -f ISD-DB-Migrate-job.yaml`
-14. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
+    - `kubectl -n opsmx-isd apply -f ISD-DB-Migrate-job.yaml`   # Edit namespace if changed from the default "opsmx-isd"
+
+15. Once the upgrade Db is completed scale up the oes-audit-service deployment which is scaled down at setp 13
+    
+    - `kubectl -n opsmx-isd scale deploy oes-audit-deploy --replicas=1`  # Edit namespace if changed from the default "opsmx-isd"
+
+16. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
-15. Compare and merge branch: This job should have created a branch on the gitops-repo with the helmchart version number specified in upgrade-inputcm.yaml. Raise a PR and check what changes are being made. Once satisfied, merge the PR.
+
+17. Compare and merge branch: This job should have created a branch on the gitops-repo with the helmchart version number specified in upgrade-inputcm.yaml. Raise a PR and check what changes are being made. Once satisfied, merge the PR.
+
 16. `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
    Wait for isd-yaml-update-* pod to complete, and all pods to stabilize
-17 isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this: `kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0`
-18. Restart all pods:
+
+18 isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this: `kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0`
+19. Restart all pods:
    - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=0` Wait for a min or two
    - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=1` Wait for all pods to come to ready state   
-19. Go to ISD UI and check that version number has changed in the bottom-left corner
-20. Wait for about 5 min for autoconfiguration to take place.
-21. If required: a) Connect Spinnaker again b) Configure pipeline-promotion again. To do this, in the ISD UI:
+20. Go to ISD UI and check that version number has changed in the bottom-left corner
+21. Wait for about 5 min for autoconfiguration to take place.
+22. If required: a) Connect Spinnaker again b) Configure pipeline-promotion again. To do this, in the ISD UI:
    - Click setup
    - Click Spinnaker tab at the top. Check if "External Accounts" and "Pipeline-promotion" columns show "yes". If any of them is "no":
    - Click "edit" on the 3 dots on the far right. Check the values already filled in, make changes if required and click "update".
