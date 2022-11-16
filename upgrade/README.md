@@ -62,7 +62,7 @@ Upgrade sequence: (3.12 to 4.0.2)
 12. `kubectl -n opsmx-isd apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
 
 13.  Scale down the oes-audit-service deployment by using the below command 
-   - `kubectl scale deploy oes-audit-deploy --replicas=0 -n opsmx-isd` # Edit namespace if changed from the default "opsmx-isd"
+   - `kubectl -n opsmx-isd scale deploy -l component=auditservice --replicas=0` # Edit namespace if changed from the default "opsmx-isd"
 
 14. Upgrade DB:
       This can be be executed as a kubenetes job
@@ -70,7 +70,7 @@ Upgrade sequence: (3.12 to 4.0.2)
 
 15. Once the upgrade Db is completed scale up the oes-audit-service deployment which is scaled down at setp 13
     
-    - `kubectl -n opsmx-isd scale deploy oes-audit-deploy --replicas=1`  # Edit namespace if changed from the default "opsmx-isd"
+    - `kubectl -n opsmx-isd scale deploy -l component=auditservice --replicas=1`  # Edit namespace if changed from the default "opsmx-isd"
 
 16. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
