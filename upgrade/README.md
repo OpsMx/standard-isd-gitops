@@ -63,15 +63,15 @@ Upgrade sequence: (3.12 to 4.0.2)
 
 13.  Scale down the oes-audit-service deployment by using the below command 
    - `kubectl -n opsmx-isd scale deploy -l component=auditservice --replicas=0` # Edit namespace if changed from the default "opsmx-isd"
-
+   -  Please wait till the pod gets completly terminated and proceed after that procced for next step
 14. Upgrade DB:
       This can be be executed as a kubenetes job
-    - `kubectl -n opsmx-isd apply -f ISD-DB-Migrate-job.yaml`   # Edit namespace if changed from the default "opsmx-isd"
+   -  `kubectl -n opsmx-isd apply -f ISD-DB-Migrate-job.yaml`   # Edit namespace if changed from the default "opsmx-isd"
 
 15. Once the upgrade Db is completed scale up the oes-audit-service deployment which is scaled down at setp 13
-    
-    - `kubectl -n opsmx-isd scale deploy -l component=auditservice --replicas=1`  # Edit namespace if changed from the default "opsmx-isd"
 
+   -  `kubectl -n opsmx-isd scale deploy -l component=auditservice --replicas=1`  # Edit namespace if changed from the default "opsmx-isd"
+     
 16. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
 
@@ -81,9 +81,11 @@ Upgrade sequence: (3.12 to 4.0.2)
    Wait for isd-yaml-update-* pod to complete, and all pods to stabilize
 
 18 isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this: `kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0`
+
 19. Restart all pods:
    - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=0` Wait for a min or two
-   - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=1` Wait for all pods to come to ready state   
+   - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=1` Wait for all pods to come to ready state
+ 
 20. Go to ISD UI and check that version number has changed in the bottom-left corner
 21. Wait for about 5 min for autoconfiguration to take place.
 22. If required: a) Connect Spinnaker again b) Configure pipeline-promotion again. To do this, in the ISD UI:
