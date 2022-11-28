@@ -97,7 +97,7 @@ spec:
             - /bin/bash
             - +x
             - '-c'
-          image: 'quay.io/opsmxpublic/opsmx-custom-binaries:opsmx-isd-scripts4'
+          image: 'quay.io/opsmxpublic/opsmx-custom-binaries:opsmx-isd-scripts-latest'
           name: get-script
           envFrom:
             - configMapRef:
