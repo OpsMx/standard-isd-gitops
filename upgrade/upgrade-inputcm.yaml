@@ -8,7 +8,7 @@ data:
   # Typically, there is no need to change the values below this line, please check the "nameaspace"
   #####################################################################################################
   branch: main         # Gitrepo branch, MUST be the default branch
-  chartVersion: 4.0.7     # Helm Chart Version
+  chartVersion: 4.0.8     # Helm Chart Version
   release: isd         # ISD helm-release version, default is oes
   currentISDVersion: "3.12"
   namespace: opsmx-isd # Namespace to install ISD, best not to change 
