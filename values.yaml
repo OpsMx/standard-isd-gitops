@@ -1,9 +1,15 @@
 #####################################################
 global:
+  # Set to true if user need to access Spinnaker seperately
+  spinnakerUrl: false
   ## URL that will be used to access ISD. MUST BE CHANGED
   ## Ensure that this URL is reachable from your browser. Either DNS name server record must exist or "hosts" file must be updated
   oesUI:
     host: isd.dev.example.com
+
+  # Spinnaker Deck URL configuration; url overwhich spinnaker deck will be accessed
+  spinDeck:
+    host: spin31.isd.training.opsmx.net
 
   ssl:
     enabled: false # Set to true if using "httpS" urls. TLS certificates must be generated for the above URL
