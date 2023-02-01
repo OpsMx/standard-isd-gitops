@@ -11,6 +11,7 @@ data:
   chartVersion: 4.0.8     # Helm Chart Version
   release: isd         # ISD helm-release version, default is oes
   currentISDVersion: "3.12"
+  spinnakerStorage: "redis" # Spinnaker data is stored in redis if not change to sql
   namespace: opsmx-isd # Namespace to install ISD, best not to change 
   secrets: gittoken,ldappassword,dbpassword,keystorepassword,rabbitmqpassword,saporpassword,redispassword,miniopassword,ldapconfigpassword
 kind: ConfigMap
