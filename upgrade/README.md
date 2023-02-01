@@ -61,9 +61,11 @@ Upgrade sequence: (3.12 to 4.0.2)
 11. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
 12. `kubectl -n opsmx-isd apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
 
-13. Upgrade DB:
+13. Pre DB Sanity Check:
+
       This can be be executed as a kubenetes job
-   -  `kubectl -n opsmx-isd apply -f ISD-DB-Migrate-job.yaml`   # Edit namespace if changed from the default "opsmx-isd"
+
+   -  `kubectl -n opsmx-isd apply -f ISD-Pre-Helm-job.yaml`   # Edit namespace if changed from the default "opsmx-isd"
      
 14. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
@@ -87,6 +89,11 @@ Upgrade sequence: (3.12 to 4.0.2)
    - Click "edit" on the 3 dots on the far right. Check the values already filled in, make changes if required and click "update".
    - Restart the halyard pod by clicking "Sync Accounts to Spinnaker" in the Cloud Accounts tab or simply delete the halayard pod
 
+22. Post DB Migration 
+    
+    This can be be executed as a kubenetes job
+    
+   -  `kubectl -n opsmx-isd apply -f ISD-Post-Helm-job.yaml`   # Edit namespace if changed from the default "opsmx-isd"
 ## If things go wrong during upgrade
 *As we have a gitops installer, recovering from a failed install/upgrade is very easy. In summary, we simply delete all objects are re-apply. Please follow the steps below to recover.*
 
