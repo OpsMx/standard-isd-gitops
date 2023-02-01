@@ -15,7 +15,6 @@ spec:
               source /repo/environment
               export source=${currentISDVersion}
               export spinnakersource=${spinnakerStorage}
-              export mysqlhost=${mysqlHost}
               cd /repo/oes-data-migration-scripts/
               ls -ltra
               if [ "$source" == "3.12" ] && [ "$spinnakersource" == "sql" ]; then
