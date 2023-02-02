@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: isd-db-migrate
+  name: isd-post-helm-migrate
   labels:
     app: isd-install
 spec:
@@ -62,6 +62,7 @@ spec:
             - +x
             - '-c'
           image: 'quay.io/opsmxpublic/ubi8-oes-platform-migration-script:v4.0.0'
+          imagePullPolicy: Always
           name: exec-db-upgrade
           envFrom:
             - configMapRef:
@@ -83,6 +84,7 @@ spec:
             - +x
             - '-c'
           image: 'quay.io/opsmxpublic/opsmx-custom-binaries:opsmx-isd-scripts-latest'
+          imagePullPolicy: Always
           name: get-script
           envFrom:
             - configMapRef:
