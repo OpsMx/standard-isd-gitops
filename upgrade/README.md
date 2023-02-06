@@ -47,7 +47,7 @@ Execute these commands, replacing "gitops-repo" with your repo
 Upgrade sequence: (3.12 to 4.0.3)
 1. Ensure that "default" account is configured to deploy to the ISD namespace (e.g. oes)
 2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
-3. Update the halyard version in config file i.e deploymentConfigurations.version 1.28.1
+3. Update the halyard version in config file i.e deploymentConfigurations.version 1.28.1 (Will be removed later) 
 4. If there are any custom settings done for spinnaker please update those changes accordingly in gitops-repo/default/profiles and gitops-repo/default/service-settings.
 5. In the gitops-repo/default/profiles in echo-local.yml file need to be updated as shown in repo https://github.com/OpsMx/standard-gitops-repo/blob/v4.0.3/default/profiles/echo-local.yml
 6. If there are no custom settings for spinnaker please execute below commands
