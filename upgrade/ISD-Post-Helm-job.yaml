@@ -23,7 +23,7 @@ spec:
 
                           #echo "python3 migration_v3.12.x_to_v4.0.x.py platformdb $host oesdb $host opsmx $host auditdb $host visibilitydb $host $port $pguser $pgpassword $oesuiurl $saporusername $ldappassword http://oes-sapor:8085 http://oes-audit:8097 sql $mysqlhost $mysqlusername $mysqlpassword true http://oes-platform:8095"
 
-                          python3 migration_v3.12.x_to_v4.0.x.py platformdb $host oesdb $host opsmx $host auditdb $host visibilitydb $host $port $pguser $pgpassword $oesuiurl $saporusername $ldappassword http://oes-sapor:8085 http://oes-audit:8097 sql $mysqlhost $mysqlusername $mysqlpassword true http://oes-platform:8095"
+                          python3 migration_v3.12.x_to_v4.0.x.py platformdb $host oesdb $host opsmx $host auditdb $host visibilitydb $host $port $pguser $pgpassword $oesuiurl $saporusername $ldappassword http://oes-sapor:8085 http://oes-audit:8097 sql $mysqlhost 3306 $mysqlusername $mysqlpassword true http://oes-platform:8095
 
               elif [ "$source" == "3.12" ] && [ "$spinnakersource" == "redis" ]; then
 
