@@ -58,28 +58,41 @@ Upgrade sequence: (3.12 to 4.0.3)
 7. Update upgrade-inputcm.yaml: 
    - url, username and gitemail MUST be updated. TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
    - **If ISD Namespace is different from "opsmx-isd"**: Update namespace (default is opsmx-isd) to the namespace where ISD is installed
-   - **If you are external Mysql for Spinnaker update the spinnakerStorage value to "sql".
+   - If you are external Mysql for Spinnaker update the spinnakerStorage value to "sql".
 8. **If ISD Namespace is different from "opsmx-isd"**: Edit serviceaccount.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
 9. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
 10. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
 11. `kubectl -n opsmx-isd apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
 12. `kubectl -n opsmx-isd create secret generic mysqlcredentials --from-literal host=PUT_YOUR_MYSQL_HOST_NAME --from-literal username=PUT_YOUR_MYSQL_USER_NAME --from-literal password=PUT_YOUR_MYSQL_PASSWORD` (NOTE: Do not change the default values)
 
-13. Pre DB Sanity Check:
-
-      This can be be executed as a kubenetes job
-
-   -  `kubectl -n opsmx-isd apply -f ISD-Pre-Helm-job.yaml`   # Edit namespace if changed from the default "opsmx-isd"
+13. **DB Upgrade - Schema update**: This can be be executed as a kubenetes job
+   
+      - `kubectl -n opsmx-isd apply -f ISD-Pre-Helm-job.yaml`   # Edit namespace if changed from the default "opsmx-isd"
+   
+      Once the above command is executed a new pod will be created so please check the pod logs to verify if the Schema is updated or not.   
+         `kubectl -n opsmx-isd logs isd-pre-helm-migrate-xxx`  #Replacing the name of the pod name correctly
      
 14. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
+   
+    - Once the pod is completed please check the pod logs to verify manifest files are updated in GIt or not.
+
+         `kubectl -n opsmx-isd logs isd-generate-yamls-xxx -c git-clone` #Replacing the name of the pod name correctly, check if your gitops-repo is cloned correctly
 
 15. Compare and merge branch: This job should have created a branch on the gitops-repo with the helmchart version number specified in upgrade-inputcm.yaml. Raise a PR and check what changes are being made. Once satisfied, merge the PR.
 
 16. `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
-   Wait for isd-yaml-update-* pod to complete, and all pods to stabilize
+   Wait for isd-yaml-update-* pod to complete
+    
+    - Once pod will completed so please check the pod logs to verify manifest files are updated in Git or not.
 
-17 isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this: `kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0`
+      `kubectl -n opsmx-isd logs isd-apply-yamls-xxx -c git-clone` #Replacing the name of the pod name correctly, check if your gitops-repo is cloned correctly
+
+      `kubectl -n opsmx-isd logs isd-apply-yamls-xxx -c script` #Replacing the name of the pod name correctly, check the log of the script that pushes the yamls and applies them
+
+17. isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this: 
+   
+      `kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0`
 
 18. Restart all pods:
    - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=0` Wait for a min or two
@@ -93,11 +106,16 @@ Upgrade sequence: (3.12 to 4.0.3)
    - Click "edit" on the 3 dots on the far right. Check the values already filled in, make changes if required and click "update".
    - Restart the halyard pod by clicking "Sync Accounts to Spinnaker" in the Cloud Accounts tab or simply delete the halayard pod
 
-22. Post DB Migration 
+22. DB Upgrade - Data update
     
     This can be be executed as a kubenetes job
     
    -  `kubectl -n opsmx-isd apply -f ISD-Post-Helm-job.yaml`   # Edit namespace if changed from the default "opsmx-isd"
+
+      Once the above command is executed a new pod will be created so please check the pod logs to verify if the Schema is updated or not.
+
+      `kubectl -n opsmx-isd logs isd-post-helm-migrate-xxx`  #Replacing the name of the pod name correctly
+
 ## If things go wrong during upgrade
 *As we have a gitops installer, recovering from a failed install/upgrade is very easy. In summary, we simply delete all objects are re-apply. Please follow the steps below to recover.*
 
