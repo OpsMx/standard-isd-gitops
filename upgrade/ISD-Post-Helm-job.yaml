@@ -29,9 +29,9 @@ spec:
 
                           echo "upgrading  v3.12 to v4.0.3"
 
-                          #echo "python3 migration_v3.12.x_to_v4.0.x.py platformdb $host oesdb $host opsmx $host auditdb $host visibilitydb $host $port $pguser $pgpassword $oesuiurl $saporusername $ldappassword http://oes-sapor:8085 http://oes-audit:8097 redis "$release"-redis-master 6379 $redispassword true http://oes-platform:8095"
+                          #echo "python3 migration_v3.12.x_to_v4.0.x.py platformdb $host oesdb $host opsmx $host auditdb $host visibilitydb $host $port $pguser $pgpassword $oesuiurl $saporusername $ldappassword http://oes-sapor:8085 http://oes-audit:8097 redis "$release"-redis-master 6379 redisusername $redispassword true http://oes-platform:8095"
 
-                          python3 migration_v3.12.x_to_v4.0.x.py platformdb $host oesdb $host opsmx $host auditdb $host visibilitydb $host $port $pguser $pgpassword $oesuiurl $saporusername $ldappassword http://oes-sapor:8085 http://oes-audit:8097 redis "$release"-redis-master 6379 $redispassword true http://oes-platform:8095
+                          python3 migration_v3.12.x_to_v4.0.x.py platformdb $host oesdb $host opsmx $host auditdb $host visibilitydb $host $port $pguser $pgpassword $oesuiurl $saporusername $ldappassword http://oes-sapor:8085 http://oes-audit:8097 redis "$release"-redis-master 6379 redisusername $redispassword true http://oes-platform:8095
 
               else
 
