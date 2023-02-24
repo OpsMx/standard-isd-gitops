@@ -23,12 +23,12 @@ Should we have different infrastructure requirements, please contact OpsMx.
 ## Specify inputs based on your environment and git-repo
 *The installation process requires inputs such as the application version, git-repo details and so on.*
 
-4. In the gitops-repo cloned to disk and edit install/inputcm.yaml. This should be updated, at a **minimum**, with gitrepo and username.
+4. In the gitops-repo cloned to disk and edit `install/inputcm.yaml`. This should be updated, at a **minimum**, with gitrepo and username.
 5. **Update Values.yaml as required**, specifically: At **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/v4.0/charts/oes
 
 NOTE: We recommend that we start with the defaults, updating just the URL and gitopsHalyard details and gradually adding SSO, external DBs, etc. while updating the installed instance
 
-6. Edit namespace in the install/inputcm.yaml file and install/serviceaccount.yaml,  if changed from default (i.e. "opsmx-isd")
+6. Edit namespace in the `install/inputcm.yaml` file and `install/serviceaccount.yaml`,  if changed from default (i.e. "opsmx-isd")
 7. Push all changes in the gitops-repo to git (e.g `git add -A; git commit -m"my changes";git push`)
 8. Create namespace, a configmap for inputs and a service account as follows [edit namespace (i.e. opsmx-isd) as appropriate]:
 - `kubectl create ns opsmx-isd` 
