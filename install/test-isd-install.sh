@@ -10,8 +10,8 @@ cd /repo/
 #chartversion=$(helm search repo isd/oes --versions | awk '{print $2,$3}' | grep "${version}" | head -1 | awk -F ' ' '{print $1}')
 #helm pull isd/oes --version="$chartversion"
 #tar -xf oes-"$chartversion".tgz
-tar -xf isd-40.tgz
-git clone https://github.com/OpsMx/enterprise-spinnaker.git -b v4.0
+#tar -xf isd-40.tgz
+#git clone https://github.com/OpsMx/enterprise-spinnaker.git -b v4.0
 if [ $? -eq 0 ]; then  
      echo "##################Sucessfully downloaded the helm chart######################"
 else
@@ -31,7 +31,7 @@ sed -i 's/| *b64enc *//' /repo/oes/templates/sapor-gate/sapor-gate-secret.yaml
 sed -i 's/^data:/stringData:/' /repo/oes/templates/sapor-gate/sapor-gate-secret.yaml
 sed -i 's/{{ .Values.saporgate.config.password }}/encrypted:saporpassword:saporpassword/' /repo/oes/config/sapor-gate/gate-local.yml
 ####################################################################################################################
-helm template isd /repo/oes/ -f values.yaml --output-dir=isd
+helm template isd /repo/oes/ -f values.yaml -n $namespace --output-dir=isd
 if [ $? -eq 0 ]; then  
      echo "######################Helm template is sucessfull into isd directory###########################"
 else
@@ -42,8 +42,8 @@ ls -l isd/oes/
 ls -l isd/oes/templates/
 rm -rf /repo/isd/oes/charts/spinnaker/templates/hooks/
 rm -rf /repo/isd/oes/templates/hooks/cleanup.yaml
-rm -rf /repo/oes/
-rm -rf oes-${chartversion}.tgz
+#rm -rf /repo/oes/
+#rm -rf oes-${chartversion}.tgz
 #####################################committing tempates to github repo################################
 git status
 git add .
@@ -74,7 +74,7 @@ echo secret and are $keyName
 #eval "value=\$$keyName"
 value=$(kubectl -n $namespace  get secret $keyName -o jsonpath="{.data.$keyName}" )
 sed -i "s/encrypted:$keyName:$keyName/$value/g" $file
-echo value is $value
+#echo value is $value
 done < secret-strings.list
 echo $file is secret and has data
 fi
@@ -91,7 +91,7 @@ echo secret and are $keyName
 value=$(kubectl -n $namespace  get secret $keyName -o jsonpath="{.data.$keyName}" | base64 -d)
 #eval "value=\$$keyName"
 sed -i "s/encrypted:$keyName:$keyName/$value/g" $file
-echo value is $value
+#echo value is $value
 done < secret-strings.list
 done < tmp1.list
 sed -i "s/encrypted%3Agittoken%3Agittoken/$gittoken/g" isd/oes/templates/secrets/opsmx-gitops-secret.yaml
