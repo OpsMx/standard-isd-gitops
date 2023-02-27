@@ -24,9 +24,17 @@ Should we have different infrastructure requirements, please contact OpsMx.
 *The installation process requires inputs such as the application version, git-repo details and so on.*
 
 4. In the gitops-repo cloned to disk and edit `install/inputcm.yaml`. This should be updated, at a **minimum**, with gitrepo and username.
-5. **Update Values.yaml as required**, specifically: At **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/v4.0/charts/oes
+5. **Update Values.yaml as required**, specifically: At **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/v4.0.3/charts/oes
 
-NOTE: We recommend that we start with the defaults, updating just the URL and gitopsHalyard details and gradually adding SSO, external DBs, etc. while updating the installed instance
+NOTE: We recommend that we start with the defaults, updating just the URL and gitopsHalyard details and gradually adding SSO, external DBs, etc. while updating the installed instance.
+
+ - **If you are using single tile in saml for login into ISD and Spinnaker** please use below document to create application in okta and configuring
+   
+   https://docs.google.com/document/d/1XaSfst2j4uhWEj5TtjSfeDZ5ThXkfvZTXK6peh0mNxI/edit#heading=h.kj67c5tkrlqr
+
+- **If you are using different tiles in saml for login into ISD and Spinnaker** please use below document to create application in okta and and configuring
+   
+   https://docs.google.com/document/d/15KDjAQBw-U6qgwGw48ferOiIYpYiIRjUAMWftUFLpz8/edit#
 
 6. Edit namespace in the `install/inputcm.yaml` file and `install/serviceaccount.yaml`,  if changed from default (i.e. "opsmx-isd")
 7. Push all changes in the gitops-repo to git (e.g `git add -A; git commit -m"my changes";git push`)
@@ -34,7 +42,7 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 - `kubectl create ns opsmx-isd` 
 - `kubectl -n opsmx-isd apply -f install/inputcm.yaml` 
 - `kubectl -n opsmx-isd apply -f install/serviceaccount.yaml`
--
+
 ## Create secrets
 *ISD supports multiple secret managers for storing secrets such as DB passwords, SSO authenticatoin details and so on. Using kubernetes secrets is the default.*
 
