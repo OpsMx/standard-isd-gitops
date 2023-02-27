@@ -52,6 +52,15 @@ Upgrade sequence: (3.12 to 4.0.3)
    `cp -r standard-isd-gitops/bom gitops-repo/`
 
 4. If there are any custom settings done for spinnaker please update those changes accordingly in gitops-repo/default/profiles.
+
+   **If you are using single tile in saml for login into ISD and Spinnaker** please use below document to create application in okta and configuring
+
+   https://docs.google.com/document/d/1XaSfst2j4uhWEj5TtjSfeDZ5ThXkfvZTXK6peh0mNxI/edit#heading=h.kj67c5tkrlqr
+
+   **If you are using different tiles in saml for login into ISD and Spinnaker** please use below document to create application in okta and configuring
+
+   https://docs.google.com/document/d/15KDjAQBw-U6qgwGw48ferOiIYpYiIRjUAMWftUFLpz8/edit#  
+   
 5. Please refer below doc to check the differences from 3.12 to 4.0.3 of git-repo and updated it accordingly
    https://docs.google.com/document/d/14pEUXDwWshpUPRPLykM0lW4gzHvw5kHJyTJHveGlfoo/edit#
 6. `cd upgrade`
