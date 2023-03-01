@@ -20,15 +20,15 @@ Execute these commands, replacing "gitops-repo" with your repo
 - diff values-402.yaml values-312.yaml and merge all of your changes into "values.yaml". **NOTE**: In most cases just replacing images v3.12.x with v4.0.3 is enough.
 - Copy the updated values file as "values.yaml" (file name is important)
 - create gittoken secret. This token will be used to authenticate to the gitops-repo
-   - `kubectl -n oes create secret generic gittoken --from-literal gittoken=PUT_YOUR_GITTOKEN_HERE` 
+   - `kubectl -n opsmx-isd create secret generic gittoken --from-literal gittoken=PUT_YOUR_GITTOKEN_HERE` 
 - create secrets mentioned above. **NOTE**: You only need to create these secrets if they are changed from the default
-   - `kubectl -n oes create secret generic ldapconfigpassword --from-literal ldapconfigpassword=PUT_YOUR_SECRET_HERE`
-   - `kubectl -n oes create secret generic ldappassword --from-literal ldappassword=PUT_YOUR_SECRET_HERE`
-   - `kubectl -n oes create secret generic miniopassword --from-literal miniopassword=PUT_YOUR_SECRET_HERE`
-   - `kubectl -n oes create secret generic redispassword --from-literal redispassword=PUT_YOUR_SECRET_HERE`
-   - `kubectl -n oes create secret generic saporpassword --from-literal saporpassword=PUT_YOUR_SECRET_HERE`
-   - `kubectl -n oes create secret generic rabbitmqpassword --from-literal rabbitmqpassword=PUT_YOUR_SECRET_HERE`
-   - `kubectl -n oes create secret generic keystorepassword --from-literal keystorepassword=PUT_YOUR_SECRET_HERE`
+   - `kubectl -n opsmx-isd create secret generic ldapconfigpassword --from-literal ldapconfigpassword=PUT_YOUR_SECRET_HERE`
+   - `kubectl -n opsmx-isd create secret generic ldappassword --from-literal ldappassword=PUT_YOUR_SECRET_HERE`
+   - `kubectl -n opsmx-isd create secret generic miniopassword --from-literal miniopassword=PUT_YOUR_SECRET_HERE`
+   - `kubectl -n opsmx-isd create secret generic redispassword --from-literal redispassword=PUT_YOUR_SECRET_HERE`
+   - `kubectl -n opsmx-isd create secret generic saporpassword --from-literal saporpassword=PUT_YOUR_SECRET_HERE`
+   - `kubectl -n opsmx-isd create secret generic rabbitmqpassword --from-literal rabbitmqpassword=PUT_YOUR_SECRET_HERE`
+   - `kubectl -n opsmx-isd create secret generic keystorepassword --from-literal keystorepassword=PUT_YOUR_SECRET_HERE`
 
 ## Scenario B
 Use this set if instructions if:
@@ -45,7 +45,7 @@ Execute these commands, replacing "gitops-repo" with your repo
 
 ## Common Steps
 Upgrade sequence: (3.12 to 4.0.3)
-1. Ensure that "default" account is configured to deploy to the ISD namespace (e.g. oes)
+1. Ensure that "default" account is configured to deploy to the ISD namespace (e.g. opsmx-isd)
 2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
 3. Copy the bom from standard-isd-gitops.git to the gitops-repo
 
@@ -75,15 +75,15 @@ Upgrade sequence: (3.12 to 4.0.3)
 12. `kubectl -n opsmx-isd create secret generic mysqlcredentials --from-literal host=PUT_YOUR_MYSQL_HOST_NAME --from-literal username=PUT_YOUR_MYSQL_USER_NAME --from-literal password=PUT_YOUR_MYSQL_PASSWORD` (NOTE: Do not change the default values)
 
 13. **DB Upgrade - Schema update**: This can be be executed as a kubenetes job
-   
+
       - `kubectl -n opsmx-isd apply -f ISD-Pre-Helm-job.yaml`   # Edit namespace if changed from the default "opsmx-isd"
-   
-      Once the above command is executed a new pod will be created so please check the pod logs to verify if the Schema is updated or not.   
+
+      Once the above command is executed a new pod will be created so please check the pod logs to verify if the Schema is updated or not.
          `kubectl -n opsmx-isd logs isd-pre-helm-migrate-xxx`  #Replacing the name of the pod name correctly
-     
+
 14. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
-   
+
     - Once the pod is completed please check the pod logs to verify manifest files are updated in GIt or not.
 
          `kubectl -n opsmx-isd logs isd-generate-yamls-xxx -c git-clone` #Replacing the name of the pod name correctly, check if your gitops-repo is cloned correctly
@@ -99,8 +99,8 @@ Upgrade sequence: (3.12 to 4.0.3)
 
       `kubectl -n opsmx-isd logs isd-apply-yamls-xxx -c script` #Replacing the name of the pod name correctly, check the log of the script that pushes the yamls and applies them
 
-17. isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this: 
-   
+17. isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this:
+
       `kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0`
 
 18. Restart all pods:
@@ -116,9 +116,9 @@ Upgrade sequence: (3.12 to 4.0.3)
    - Restart the halyard pod by clicking "Sync Accounts to Spinnaker" in the Cloud Accounts tab or simply delete the halayard pod
 
 22. DB Upgrade - Data update
-    
+
     This can be be executed as a kubenetes job
-    
+
    -  `kubectl -n opsmx-isd apply -f ISD-Post-Helm-job.yaml`   # Edit namespace if changed from the default "opsmx-isd"
 
       Once the above command is executed a new pod will be created so please check the pod logs to verify if the Schema is updated or not.
@@ -132,9 +132,9 @@ As a first step. Please try the "Troubleshooting Issues during Installation" sec
 
 ### Reinstall ISD
 [Make changes to uppgrade-inputcm and/or values.yaml as required. **Ensure that the changes are pushed to git**]
-1. `kubectl -n oes  delete sts isd-spinnaker-halyard`
-2. `kubectl -n oes  delete deploy --all`
-3. `kubectl -n oes delete svc --all`
-4. `kubectl -n oes replace --force -f ISD-Apply-yamls-job.yaml`
+1. `kubectl -n opsmx-isd  delete sts isd-spinnaker-halyard`
+2. `kubectl -n opsmx-isd  delete deploy --all`
+3. `kubectl -n opsmx-isd delete svc --all`
+4. `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
 5.  Wait for all the pods to come up
 
