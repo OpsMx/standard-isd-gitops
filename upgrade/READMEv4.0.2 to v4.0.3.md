@@ -96,3 +96,15 @@ As a first step. Please try the "Troubleshooting Issues during Installation" sec
 4. `kubectl -n oes replace --force -f ISD-Apply-yamls-job.yaml`
 5.  Wait for all the pods to come up
 
+## Rollback from v4.0.2 and v4.0.3
+
+1. Create a PR to revert the changes which is merged as part of step 12.
+
+   `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml` # Wait for the pods to stabilize
+
+
+2. Restart all pods:
+
+   `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=0` # Wait for a min or two
+   `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=1` # Wait for all pods to come to ready state
+
