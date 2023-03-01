@@ -67,12 +67,16 @@ Upgrade sequence: (3.12 to 4.0.3)
 12. `kubectl -n opsmx-isd create secret generic mysqlcredentials --from-literal host=PUT_YOUR_MYSQL_HOST_NAME --from-literal username=PUT_YOUR_MYSQL_USER_NAME --from-literal password=PUT_YOUR_MYSQL_PASSWORD` (NOTE: Do not change the default values)
 
 13. **DB Upgrade - Schema update**: This can be be executed as a kubenetes job
-
+   
       - `kubectl -n opsmx-isd apply -f ISD-Pre-Helm-job.yaml`   # Edit namespace if changed from the default "opsmx-isd"
       -  Once the above command is executed a new pod will be created so please check the pod logs to verify if the Schema is updated or not.
+        
+         **message indicating success** - "Successfully updated databases" 
+        
+         **message indicating failure** - "Exception occurred while updating databases"
+         
          `kubectl -n opsmx-isd logs isd-pre-helm-migrate-xxx`  #Replacing the name of the pod name correctly 
-         [ **message indicating success** - "Successfully updated databases" 
-           **message indicating failure** - "Exception occurred while updating databases"]
+
       -  Use below command to scale down the services
  
          `kubectl -n opsmx-isd scale deploy oes-audit-client oes-audit-service oes-autopilot oes-dashboard oes-datascience oes-platform oes-sapor oes-visibility --replicas=0`
@@ -96,32 +100,35 @@ Upgrade sequence: (3.12 to 4.0.3)
       `kubectl -n opsmx-isd logs isd-apply-yamls-xxx -c script` #Replacing the name of the pod name correctly, check the log of the script that pushes the yamls and applies them
 
 17. isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this:
-
-      `kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0`
+   
+      - `kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0`
 
 18. Restart all pods:
-   - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=0` Wait for a min or two
-   - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=1` Wait for all pods to come to ready state
+      - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=0` Wait for a min or two
+      - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=1` Wait for all pods to come to ready state
  
 19. Go to ISD UI and check that version number has changed in the bottom-left corner
 20. Wait for about 5 min for autoconfiguration to take place.
 21. If required: a) Connect Spinnaker again b) Configure pipeline-promotion again. To do this, in the ISD UI:
-   - Click setup
-   - Click Spinnaker tab at the top. Check if "External Accounts" and "Pipeline-promotion" columns show "yes". If any of them is "no":
-   - Click "edit" on the 3 dots on the far right. Check the values already filled in, make changes if required and click "update".
-   - Restart the halyard pod by clicking "Sync Accounts to Spinnaker" in the Cloud Accounts tab or simply delete the halayard pod
+      - Click setup
+      - Click Spinnaker tab at the top. Check if "External Accounts" and "Pipeline-promotion" columns show "yes". If any of them is "no":
+      - Click "edit" on the 3 dots on the far right. Check the values already filled in, make changes if required and click "update".
+      - Restart the halyard pod by clicking "Sync Accounts to Spinnaker" in the Cloud Accounts tab or simply delete the halayard pod
 
 22. **DB Upgrade - Data update**
 
     This can be be executed as a kubenetes job
 
-   -  `kubectl -n opsmx-isd apply -f ISD-Post-Helm-job.yaml`   # Edit namespace if changed from the default "opsmx-isd"
+      - `kubectl -n opsmx-isd apply -f ISD-Post-Helm-job.yaml`   # Edit namespace if changed from the default "opsmx-isd"
 
-      Once the above command is executed a new pod will be created so please check the pod logs to verify if the Schema is updated or not.
+      - Once the above command is executed a new pod will be created so please check the pod logs to verify if the Schema is updated or not.
+        
+        **message indicating success** - "Successfully updated databases"
 
-      `kubectl -n opsmx-isd logs isd-post-helm-migrate-xxx`  #Replacing the name of the pod name correctly
-       [ **message indicating success** - "Successfully updated databases" 
-         **message indicating failure** - "Exception occurred while updating databases"]
+        **message indicating failure** - "Exception occurred while updating databases"
+         
+        `kubectl -n opsmx-isd logs isd-post-helm-migrate-xxx`  #Replacing the name of the pod name correctly
+
 
 ## If things go wrong during upgrade
 *As we have a gitops installer, recovering from a failed install/upgrade is very easy. In summary, we simply delete all objects are re-apply. Please follow the steps below to recover.*
