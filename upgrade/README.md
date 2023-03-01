@@ -71,7 +71,9 @@ Upgrade sequence: (3.12 to 4.0.3)
       - `kubectl -n opsmx-isd apply -f ISD-Pre-Helm-job.yaml`   # Edit namespace if changed from the default "opsmx-isd"
 
       Once the above command is executed a new pod will be created so please check the pod logs to verify if the Schema is updated or not.
-         `kubectl -n opsmx-isd logs isd-pre-helm-migrate-xxx`  #Replacing the name of the pod name correctly
+         `kubectl -n opsmx-isd logs isd-pre-helm-migrate-xxx`  #Replacing the name of the pod name correctly 
+         [ **message indicating success** - "Successfully updated databases" 
+           **message indicating failure** - "Exception occurred while updating databases"]
 
 14. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
@@ -107,7 +109,7 @@ Upgrade sequence: (3.12 to 4.0.3)
    - Click "edit" on the 3 dots on the far right. Check the values already filled in, make changes if required and click "update".
    - Restart the halyard pod by clicking "Sync Accounts to Spinnaker" in the Cloud Accounts tab or simply delete the halayard pod
 
-22. DB Upgrade - Data update
+22. **DB Upgrade - Data update**
 
     This can be be executed as a kubenetes job
 
@@ -116,6 +118,8 @@ Upgrade sequence: (3.12 to 4.0.3)
       Once the above command is executed a new pod will be created so please check the pod logs to verify if the Schema is updated or not.
 
       `kubectl -n opsmx-isd logs isd-post-helm-migrate-xxx`  #Replacing the name of the pod name correctly
+       [ **message indicating success** - "Successfully updated databases" 
+         **message indicating failure** - "Exception occurred while updating databases"]
 
 ## If things go wrong during upgrade
 *As we have a gitops installer, recovering from a failed install/upgrade is very easy. In summary, we simply delete all objects are re-apply. Please follow the steps below to recover.*
