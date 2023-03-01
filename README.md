@@ -85,6 +85,11 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 12. Access ISD using the URL specified in the values.yaml in step 5 in a browser such as Chrome.
 13. Login to the ISD instance with user/password as admin and opsmxadmin123, if using the defaults for build-in LDAP.
 
+## Switch from OpenLDAP to Saml
+1. Refer below document to upgrade OpenLDAP to Saml
+
+   [Doc](https://docs.google.com/document/d/1y1xpMFq5fm5oqS83Bk62msM9VzdIr5kAcH_j2sNrmCw/edit#)
+
 # Troubleshooting Issues during installation
 ## ISD-Install-Job fails to start, no pod created or it errors
 Execute this command:
