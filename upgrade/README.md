@@ -69,11 +69,13 @@ Upgrade sequence: (3.12 to 4.0.3)
 13. **DB Upgrade - Schema update**: This can be be executed as a kubenetes job
 
       - `kubectl -n opsmx-isd apply -f ISD-Pre-Helm-job.yaml`   # Edit namespace if changed from the default "opsmx-isd"
-
-      Once the above command is executed a new pod will be created so please check the pod logs to verify if the Schema is updated or not.
+      -  Once the above command is executed a new pod will be created so please check the pod logs to verify if the Schema is updated or not.
          `kubectl -n opsmx-isd logs isd-pre-helm-migrate-xxx`  #Replacing the name of the pod name correctly 
          [ **message indicating success** - "Successfully updated databases" 
            **message indicating failure** - "Exception occurred while updating databases"]
+      -  Use below command to scale down the services
+ 
+         `kubectl -n opsmx-isd scale deploy oes-audit-client oes-audit-service oes-autopilot oes-dashboard oes-datascience oes-platform oes-sapor oes-visibility --replicas=0`
 
 14. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
