@@ -28,14 +28,6 @@ Should we have different infrastructure requirements, please contact OpsMx.
 
 NOTE: We recommend that we start with the defaults, updating just the URL and gitopsHalyard details and gradually adding SSO, external DBs, etc. while updating the installed instance.
 
- - **If you are using single tile in saml for login into ISD and Spinnaker** please use below document to create application in okta and configuring
-   
-   https://docs.google.com/document/d/1XaSfst2j4uhWEj5TtjSfeDZ5ThXkfvZTXK6peh0mNxI/edit#heading=h.kj67c5tkrlqr
-
-- **If you are using different tiles in saml for login into ISD and Spinnaker** please use below document to create application in okta and and configuring
-   
-   https://docs.google.com/document/d/15KDjAQBw-U6qgwGw48ferOiIYpYiIRjUAMWftUFLpz8/edit#
-
 6. Edit namespace in the `install/inputcm.yaml` file and `install/serviceaccount.yaml`,  if changed from default (i.e. "opsmx-isd")
 7. Push all changes in the gitops-repo to git (e.g `git add -A; git commit -m"my changes";git push`)
 8. Create namespace, a configmap for inputs and a service account as follows [edit namespace (i.e. opsmx-isd) as appropriate]:
@@ -86,9 +78,7 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 13. Login to the ISD instance with user/password as admin and opsmxadmin123, if using the defaults for build-in LDAP.
 
 ## Switch from OpenLDAP to Saml
-1. Refer below document to upgrade OpenLDAP to Saml
-
-   [Doc](https://docs.google.com/document/d/1y1xpMFq5fm5oqS83Bk62msM9VzdIr5kAcH_j2sNrmCw/edit#)
+1. Document to update from OpenLDAP to Saml can be found [here](https://docs.google.com/document/d/1y1xpMFq5fm5oqS83Bk62msM9VzdIr5kAcH_j2sNrmCw/edit#)
 
 # Troubleshooting Issues during installation
 ## ISD-Install-Job fails to start, no pod created or it errors
