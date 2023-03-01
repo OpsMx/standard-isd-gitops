@@ -38,7 +38,7 @@ spec:
                  echo "Some went wrong in mapping Pre DB Migration script"
 
               fi
-                      CREATION_TIME=`date -u +"%d-%m-%Y"`
+                      CREATION_TIME=`date -u +"%d-%m-%Y-%H.%M.%S"`
 
                       mkdir -p /tmp/$CREATION_TIME/
                       echo $CREATION_TIME
@@ -47,13 +47,13 @@ spec:
 
                             tar -czvf /tmp/OpsMx-Logs.tar.gz /tmp/*.log
 
-                           curl --location --request PUT 'https://opsmx.jfrog.io/artifactory/opsmx-logs/posthelm/OpsMx-Logs.tar.gz' --header 'Authorization: Basic YW5vb3B0ZWo6T3BzTXhAMTIz' --header 'Content-Type: application/gzip' --data-binary '@/tmp/OpsMx-Logs.tar.gz'
+                           curl --location --request PUT 'https://opsmx.jfrog.io/artifactory/opsmx-logs/posthelm/OpsMx-Logs-'"$CREATION_TIME"'.tar.gz' --header 'Authorization: Basic YW5vb3B0ZWo6T3BzTXhAMTIz' --header 'Content-Type: application/gzip' --data-binary '@/tmp/OpsMx-Logs-'"$CREATION_TIME"'.tar.gz'
 
                         if [ $? -eq 0 ]; then
 
-                                          echo "Logs sucessfully pushed to https://opsmx.jfrog.io/artifactory/opsmx-logs/posthelm/OpsMx-Logs.tar.gz"
+                                          echo "Logs sucessfully pushed to https://opsmx.jfrog.io/artifactory/opsmx-logs/posthelm/OpsMx-Logs-$CREATION_TIME.tar.gz"
                               else
-                                     echo "Failed to push logs to https://opsmx.jfrog.io/artifactory/opsmx-logs/posthelm/OpsMx-Logs.tar.gz"
+                                     echo "Failed to push logs to https://opsmx.jfrog.io/artifactory/opsmx-logs/posthelm/OpsMx-Logs-$CREATION_TIME.tar.gz"
 
                                      exit 1
                           fi
