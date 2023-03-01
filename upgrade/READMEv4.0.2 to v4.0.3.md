@@ -20,15 +20,15 @@ Execute these commands, replacing "gitops-repo" with your repo
 - diff values-402.yaml values.yaml and merge all of your changes into "values.yaml". **NOTE**: In most cases just replacing images v4.0.2 with v4.0.3 is enough.
 - Copy the updated values file as "values.yaml" (file name is important)
 - create gittoken secret. This token will be used to authenticate to the gitops-repo
-   - `kubectl -n oes create secret generic gittoken --from-literal gittoken=PUT_YOUR_GITTOKEN_HERE` 
+   - `kubectl -n opsmx-isd create secret generic gittoken --from-literal gittoken=PUT_YOUR_GITTOKEN_HERE` 
 - create secrets mentioned above. **NOTE**: You only need to create these secrets if they are changed from the default
-   - `kubectl -n oes create secret generic ldapconfigpassword --from-literal ldapconfigpassword=PUT_YOUR_SECRET_HERE`
-   - `kubectl -n oes create secret generic ldappassword --from-literal ldappassword=PUT_YOUR_SECRET_HERE`
-   - `kubectl -n oes create secret generic miniopassword --from-literal miniopassword=PUT_YOUR_SECRET_HERE`
-   - `kubectl -n oes create secret generic redispassword --from-literal redispassword=PUT_YOUR_SECRET_HERE`
-   - `kubectl -n oes create secret generic saporpassword --from-literal saporpassword=PUT_YOUR_SECRET_HERE`
-   - `kubectl -n oes create secret generic rabbitmqpassword --from-literal rabbitmqpassword=PUT_YOUR_SECRET_HERE`
-   - `kubectl -n oes create secret generic keystorepassword --from-literal keystorepassword=PUT_YOUR_SECRET_HERE`
+   - `kubectl -n opsmx-isd create secret generic ldapconfigpassword --from-literal ldapconfigpassword=PUT_YOUR_SECRET_HERE`
+   - `kubectl -n opsmx-isd create secret generic ldappassword --from-literal ldappassword=PUT_YOUR_SECRET_HERE`
+   - `kubectl -n opsmx-isd create secret generic miniopassword --from-literal miniopassword=PUT_YOUR_SECRET_HERE`
+   - `kubectl -n opsmx-isd create secret generic redispassword --from-literal redispassword=PUT_YOUR_SECRET_HERE`
+   - `kubectl -n opsmx-isd create secret generic saporpassword --from-literal saporpassword=PUT_YOUR_SECRET_HERE`
+   - `kubectl -n opsmx-isd create secret generic rabbitmqpassword --from-literal rabbitmqpassword=PUT_YOUR_SECRET_HERE`
+   - `kubectl -n opsmx-isd create secret generic keystorepassword --from-literal keystorepassword=PUT_YOUR_SECRET_HERE`
 
 ## Scenario B
 Use this set if instructions if:
@@ -45,7 +45,7 @@ Execute these commands, replacing "gitops-repo" with your repo
 
 ## Common Steps
 Upgrade sequence: (4.0.2 to 4.0.3)
-1. Ensure that "default" account is configured to deploy to the ISD namespace (e.g. oes)
+1. Ensure that "default" account is configured to deploy to the ISD namespace (e.g. opsmx-isd)
 2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
 3. Copy the bom from standard-isd-gitops.git to the gitops-repo
 
@@ -57,7 +57,7 @@ Upgrade sequence: (4.0.2 to 4.0.3)
    - url, username and gitemail MUST be updated. TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
    - **If ISD Namespace is different from "opsmx-isd"**: Update namespace (default is opsmx-isd) to the namespace where ISD is installed
    - **If you are external Mysql for Spinnaker update the spinnakerStorage value to "sql".
-7. **If ISD Namespace is different from "opsmx-isd"**: Edit serviceaccount.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
+7. **If ISD Namespace is different from "opsmx-isd"**: Edit serviceaccount.yaml and edit "namespace:" to update it to the ISD namespace (e.g.opsmx-isd)
 8. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
 9. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
 10. `kubectl -n opsmx-isd apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"     
@@ -90,10 +90,10 @@ As a first step. Please try the "Troubleshooting Issues during Installation" sec
 
 ### Reinstall ISD
 [Make changes to uppgrade-inputcm and/or values.yaml as required. **Ensure that the changes are pushed to git**]
-1. `kubectl -n oes  delete sts isd-spinnaker-halyard`
-2. `kubectl -n oes  delete deploy --all`
-3. `kubectl -n oes delete svc --all`
-4. `kubectl -n oes replace --force -f ISD-Apply-yamls-job.yaml`
+1. `kubectl -n opsmx-isd  delete sts isd-spinnaker-halyard`
+2. `kubectl -n opsmx-isd  delete deploy --all`
+3. `kubectl -n opsmx-isd delete svc --all`
+4. `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
 5.  Wait for all the pods to come up
 
 ## Rollback from v4.0.2 and v4.0.3
