@@ -38,10 +38,6 @@ global:
   ldap:
     managerPassword: encrypted:ldappassword:ldappassword
 
-  # Set it to true only if gate.config.saml.enabled to true
-  auth:
-    saml: false
-
    ## Valid admin details for ISD authorization
   saporgate:
     config:

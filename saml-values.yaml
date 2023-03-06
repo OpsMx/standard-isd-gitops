@@ -1,0 +1,110 @@
+###############################################################################
+gate:
+  config:
+    saml:
+      enabled: true
+      keyStorePassword: encrypted:keystorepassword:keystorepassword
+      redirectProtocol: https
+      redirectHostname: ISD.REPLACE.THIS.WITH.YOURCOMPANY.COM/gate #Replace the ISD URL
+      issuerId: ryzonoesgate   #REPLACE the Uniq issuer ID from Saml App
+      jksSecretName: oessamljks # Secret to be created with same key store certificate(Do not change the name of the secret)
+      metadataSecretName: oesmetadataxml # Secret to be created with saml app metadata.xml
+
+#####################################################
+global:
+  # Set to true if user need to access Spinnaker seperately
+  spinnakerUrl: false
+
+  oesUI:
+    protocol: true
+    host: ISD.REPLACE.THIS.WITH.YOURCOMPANY.COM  # Replace the ISD URL
+
+  spinDeck:
+    protocol: true
+    host: SPINNAKER.REPLACE.THIS.WITH.YOURCOMPANY.COM # Replace the Spinnaker URL
+
+  ssl:
+    enabled: true # Set to true if using "httpS" urls. TLS certificates must be generated for the above URL
+
+  certManager:
+    installed: true # Set to true if you have cert-manager installed in the cluster, the URL must be accessible from the internet
+
+  ## Set to false if using LoadBalancer or any other ingress
+  ## If Set to true The cluster MUST have nginx ingress controller already installed
+  createIngress: true
+
+  saporgate:
+    config:
+      username: admin       #Name of the valid user in your service provider
+      adminGroups: admin    ## Groups defined here will have Admin privileges in ISD
+      password: encrypted:saporpassword:saporpassword  #password for the saporgate
+
+  ########################################################################################
+  ## No need to be change the below parameters let it be as it is
+  ########################################################################################
+  gitea:
+    enabled: false
+
+  installOpenLdap: false
+
+  ldap:
+    enabled: false
+
+  minio:
+    accessKey: encrypted:miniopassword:miniopassword
+    secretKey: encrypted:miniopassword:miniopassword
+
+  auth:
+    saml: true
+####################################################
+spinnaker:
+  gitopsHalyard: # A repo with appropriate contents used for configuring Spinnaker
+    repo:
+      type: git # git, s3, stash(bitbucket server) use a different sample values file for s3/bitbuck-stash
+      ## Git repo details, https://<baseUrlHostName>/<organization>/<repository>
+      organization: YOUR_ORG_NAME_OR_YOUR_USER_NAME_IF_NO_ORG  #Replace the username/organization
+      repository: YOUR_REPO_NAME # repo name for GitOps Halyard, will be created if "githubcreationHook" is set to true
+      username: YOUR_USER_NAME  # Username to authenticate with git/stash repo
+      dynamicAccRepository: SAME_AS_REPOSITORY_ABOVE # Repo name of the GitOps Dynamic Accounts Directory, Can be same as "repository"
+
+      ########################################################################################
+      ## Additional git-repo parameters, typically no need to be change
+      ########################################################################################
+
+      configArgs: "http.sslVerify=false"  # Extra arguments to the git clone command
+      ## Configure below fields only if repo type is git/stash.
+      baseUrlHostName: github.com    # Change only if using enterprise git or another repo-type
+      projectName: ""                # Specify project name only if repo is under a project
+      halConfigBranch: main        # Branch for the "repository", recommend to keep "main"
+      halConfigPath: /               #relative path from repository root folder
+      dynAccntConfigPath: /          #relative path from repository root folder
+      token: encrypted:gittoken:gittoken  # Token corresponding to spinnaker.gitopsHalyard.repo.username
+
+  ########################################################################################
+  # Lines below this do not need to be changed except where external SSO
+  ########################################################################################
+
+  ## Here basic ldap auth is used by default; everything under spinCli will be pasted in ~/.spin/config
+  spinCli:
+    auth:
+      basic:
+        username: admin          # Use credentials corresponding to global.saporgate.config.username
+        password: encrypted:saporpassword:saporpassword     # Use credentials corresponding to global.saporgate.config.password
+
+#######################################################################################
+# Lines below this do not need to be changed except where external Redis and DBs is used
+########################################################################################
+redis:
+  url: redis://:encrypted:redispassword:redispassword@{{ .Release.Name }}-redis-master
+  password: encrypted:redispassword:redispassword
+#####################################################
+db:
+  url: jdbc:postgresql://oes-db:5432
+  username: postgres
+  password: encrypted:dbpassword:dbpassword
+########################################################################################
+# Do not change the below parameter leave it as it is
+########################################################################################
+rabbitmq:
+  username: rabbitmq
+  password: encrypted:rabbitmqpassword:rabbitmqpassword
