@@ -5,10 +5,12 @@ global:
   ## URL that will be used to access ISD. MUST BE CHANGED
   ## Ensure that this URL is reachable from your browser. Either DNS name server record must exist or "hosts" file must be updated
   oesUI:
+    protocol: http # Set to https if global.certManager and global.ssl is tru
     host: isd.dev.example.com
 
   # Spinnaker Deck URL configuration; url overwhich spinnaker deck will be accessed
   spinDeck:
+    protocol: http # Set to https if global.certManager and global.ssl is true
     host: spin.dev.example.com
 
   # Set to true if you are using the saml/Okta for Spinnaker
