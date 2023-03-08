@@ -5,13 +5,12 @@ global:
   ## URL that will be used to access ISD. MUST BE CHANGED
   ## Ensure that this URL is reachable from your browser. Either DNS name server record must exist or "hosts" file must be updated
   oesUI:
-    protocol: http # Set to https if global.certManager and global.ssl is tru
-    host: isd.dev.example.com
+    protocol: http # Set to https if global.certManager and global.ssl is true
+    host: ISD.REPLACE.THIS.WITH.YOURCOMPANY.COM  # Replace the ISD URL
 
-  # Spinnaker Deck URL configuration; url overwhich spinnaker deck will be accessed
   spinDeck:
     protocol: http # Set to https if global.certManager and global.ssl is true
-    host: spin.dev.example.com
+    host: SPINNAKER.REPLACE.THIS.WITH.YOURCOMPANY.COM   # Replace the Spinnaker URL
 
   # Set to true if you are using the saml/Okta for Spinnaker
   auth:
@@ -87,13 +86,6 @@ spinnaker:
         password: encrypted:saporpassword:saporpassword     # Use credentials corresponding to saporgate.config.password
 
 ####################################################
-
-db:
-  url: jdbc:postgresql://oes-db:5432
-  username: postgres
-  password: encrypted:dbpassword:dbpassword
-
-###############################################################################
 gate:
   config:
     #####################################################
@@ -118,36 +110,23 @@ gate:
       jksSecretName: oessamljks
       metadataSecretName: oesmetadataxml
 
-    #####################################################
-    #OAUTH2 Authentication for GitHub
-    #####################################################
-    oauth2:
-      enabled: false
-      client:
-        clientId: #CLIENT_ID
-        clientSecret: #CLIENT_SECRET_ID
-        accessTokenUri: https://github.com/login/oauth/access_token
-        userAuthorizationUri: https://github.com/login/oauth/authorize
-        scope: user-email
-      resource:
-        userInfoUri: https://api.github.com/user
-      userInfoMapping:
-        email: email
-        firstName: firstname
-        lastName: name
-        username: login
-      provider: GITHUB
-
-###############################################################################
-rabbitmq:
-  username: rabbitmq
-  password: encrypted:rabbitmqpassword:rabbitmqpassword
-
-###############################################################################
-## Details of redis-master image for OES
+#######################################################################################
+# Lines below this do not need to be changed except where external Redis and DBs is used
+########################################################################################
 redis:
   url: redis://:encrypted:redispassword:redispassword@{{ .Release.Name }}-redis-master
   password: encrypted:redispassword:redispassword
+#####################################################
+db:
+  url: jdbc:postgresql://oes-db:5432
+  username: postgres
+  password: encrypted:dbpassword:dbpassword
+########################################################################################
+# Do not change the below parameter leave it as it is
+########################################################################################
+rabbitmq:
+  username: rabbitmq
+  password: encrypted:rabbitmqpassword:rabbitmqpassword
 #####################################################
 # OpenLDAP custom configuration; will override default configuration of openldap helm chart
 openldap:
