@@ -16,11 +16,11 @@ global:
   spinnakerUrl: false
 
   oesUI:
-    protocol: true
+    protocol: http
     host: ISD.REPLACE.THIS.WITH.YOURCOMPANY.COM  # Replace the ISD URL
 
   spinDeck:
-    protocol: true
+    protocol: http
     host: SPINNAKER.REPLACE.THIS.WITH.YOURCOMPANY.COM # Replace the Spinnaker URL
 
   ssl:
