@@ -7,7 +7,7 @@ auth:
   groupMembership:
     service: ldap
     ldap:
-      url: ldap://RELEASE_NAME-openldap:389
+      url: ldap://isd-openldap:389
       managerDn: cn=admin,dc=example,dc=org
       managerPassword: opsmxadmin123
       groupSearchBase: ou=groups,dc=example,dc=org
