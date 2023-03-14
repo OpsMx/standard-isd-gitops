@@ -3,6 +3,7 @@ helm version
 git --version
 cd /repo/
 ls -ltr
+sleep 30
 helm repo add isd https://helmcharts.opsmx.com/
 helm repo list
 helm repo update
