@@ -5,6 +5,24 @@ cd /repo/
 ls -ltr
 sleep 30
 helm repo add isd https://helmcharts.opsmx.com/
+if [ $? != 0 ]; then
+  n=0
+  until [ "$n" -ge 3 ]
+  do
+  echo Retrying.....
+  helm repo add isd https://helmcharts.opsmx.com/
+  if [ $? != 0 ]; then
+    echo "ERROR: Failed to add helm repo"
+  else
+    echo "Repo added successfully.."
+    break
+  fi
+  n=$((n+1))
+  sleep 5
+  done
+else
+  echo "Repo added successfully.."
+fi
 helm repo list
 helm repo update
 helm search repo --versions
