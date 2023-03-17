@@ -12,7 +12,7 @@ Should we have different infrastructure requirements, please contact OpsMx.
 
 1. Create an empty-repo (called the "gitops-repo" in the document),  "main" branch should be the default, and clone it locally
 2. Clone https://github.com/OpsMx/standard-isd-gitops, selecting the appropriate branch:
-- `git clone https://github.com/OpsMx/standard-isd-gitops  -b 4.0.3`
+- `git clone https://github.com/OpsMx/standard-isd-gitops -b 4.0.4`
 
 3. Copy contents of the standard-isd-repo to the gitops-repo created above using:
    
@@ -127,5 +127,3 @@ Issue these commands, replace -n option with the namespace
 - `kubectl -n opsmx-isd delete pvc -–all`
 - `kubectl -n opsmx-isd delete secrets --all`
 - `kubectl delete ns opsmx-isd`
-
-
