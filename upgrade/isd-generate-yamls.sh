@@ -6,7 +6,7 @@ ls -ltr
 sleep 30
 beta=$(echo $version | grep b)
 if [ "$beta" = b ]; then
-  helm repo add staging-helm https://opsmx.jfrog.io/artifactory/opsmx-helm-local --username madhukar --password OpsMx@123
+  helm repo add staging-helm https://opsmx.jfrog.io/artifactory/opsmx-helm-local --username staging --password Stagingpublishqa1
   helm repo list
   helm repo update
   helm search repo staging-helm --versions
