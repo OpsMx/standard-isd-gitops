@@ -4,9 +4,11 @@ git --version
 cd /repo/
 ls -ltr
 sleep 30
-beta=$(echo $version | grep b)
-if [ "$beta" = b ]; then
-  helm repo add staging-helm https://opsmx.jfrog.io/artifactory/opsmx-helm-local
+helm repo add staging-helm https://opsmx.jfrog.io/artifactory/opsmx-helm-local
+isdversion=$(helm search repo staging-helm/oes --versions | awk '{print $2,$3}' | grep "${version}" | head -1 | awk -F ' ' '{print $2}')
+echo $isdversion
+beta=$(echo $isdversion | awk -F . '{print $NF}' | grep -c b)
+if [ "$beta" = "1" ]; then
   helm repo list
   helm repo update
   helm search repo staging-helm --versions
@@ -37,6 +39,7 @@ helm repo update
 helm search repo --versions
 chartversion=$(helm search repo isd/oes --versions | awk '{print $2,$3}' | grep "${version}" | head -1 | awk -F ' ' '{print $1}')
 helm pull isd/oes --version="$chartversion"
+helm repo remove staging-helm
 fi
 tar -xf oes-"$chartversion".tgz
 if [ $? -eq 0 ]; then  
