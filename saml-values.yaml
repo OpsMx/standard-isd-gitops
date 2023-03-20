@@ -108,3 +108,22 @@ db:
 rabbitmq:
   username: rabbitmq
   password: encrypted:rabbitmqpassword:rabbitmqpassword
+##########################################################################
+autopilot:
+  image:
+    tag: v4.0.4.b1
+dashboard:
+  image:
+    tag: v4.0.4.b1
+gate:
+  image:
+    tag: v4.0.4.b1
+sapor:
+  image:
+    tag: v4.0.4.b1
+ui:
+  image:
+    tag: v4.0.4.b1
+visibility:
+  image:
+    tag: v4.0.4.b1
