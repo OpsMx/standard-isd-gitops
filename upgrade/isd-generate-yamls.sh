@@ -38,6 +38,7 @@ helm search repo --versions
 version=$chartVersion
 helm pull isd/oes --version="$chartVersion"
 fi
+version=$chartVersion
 tar -xf oes-"$chartVersion".tgz
 if [ $? -eq 0 ]; then  
      echo "#################################Sucessfully downloaded the helm chart#################################"
