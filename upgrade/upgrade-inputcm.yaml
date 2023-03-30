@@ -13,7 +13,7 @@ data:
   currentISDVersion: "3.12"
   spinnakerStorage: "redis" # Spinnaker data is stored in redis if not change to sql
   namespace: opsmx-isd # Namespace to install ISD, best not to change
-  beta: false          # Set to true only for beta releases, default is false
+  beta: "false"          # Set to true only for beta releases, default is false
   secrets: gittoken,ldappassword,dbpassword,keystorepassword,rabbitmqpassword,saporpassword,redispassword,miniopassword,ldapconfigpassword
 kind: ConfigMap
 metadata:

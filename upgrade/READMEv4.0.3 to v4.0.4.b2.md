@@ -1,7 +1,7 @@
 
 # Upgrade Instructions
 
-Please follow these instructions if you are upgrading from 4.0.3 (to 4.0.4.b1). The current installation (4.0.3) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
+Please follow these instructions if you are upgrading from 4.0.3 (to 4.0.4.b2). The current installation (4.0.3) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
 
 **WARNING**: Please backup all the databases, in particular the Posgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration. 
 
@@ -44,7 +44,7 @@ Execute these commands, replacing "gitops-repo" with your repo
 - Check that a "values.yaml" file exists in this directory (root of the gitops-repo)
 
 ## Common Steps
-Upgrade sequence: (4.0.3 to 4.0.4.b1)
+Upgrade sequence: (4.0.3 to 4.0.4.b2)
 1. Ensure that "default" account is configured to deploy to the ISD namespace (e.g. opsmx-isd)
 2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
 3. Copy the bom from standard-isd-gitops.git to the gitops-repo
@@ -57,6 +57,7 @@ Upgrade sequence: (4.0.3 to 4.0.4.b1)
    - url, username and gitemail MUST be updated. TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
    - **If ISD Namespace is different from "opsmx-isd"**: Update namespace (default is opsmx-isd) to the namespace where ISD is installed
    - **If you are external Mysql for Spinnaker update the spinnakerStorage value to "sql".
+   - **Edit the beta value to true in the `install/inputcm.yaml` file for beta releases only, if not let the default value be false (i.e. "false").
 7. **If ISD Namespace is different from "opsmx-isd"**: Edit serviceaccount.yaml and edit "namespace:" to update it to the ISD namespace (e.g.opsmx-isd)
 8. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
 9. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
