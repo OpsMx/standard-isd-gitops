@@ -7,6 +7,7 @@ sleep 30
 echo $chartVersion
 #beta=$(echo $chartVersion | awk -F - '{print $NF}' | grep -c b)
 if [ "$beta" = "true" ]; then
+  helm repo add staging-helm https://opsmx.jfrog.io/artifactory/opsmx-helm-local
   helm repo list
   helm repo update
   helm search repo staging-helm --versions
