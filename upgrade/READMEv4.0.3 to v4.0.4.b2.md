@@ -1,7 +1,7 @@
 
 # Upgrade Instructions
 
-Please follow these instructions if you are upgrading from 4.0.3 (to 4.0.4.b2). The current installation (4.0.3) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
+Please follow these instructions if you are upgrading from 4.0.3 (to 4.0.4.b3). The current installation (4.0.3) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
 
 **WARNING**: Please backup all the databases, in particular the Posgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration. 
 
@@ -17,7 +17,7 @@ Execute these commands, replacing "gitops-repo" with your repo
 - `cp -r standard-isd-gitops/upgrade gitops-repo`  
 - `cd gitops-repo`
 - Copy the existing "values.yaml", that was used for previous installation into this folder. We will call it values-402.yaml
-- diff values-403.yaml values.yaml and merge all of your changes into "values.yaml". **NOTE**: In most cases just replacing images v4.0.2 with v4.0.4.b1 is enough.
+- diff values-403.yaml values.yaml and merge all of your changes into "values.yaml". **NOTE**: In most cases just replacing images v4.0.2 with v4.0.4.b3 is enough.
 - Copy the updated values file as "values.yaml" (file name is important)
 - create gittoken secret. This token will be used to authenticate to the gitops-repo
    - `kubectl -n opsmx-isd create secret generic gittoken --from-literal gittoken=PUT_YOUR_GITTOKEN_HERE` 
@@ -44,7 +44,7 @@ Execute these commands, replacing "gitops-repo" with your repo
 - Check that a "values.yaml" file exists in this directory (root of the gitops-repo)
 
 ## Common Steps
-Upgrade sequence: (4.0.3 to 4.0.4.b2)
+Upgrade sequence: (4.0.3 to 4.0.4.b3)
 1. Ensure that "default" account is configured to deploy to the ISD namespace (e.g. opsmx-isd)
 2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
 3. Copy the bom from standard-isd-gitops.git to the gitops-repo
@@ -97,7 +97,7 @@ As a first step. Please try the "Troubleshooting Issues during Installation" sec
 4. `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
 5.  Wait for all the pods to come up
 
-## Rollback from v4.0.3 and v4.0.4.b1
+## Rollback from v4.0.3 and v4.0.4.b3
 
 1. Create a PR to revert the changes which is merged as part of step 12.
 

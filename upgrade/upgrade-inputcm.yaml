@@ -8,7 +8,7 @@ data:
   # Typically, there is no need to change the values below this line, please check the "nameaspace"
   #####################################################################################################
   branch: main         # Gitrepo branch, MUST be the default branch
-  chartVersion: 4.0.11     # Helm Chart Version
+  chartVersion: 4.0.12     # Helm Chart Version
   release: isd         # ISD helm-release version, default is oes
   currentISDVersion: "3.12"
   spinnakerStorage: "redis" # Spinnaker data is stored in redis if not change to sql
