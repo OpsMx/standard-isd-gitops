@@ -132,38 +132,4 @@ rabbitmq:
 openldap:
   adminPassword: encrypted:ldappassword:ldappassword
   configPassword: encrypted:ldapconfigpassword:ldapconfigpassword
-#####################################################
-autopilot:
-  image:
-    tag: v4.0.4.b3
-dashboard:
-  image:
-    tag: v4.0.4.b3
-gate:
-  image:
-    tag: v4.0.4.b2
-sapor:
-  image:
-    tag: v4.0.4.b3
-ui:
-  image:
-    tag: v4.0.4.b3
-visibility:
-  image:
-    tag: v4.0.4.b3
-auditClient:
-  image:
-    tag: v4.0.4.b3
-platform:
-  image:
-    tag: v4.0.4.b3
-dashboard:
-  image:
-    tag: v4.0.4.b3
-datascience:
-  image:
-    tag: v4.0.4.b3
-opa:
-  image:
-    repository: quay.io/opsmxpublic/opa
-    tag: v0.47.0
+####################################################
