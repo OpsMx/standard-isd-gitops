@@ -28,7 +28,7 @@ spec:
 
               cd /repo/
 
-              export version="$chartversion"
+              export version="$version"
 
               chmod +x /repo/upgrade/isd-apply-yamls.sh
 
@@ -186,7 +186,7 @@ spec:
 
               git clone https://"$username":"$(cat /secret/gittoken)"@"$url" -b "$branch" /repo
 
-              echo "export version=$chartVersion" >> /repo/environment
+              echo "export version=$version" >> /repo/environment
 
               if [ $? != 0 ]
 

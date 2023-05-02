@@ -4,14 +4,14 @@ git --version
 cd /repo/
 ls -ltr
 sleep 30
-echo $chartVersion
+echo $version
 #beta=$(echo $chartVersion | awk -F - '{print $NF}' | grep -c b)
 if [ "$beta" = "true" ]; then
   helm repo add staging-helm https://opsmx.jfrog.io/artifactory/opsmx-helm-local
   helm repo list
   helm repo update
   helm search repo staging-helm --versions
-  helm pull staging-helm/oes --version="$chartversion"
+  helm pull staging-helm/oes --version="$version"
 else
 helm repo add isd https://helmcharts.opsmx.com/
 if [ $? != 0 ]; then
@@ -36,11 +36,11 @@ helm repo list
 helm repo update
 helm search repo --versions
 #chartVersion=$(helm search repo isd/oes --versions | awk '{print $2,$3}' | grep "${version}" | head -1 | awk -F ' ' '{print $1}')
-version=$chartVersion
-helm pull isd/oes --version="$chartVersion"
+#version=$chartVersion
+helm pull isd/oes --version="$version"
 fi
-version=$chartVersion
-tar -xf oes-"$chartVersion".tgz
+#version=$chartVersion
+tar -xf oes-"$version".tgz
 if [ $? -eq 0 ]; then  
      echo "#################################Sucessfully downloaded the helm chart#################################"
 else
@@ -72,7 +72,7 @@ ls -l /tmp/isd/oes/templates/
 rm -rf /tmp/isd/oes/charts/spinnaker/templates/hooks/
 rm -rf /tmp/isd/oes/templates/hooks/cleanup.yaml
 rm -rf /repo/oes/
-rm -rf oes-"$chartVersion".tgz
+rm -rf oes-"$version".tgz
 #####################################committing tempates to github repo################################
 git branch "$version"
 if [ $? -eq 0 ]; then  
