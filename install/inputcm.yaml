@@ -10,7 +10,6 @@ data:
   branch: main         # Gitrepo branch, MUST be the default branch
   version: 4.0.12      # ISD Chart version
   namespace: opsmx-isd # Namespace to install ISD, best not to change
-  path: install/isd-install.sh  # Script to execute for installation, should not be changed
   beta: "false"          # Set to true only for beta releases, default is false
 
   ## values.yaml can contain secrets encoded as "encrypted:SECRETNAME:SECRETKEY". All the secrets mentioned below are replaced in values.yaml

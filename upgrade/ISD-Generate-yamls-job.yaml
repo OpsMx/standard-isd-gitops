@@ -19,7 +19,7 @@ spec:
 
               chmod +x /repo/upgrade/isd-generate-yamls.sh
                    
-              export version="$chartVersion"
+              export version="$version"
 
               export release="$release"
 
@@ -52,7 +52,7 @@ spec:
 
               echo "export gittoken=$gittoken" >> /repo/environment
 
-              echo "export version=$chartVersion" >> /repo/environment
+              echo "export version=$version" >> /repo/environment
 
               echo "export release=$release" >> /repo/environment
 

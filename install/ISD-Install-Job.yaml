@@ -20,8 +20,8 @@ spec:
               do
               echo export $env >> /tmp/environment
               done
-              for filename in /secret/* 
-              do 
+              for filename in /secret/*
+              do
               variable=$(echo $filename | sed 's#/# #g' | awk '{print $2}')
               echo setting env $variable for $filename 
               echo "export $variable=$(cat "$filename")" >> /tmp/environment
@@ -29,8 +29,8 @@ spec:
 
               source /tmp/environment >/dev/null 2>&1
               cd /repo/
-              chmod +x /repo/"$path"
-              /repo/"$path"
+              chmod +x /repo/install/isd-install.sh
+              /repo/install/isd-install.sh
           command:
             - /bin/bash
             - +x
