@@ -8,9 +8,9 @@ data:
   # Typically, there is no need to change the values below this line
   #####################################################################################################
   branch: main         # Gitrepo branch, MUST be the default branch
-  version: 4.0.12      # ISD Chart version
+  version: 4.0.14    # ISD Chart version
   namespace: opsmx-isd # Namespace to install ISD, best not to change
-  beta: "false"          # Set to true only for beta releases, default is false
+  beta: "true"          # Set to true only for beta releases, default is false
 
   ## values.yaml can contain secrets encoded as "encrypted:SECRETNAME:SECRETKEY". All the secrets mentioned below are replaced in values.yaml
   # and other places during the installation process. User is responsible for creating these secrets manually, as mentioned in the document:
