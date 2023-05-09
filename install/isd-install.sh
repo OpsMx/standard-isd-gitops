@@ -4,6 +4,15 @@ git --version
 cd /repo/
 ls -ltr
 sleep 30
+echo $version
+#beta=$(echo $version | awk -F - '{print $NF}' | grep -c b)
+if [ "$beta" = "true" ]; then
+  helm repo add staging-helm https://opsmx.jfrog.io/artifactory/opsmx-helm-local
+  helm repo list
+  helm repo update
+  helm search repo staging-helm --versions
+  helm pull staging-helm/oes --version="$version"
+else
 helm repo add isd https://helmcharts.opsmx.com/
 if [ $? != 0 ]; then
   n=0
@@ -26,8 +35,11 @@ fi
 helm repo list
 helm repo update
 helm search repo --versions
-chartversion=$(helm search repo isd/oes --versions | awk '{print $2,$3}' | grep "${version}" | head -1 | awk -F ' ' '{print $1}')
+#chartversion=$(helm search repo isd/oes --versions | awk '{print $2,$3}' | grep "${version}" | head -1 | awk -F ' ' '{print $1}')
+chartversion=$version
 helm pull isd/oes --version="$chartversion"
+fi
+chartversion=$version
 tar -xf oes-"$chartversion".tgz
 if [ $? -eq 0 ]; then  
      echo "##################Sucessfully downloaded the helm chart######################"

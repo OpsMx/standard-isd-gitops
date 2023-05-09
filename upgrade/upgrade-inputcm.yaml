@@ -8,11 +8,9 @@ data:
   # Typically, there is no need to change the values below this line, please check the "nameaspace"
   #####################################################################################################
   branch: main         # Gitrepo branch, MUST be the default branch
-  chartVersion: 4.0.9     # Helm Chart Version
-  release: isd         # ISD helm-release version, default is oes
-  currentISDVersion: "3.12"
-  spinnakerStorage: "redis" # Spinnaker data is stored in redis if not change to sql
-  namespace: opsmx-isd # Namespace to install ISD, best not to change 
+  version: 4.0.13     # Helm Chart Version
+  namespace: opsmx-isd # Namespace to install ISD, best not to change
+  beta: "false"          # Set to true only for beta releases, default is false
   secrets: gittoken,ldappassword,dbpassword,keystorepassword,rabbitmqpassword,saporpassword,redispassword,miniopassword,ldapconfigpassword
 kind: ConfigMap
 metadata:
