@@ -1,7 +1,7 @@
 
 # Upgrade Instructions
 
-Please follow these instructions if you are upgrading from 4.0.3 (to 4.0.4). The current installtion (4.0.3) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
+Please follow these instructions if you are upgrading from 4.0.3 (to 4.0.3.1). The current installtion (4.0.3) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
 
 **WARNING**: Please backup all the databases, in particualr the Posgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration. 
 
@@ -53,19 +53,17 @@ Upgrade sequence: (4.0.3 to 4.0.3.1)
 
 4. If there are any custom settings done for spinnaker please update those changes accordingly in gitops-repo/default/profiles.
 
-5. Please refer below doc to check the differences from 4.0.3 to 4.0.4 of git-repo and updated it accordingly
-   https://docs.google.com/document/d/14pEUXDwWshpUPRPLykM0lW4gzHvw5kHJyTJHveGlfoo/edit# (TODO)
-6. `cd upgrade`
-7. Update upgrade-inputcm.yaml: 
+5. `cd upgrade`
+6. Update upgrade-inputcm.yaml: 
    - url, username and gitemail MUST be updated. TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
    - **If ISD Namespace is different from "opsmx-isd"**: Update namespace (default is opsmx-isd) to the namespace where ISD is installed
-8. **If ISD Namespace is different from "opsmx-isd"**: Edit serviceaccount.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
-9. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
-10. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
+7. **If ISD Namespace is different from "opsmx-isd"**: Edit serviceaccount.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
+8. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
+9. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
      `kubectl patch configmap/upgrade-inputcm --type merge -p '{"data":{"release":"isd"}}' -n opsmx-isd` # Default release name is "isd". Please update it       accordingly and apply the command 
-11. `kubectl -n opsmx-isd apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
+10. `kubectl -n opsmx-isd apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
 
-12. **DB Upgrade - Schema update**:
+11. **DB Upgrade - Schema update**:
       
        `kubectl -n opsmx-isd apply -f migration_v403_to_v4031.yaml`
 
@@ -88,16 +86,16 @@ Upgrade sequence: (4.0.3 to 4.0.3.1)
 
         `kubectl -n opsmx-isd delete -f migration_v403_to_v4031.yaml`
 
-13. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
+12. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
 
     - Once the pod is completed please check the pod logs to verify manifest files are updated in GIt or not.
 
          `kubectl -n opsmx-isd logs isd-generate-yamls-xxx -c git-clone` #Replacing the name of the pod name correctly, check if your gitops-repo is cloned correctly
 
-14. Compare and merge branch: This job should have created a branch on the gitops-repo with the helmchart version number specified in upgrade-inputcm.yaml. Raise a PR and check what changes are being made. Once satisfied, merge the PR.
+13. Compare and merge branch: This job should have created a branch on the gitops-repo with the helmchart version number specified in upgrade-inputcm.yaml. Raise a PR and check what changes are being made. Once satisfied, merge the PR.
 
-15. `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
+14. `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
    Wait for isd-yaml-update-* pod to complete
     
     - Once pod will completed so please check the pod logs to verify manifest files are updated in Git or not.
@@ -106,17 +104,17 @@ Upgrade sequence: (4.0.3 to 4.0.3.1)
 
       `kubectl -n opsmx-isd logs isd-apply-yamls-xxx -c script` #Replacing the name of the pod name correctly, check the log of the script that pushes the yamls and applies them
 
-16. isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this:
+15. isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this:
    
       - `kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0`
 
-17. Restart all pods:
+16. Restart all pods:
       - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=0` Wait for a min or two
       - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=1` Wait for all pods to come to ready state
  
-18. Go to ISD UI and check that version number has changed in the bottom-left corner
-19. Wait for about 5 min for autoconfiguration to take place.
-20. If required: a) Connect Spinnaker again b) Configure pipeline-promotion again. To do this, in the ISD UI:
+17. Go to ISD UI and check that version number has changed in the bottom-left corner
+18. Wait for about 5 min for autoconfiguration to take place.
+19. If required: a) Connect Spinnaker again b) Configure pipeline-promotion again. To do this, in the ISD UI:
       - Click setup
       - Click Spinnaker tab at the top. Check if "External Accounts" and "Pipeline-promotion" columns show "yes". If any of them is "no":
       - Click "edit" on the 3 dots on the far right. Check the values already filled in, make changes if required and click "update".
