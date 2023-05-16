@@ -66,7 +66,23 @@ Upgrade sequence: (4.0.3 to 4.0.3.1)
 11. `kubectl -n opsmx-isd apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
 
 12. **DB Upgrade - Schema update**:
-     `kubectl -n opsmx-isd apply -f migration_v403_to_v4031.yaml`
+     `kubectl -n opsmx-isd apply -f migration_v403_to_v4031.yaml 
+
+    - Once the above command is executed new pod will be created is running so please check the pod logs to verify if if the Schema is updated or not.
+
+      Below is the sample log message:
+
+      ```console
+      2023-05-11 16:05:18.101  INFO 7 --- [ task-1] c.o.a.events.UserActivityEvent : User activity data migration started
+      2023-05-11 16:05:18.582  INFO 7 --- [ task-1] c.o.a.events.UserActivityEvent : Migrated 39 user activity events successfully: 
+      2023-05-11 16:05:18.583  INFO 7 --- [ task-1] c.o.a.events.UserActivityEvent : User activity data migration ended
+      2023-05-11 16:05:18.606  INFO 7 --- [ task-1] c.o.a.events.PolicyAuditEvent  : Policy Audit data migration started
+      2023-05-11 16:05:18.619  INFO 7 --- [ task-1] c.o.a.events.PolicyAuditEvent  : Should be a fresh install or Policy Audit events might have migrated already so not attempting migration now
+      2023-05-11 16:05:18.633  INFO 7 --- [ task-1] c.o.a.events.PipelineConfigEvent : Pipeline Config data migration started
+      2023-05-11 16:05:18.649  INFO 7 --- [ task-1] c.o.a.events.PipelineConfigEvent : Should be a fresh install or Pipeline Config events might have migrated already so not attempting migration now
+      2023-05-11 16:05:18.653  INFO 7 --- [ task-1] c.o.auditservice.events.MigrationEvent : database migration Ended
+      ```
+     
 
 13. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
