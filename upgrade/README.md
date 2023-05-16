@@ -66,7 +66,8 @@ Upgrade sequence: (4.0.3 to 4.0.3.1)
 11. `kubectl -n opsmx-isd apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
 
 12. **DB Upgrade - Schema update**:
-     `kubectl -n opsmx-isd apply -f migration_v403_to_v4031.yaml 
+      
+       `kubectl -n opsmx-isd apply -f migration_v403_to_v4031.yaml`
 
     - Once the above command is executed new pod will be created is running so please check the pod logs to verify if if the Schema is updated or not.
 
@@ -83,6 +84,9 @@ Upgrade sequence: (4.0.3 to 4.0.3.1)
       2023-05-11 16:05:18.653  INFO 7 --- [ task-1] c.o.auditservice.events.MigrationEvent : database migration Ended
       ```
      
+     - Once the migration is sucessfull delete the migration yaml
+
+        `kubectl -n opsmx-isd delete -f migration_v403_to_v4031.yaml`
 
 13. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
