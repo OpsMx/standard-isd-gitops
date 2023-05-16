@@ -7,7 +7,7 @@ Please follow these instructions if you are upgrading from 4.0.3 (to 4.0.4). The
 
 ## Scenario A
 Use these instructions if:
-- You have a 4.0.3.1 installed using the helm installer and
+- You have a 4.0.3 installed using the helm installer and
 - Already have a "gitops-repo" for Spinnaker Configuration
 - Have values.yaml that was used for helm installation
 
