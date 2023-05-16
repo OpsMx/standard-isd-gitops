@@ -60,7 +60,8 @@ Upgrade sequence: (4.0.3 to 4.0.3.1)
 7. **If ISD Namespace is different from "opsmx-isd"**: Edit serviceaccount.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
 8. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
 9. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
-     `kubectl patch configmap/upgrade-inputcm --type merge -p '{"data":{"release":"isd"}}' -n opsmx-isd` # Default release name is "isd". Please update it       accordingly and apply the command 
+
+     `kubectl patch configmap/upgrade-inputcm --type merge -p '{"data":{"release":"isd"}}' -n opsmx-isd` # Default release name is "isd". Please update it accordingly and apply the command 
 10. `kubectl -n opsmx-isd apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
 
 11. **DB Upgrade - Schema update**:
