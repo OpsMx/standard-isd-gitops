@@ -69,7 +69,7 @@ Upgrade sequence: (4.0.3 to 4.0.3.1)
       
        `kubectl -n opsmx-isd apply -f migration_v403_to_v4031.yaml`
 
-    - Once the above command is executed new pod will be created is running so please check the pod logs to verify if if the Schema is updated or not.
+    - Once the above command is executed new pod will be created is running so please check the pod logs to verify if the Schema is updated or not.
 
       Below is the sample log message:
 
