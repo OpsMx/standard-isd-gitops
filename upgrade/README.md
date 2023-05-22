@@ -61,11 +61,18 @@ Upgrade sequence: (4.0.3 to 4.0.3.1)
 8. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
 9. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
 
-     `kubectl patch configmap/upgrade-inputcm --type merge -p '{"data":{"release":"isd"}}' -n opsmx-isd` # Default release name is "isd". Please update it accordingly and apply the command 
+     `kubectl patch configmap/upgrade-inputcm --type merge -p '{"data":{"release":"isd"}}' -n opsmx-isd` # Default release name is "isd". Please update it accordingly and apply the command
 10. `kubectl -n opsmx-isd apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
 
 11. **DB Upgrade - Schema update**:
-      
+
+    - Read the comments in the audit-local.yml and update the DBHOSTNAME,DBUSERNAME,DBPASSWORD.
+
+    Hint: DBHOSTNAME,DBUSERNAME is passed in values.yaml under db section. Please copy paste that.
+          DBPASSWORD can be fetched from dbpassword secret from the Cluster.(kubectl -n opsmx-isd get secret dbpassword -o jsonpath='{.data.*}'|base64 -d; echo)
+
+       `kubectl -n opsmx-isd create secret generic oes-audit-service-config-new --from-file=audit-local.yml`
+
        `kubectl -n opsmx-isd apply -f migration_v403_to_v4031.yaml`
 
     - Once the above command is executed new pod will be created is running so please check the pod logs to verify if the Schema is updated or not.
@@ -82,7 +89,7 @@ Upgrade sequence: (4.0.3 to 4.0.3.1)
       2023-05-11 16:05:18.649  INFO 7 --- [ task-1] c.o.a.events.PipelineConfigEvent : Should be a fresh install or Pipeline Config events might have migrated already so not attempting migration now
       2023-05-11 16:05:18.653  INFO 7 --- [ task-1] c.o.auditservice.events.MigrationEvent : database migration Ended
       ```
-     
+
      - Once the migration is sucessfull delete the migration yaml
 
         `kubectl -n opsmx-isd delete -f migration_v403_to_v4031.yaml`
@@ -98,7 +105,7 @@ Upgrade sequence: (4.0.3 to 4.0.3.1)
 
 14. `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
    Wait for isd-yaml-update-* pod to complete
-    
+
     - Once pod will completed so please check the pod logs to verify manifest files are updated in Git or not.
 
       `kubectl -n opsmx-isd logs isd-apply-yamls-xxx -c git-clone` #Replacing the name of the pod name correctly, check if your gitops-repo is cloned correctly
@@ -106,7 +113,7 @@ Upgrade sequence: (4.0.3 to 4.0.3.1)
       `kubectl -n opsmx-isd logs isd-apply-yamls-xxx -c script` #Replacing the name of the pod name correctly, check the log of the script that pushes the yamls and applies them
 
 15. isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this:
-   
+
       - `kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0`
 
 16. Restart all pods:
