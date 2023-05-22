@@ -66,14 +66,15 @@ Upgrade sequence: (4.0.3 to 4.0.3.1)
 
 11. **DB Upgrade - Schema update**:
 
-    - Read the comments in the audit-local.yml and update the DBHOSTNAME,DBUSERNAME,DBPASSWORD.
+    Read the comments in the audit-local.yml and update the `DBHOSTNAME,DBUSERNAME,DBPASSWORD`.
 
-    Hint: DBHOSTNAME,DBUSERNAME is passed in values.yaml under db section. Please copy paste that.
-          DBPASSWORD can be fetched from dbpassword secret from the Cluster.(kubectl -n opsmx-isd get secret dbpassword -o jsonpath='{.data.*}'|base64 -d; echo)
+    **Hint**: 
+    - `DBHOSTNAME,DBUSERNAME` is passed in values.yaml under db section. Please copy paste that.
+    - `DBPASSWORD` can be fetched from dbpassword secret from the Cluster.
 
-       `kubectl -n opsmx-isd create secret generic oes-audit-service-config-new --from-file=audit-local.yml`
+      `kubectl -n opsmx-isd create secret generic oes-audit-service-config-new --from-file=audit-local.yml`
 
-       `kubectl -n opsmx-isd apply -f migration_v403_to_v4031.yaml`
+      `kubectl -n opsmx-isd apply -f migration_v403_to_v4031.yaml`
 
     - Once the above command is executed new pod will be created is running so please check the pod logs to verify if the Schema is updated or not.
 
