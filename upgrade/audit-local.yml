@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://DBHOSTVALUE:5432/auditdb ## Replace the DBHOSTVALUE with appropriate value irrespective of internal or external ( eg: jdbc:postgresql://oes-db:5432/auditdb , jdbc:postgresql://database.cluster-rds.amazonaws.com:5432/auditdb)
+    url: jdbc:postgresql://DBHOSTVALUE:5432/auditdb ## Replace the DBHOSTVALUE with appropriate value irrespective of internal or external DB ( internal DB eg: jdbc:postgresql://oes-db:5432/auditdb , external DB eg: jdbc:postgresql://database.cluster-rds.amazonaws.com:5432/auditdb)
     username: 'DBUSERNAME' ## Replace DBUSERNAME with appropriate value that is used for connecting
     password: 'DBPASSWORD' ## Replace DBPASSWORD with appropriate value that is used for connecting
 logging:
