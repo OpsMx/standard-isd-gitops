@@ -42,7 +42,7 @@ spec:
         component: auditservice-new
     spec:
       containers:
-      - image: quay.io/opsmxpublic/ubi8-oes-audit-service:v4.0.3.1-rc3
+      - image: quay.io/opsmxpublic/ubi8-oes-audit-service:v4.0.3.1-rc5
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
