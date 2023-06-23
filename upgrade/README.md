@@ -3,7 +3,7 @@
 
 Please follow these instructions if you are upgrading from 4.0.3 (to 4.0.3.1). The current installtion (4.0.3) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
 
-**WARNING**: Please backup all the databases, in particualr the Posgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration. 
+**WARNING**: Please backup all the databases, in particualr the Posgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration.
 
 ## Scenario A
 Use these instructions if:
@@ -20,7 +20,7 @@ Execute these commands, replacing "gitops-repo" with your repo
 - diff values-4031.yaml values-403.yaml and merge all of your changes into "values.yaml".
 - Copy the updated values file as "values.yaml" (file name is important)
 - create gittoken secret. This token will be used to authenticate to the gitops-repo
-   - `kubectl -n opsmx-isd create secret generic gittoken --from-literal gittoken=PUT_YOUR_GITTOKEN_HERE` 
+   - `kubectl -n opsmx-isd create secret generic gittoken --from-literal gittoken=PUT_YOUR_GITTOKEN_HERE`
 - create secrets mentioned above. **NOTE**: You only need to create these secrets if they are changed from the default
    - `kubectl -n opsmx-isd create secret generic ldapconfigpassword --from-literal ldapconfigpassword=PUT_YOUR_SECRET_HERE`
    - `kubectl -n opsmx-isd create secret generic ldappassword --from-literal ldappassword=PUT_YOUR_SECRET_HERE`
@@ -40,7 +40,6 @@ Execute these commands, replacing "gitops-repo" with your repo
 - `git clone `**https://github.com/.../gitops-repo**
 - `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 4.0.3.1`
 - `cp -r standard-isd-gitops/upgrade gitops-repo/` 
-- `cd gitops-repo`
 - Check that a "values.yaml" file exists in this directory (root of the gitops-repo)
 
 ## Common Steps
@@ -53,7 +52,7 @@ Upgrade sequence: (4.0.3 to 4.0.3.1)
 
 4. If there are any custom settings done for spinnaker please update those changes accordingly in gitops-repo/default/profiles.
 
-5. `cd upgrade`
+5. `cd gitops-repo/upgrade`
 6. Update upgrade-inputcm.yaml: 
    - url, username and gitemail MUST be updated. TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
    - **If ISD Namespace is different from "opsmx-isd"**: Update namespace (default is opsmx-isd) to the namespace where ISD is installed
@@ -61,7 +60,10 @@ Upgrade sequence: (4.0.3 to 4.0.3.1)
 8. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
 9. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
 
-     `kubectl patch configmap/upgrade-inputcm --type merge -p '{"data":{"release":"isd"}}' -n opsmx-isd` # Default release name is "isd". Please update it accordingly and apply the command
+     `kubectl patch configmap/upgrade-inputcm --type merge -p '{"data":{"release":"isd"}}' -n opsmx-isd` # Default release name is "isd".
+
+  **NOTE**: Please update the release name accordingly and it is mandatory.
+
 10. `kubectl -n opsmx-isd apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
 
 11. **DB Upgrade - Schema update**:
