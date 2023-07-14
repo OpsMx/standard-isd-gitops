@@ -2,7 +2,7 @@
 
 Please follow these instructions if you are updating any values in values.yaml after the installation.
 
-# Use this set of instructions if:
+# Please use this set of instructions:
 
 a) You have a 4.0.3.1 installed and required to update values
 b) Already have a gitops-repo for ISD (AP and Spinnaker) Configuration
