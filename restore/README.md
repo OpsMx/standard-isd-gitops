@@ -15,7 +15,7 @@ b) Already have a gitops-repo configured for ISD (AP and Spinnaker) Configuratio
 
 1. Use the "values.yaml" stored in git and execute the below commands to install it again.
 2. Execute the below commands to create namespace and install ISD:
-- `kubectl create ns opsmx-isd` # Replace namespace <opsmx-isd> as required
+- `kubectl create ns opsmx-isd` # Replace namespace "opsmx-isd" as required
 - `kubectl -n opsmx-isd apply -f install/inputcm.yaml` 
 - `kubectl -n opsmx-isd apply -f install/serviceaccount.yaml`
 - `kubectl -n opsmx-isd create secret generic gittoken --from-literal=gittoken=PUT_YOUR_GITTOKEN_HERE`
