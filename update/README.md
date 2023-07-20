@@ -2,9 +2,10 @@
 
 Please follow these instructions if you are updating any values in values.yaml after the installation.
 
-# Please use this set of instructions:
+# Please use below set of instructions:
 
 a) You have a 4.0.3.1 installed and required to update values
+
 b) Already have a gitops-repo for ISD (AP and Spinnaker) Configuration
 
 1. Execute these commands, replacing "gitops-repo" with your repo
@@ -16,10 +17,9 @@ b) Already have a gitops-repo for ISD (AP and Spinnaker) Configuration
 5. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
 6. Compare and merge branch: This job should have created a branch on the gitops-repo with the helmchart version number specified in upgrade-inputcm.yaml. Raise a PR and check what changes are being made. Once satisfied, merge the PR.
-7. `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
+7. `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml` # Replace the namespace accordingly
    Wait for isd-yaml-update-* pod to complete, and all pods to stabilize
-8. isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this: `kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0`
-9. Restart all pods:
+8. If any pods did not restart after the changes please restart the pods. Below is the command to restart all the pods
    - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=0` Wait for a min or two
    - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=1` Wait for all pods to come to ready state
  
