@@ -64,7 +64,11 @@ Upgrade sequence: (3.12 to 4.0.3)
 9. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
 10. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
 11. `kubectl -n opsmx-isd apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
-12. `kubectl -n opsmx-isd create secret generic mysqlcredentials --from-literal host=PUT_YOUR_MYSQL_HOST_NAME --from-literal username=PUT_YOUR_MYSQL_USER_NAME --from-literal password=PUT_YOUR_MYSQL_PASSWORD` (NOTE: Do not change the default values)
+12. `kubectl -n opsmx-isd create secret generic mysqlcredentials --from-literal host=PUT_YOUR_MYSQL_HOST_NAME --from-literal username=PUT_YOUR_MYSQL_USER_NAME --from-literal password=PUT_YOUR_MYSQL_PASSWORD` (NOTE: Do not change the name of the secret and default values)
+
+    **NOTE: Please create below secret only if you are using two external dbs for Spinnaker(Orca,front50)
+
+     `kubectl -n opsmx-isd create secret generic front50credentials --from-literal host=PUT_YOUR_FRONT50_HOST_NAME --from-literal username=PUT_YOUR_FRONT50_USER_NAME --from-literal password=PUT_YOUR_FRONT50_PASSWORD` (NOTE: Do not change the name of the secret and default values)`
 
 13. **DB Upgrade - Schema update**: This can be be executed as a kubenetes job
    
