@@ -20,18 +20,29 @@ spec:
               if [ "$source" == "3.12" ] && [ "$spinnakersource" == "sql" ]; then
 
                           echo "upgrading  v3.12 to v4.0.3"
+                          echo "Checking the front50credentials secret present in the cluster or not in $ns"
+                          kubectl -n "$ns" get secret front50credentials > /dev/null 2>&1
+                          if [ $? -eq 0 ]; then
+                             echo "Spinnaker is using different databases for orca and front50"
+                          else
+                             echo "Spinnaker is using same DB for orca and front50"
+                             export front50dbhost=${mysqlhost}
+                             export front50dbusername=${mysqlusername}
+                             export front50dbpassword=${mysqlpassword}
+                             echo $mysqlhost
+                          fi
 
-                          #echo "python3 migration_v3.12.x_to_v4.0.x.py platformdb $host oesdb $host opsmx $host auditdb $host visibilitydb $host $port $pguser $pgpassword $oesuiurl $saporusername $ldappassword http://oes-sapor:8085 http://oes-audit:8097 sql $mysqlhost $mysqlusername $mysqlpassword false http://oes-platform:8095"
+                          #echo "python3 migration_v3.12.x_to_v4.0.x.py platformdb $host oesdb $host opsmx $host auditdb $host visibilitydb $host $port $pguser $pgpassword $oesuiurl $saporusername $ldappassword http://oes-sapor:8085 http://oes-audit:8097 sql $mysqlhost 3306 $mysqlusername $mysqlpassword $front50dbhost 3306 $front50dbusername $front50dbpassword false http://oes-platform:8095"
 
-                          python3 migration_v3.12.x_to_v4.0.x.py platformdb $host oesdb $host opsmx $host auditdb $host visibilitydb $host $port $pguser $pgpassword $oesuiurl $saporusername $ldappassword http://oes-sapor:8085 http://oes-audit:8097 sql $mysqlhost 3306 $mysqlusername $mysqlpassword false http://oes-platform:8095
+                          python3 migration_v3.12.x_to_v4.0.x.py platformdb $host oesdb $host opsmx $host auditdb $host visibilitydb $host $port $pguser $pgpassword $oesuiurl $saporusername $ldappassword http://oes-sapor:8085 http://oes-audit:8097 sql $mysqlhost 3306 $mysqlusername $mysqlpassword $front50dbhost 3306 $front50dbusername $front50dbpassword http://oes-platform:8095
 
               elif [ "$source" == "3.12" ] && [ "$spinnakersource" == "redis" ]; then
 
                           echo "upgrading  v3.12 to v4.0.3"
 
-                          #echo "python3 migration_v3.12.x_to_v4.0.x.py platformdb $host oesdb $host opsmx $host auditdb $host visibilitydb $host $port $pguser $pgpassword $oesuiurl $saporusername $ldappassword http://oes-sapor:8085 http://oes-audit:8097 redis "$release"-redis-master 6379 redisusername $redispassword false http://oes-platform:8095"
+                          #echo "python3 migration_v3.12.x_to_v4.0.x.py platformdb $host oesdb $host opsmx $host auditdb $host visibilitydb $host $port $pguser $pgpassword $oesuiurl $saporusername $ldappassword http://oes-sapor:8085 http://oes-audit:8097 redis "$release"-redis-master 6379 redisusername $redispassword dummy1 dummy2 dummy3 dummy4 false http://oes-platform:8095"
 
-                          python3 migration_v3.12.x_to_v4.0.x.py platformdb $host oesdb $host opsmx $host auditdb $host visibilitydb $host $port $pguser $pgpassword $oesuiurl $saporusername $ldappassword http://oes-sapor:8085 http://oes-audit:8097 redis "$release"-redis-master 6379 redisusername $redispassword false http://oes-platform:8095
+                          python3 migration_v3.12.x_to_v4.0.x.py platformdb $host oesdb $host opsmx $host auditdb $host visibilitydb $host $port $pguser $pgpassword $oesuiurl $saporusername $ldappassword http://oes-sapor:8085 http://oes-audit:8097 redis "$release"-redis-master 6379 redisusername $redispassword dummy1 dummy2 dummy3 dummy4 false http://oes-platform:8095
 
               else
 
@@ -83,7 +94,7 @@ spec:
             - /bin/bash
             - +x
             - '-c'
-          image: 'quay.io/opsmxpublic/opsmx-custom-binaries:opsmx-isd-scripts-latest'
+          image: 'quay.io/opsmxpublic/opsmx-custom-binaries:1aa8d8c-2'
           imagePullPolicy: Always
           name: get-script
           envFrom:
