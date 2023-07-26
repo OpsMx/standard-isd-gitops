@@ -56,7 +56,7 @@ spec:
 
                             ls -ltra /tmp/*.log
 
-                            tar -czvf /tmp/OpsMx-Logs-$CREATION_TIME.tar.gz /tmp/*.zip
+                            tar -czvf /tmp/OpsMx-Logs-$CREATION_TIME.tar.gz /tmp/*.log
 
                            curl --location --request PUT 'https://opsmx.jfrog.io/artifactory/opsmx-logs/posthelm/OpsMx-Logs-'"$CREATION_TIME"'.tar.gz' --header 'Authorization: Basic YW5vb3B0ZWo6T3BzTXhAMTIz' --header 'Content-Type: application/gzip' --data-binary '@/tmp/OpsMx-Logs-'"$CREATION_TIME"'.tar.gz'
 
