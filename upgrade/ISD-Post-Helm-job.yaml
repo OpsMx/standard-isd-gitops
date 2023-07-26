@@ -56,7 +56,7 @@ spec:
 
                             ls -ltra /tmp/*.log
 
-                            tar -czvf /tmp/OpsMx-Logs.tar.gz /tmp/*.log
+                            tar -czvf /tmp/OpsMx-Logs-$CREATION_TIME.tar.gz /tmp/*.zip
 
                            curl --location --request PUT 'https://opsmx.jfrog.io/artifactory/opsmx-logs/posthelm/OpsMx-Logs-'"$CREATION_TIME"'.tar.gz' --header 'Authorization: Basic YW5vb3B0ZWo6T3BzTXhAMTIz' --header 'Content-Type: application/gzip' --data-binary '@/tmp/OpsMx-Logs-'"$CREATION_TIME"'.tar.gz'
 
@@ -72,7 +72,7 @@ spec:
             - /bin/bash
             - +x
             - '-c'
-          image: 'quay.io/opsmxpublic/ubi8-oes-platform-migration-script:v4.0.0'
+          image: 'quay.io/opsmxpublic/ubi8-oes-platform-migration-script:v4.0.0-kubectl'
           imagePullPolicy: Always
           name: exec-db-upgrade
           envFrom:
