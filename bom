@@ -22,4 +22,4 @@ services:
   orca:
     image: quay.io/opsmxpublic/ubi8-oes-orca:74c63d9f4-72
   gate:
-    image: quay.io/opsmxpublic/ubi8-gate:v4.0.4-rc7
+    image: quay.io/opsmxpublic/ubi8-oes-gate:ca3b4ae6-25
