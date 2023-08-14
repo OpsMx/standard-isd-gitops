@@ -14,6 +14,7 @@ Use these instructions if:
 Execute these commands, replacing "gitops-repo" with your repo
 - `git clone `**https://github.com/.../gitops-repo**
 - `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 4.0.4`
+- `cp standard-isd-gitops/default/profiles/echo-local.yml gitops-repo/default/profiles/`
 - `cp -r standard-isd-gitops/upgrade gitops-repo`
 - `cd gitops-repo`
 - Copy the existing "values.yaml", that was used for previous installation into this folder. We will call it values-403.yaml
