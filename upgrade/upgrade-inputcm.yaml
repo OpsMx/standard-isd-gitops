@@ -8,7 +8,7 @@ data:
   # Typically, there is no need to change the values below this line, please check the "nameaspace"
   #####################################################################################################
   branch: main         # Gitrepo branch, MUST be the default branch
-  version: 4.0.22     # Helm Chart Version
+  version: 4.0.23     # Helm Chart Version
   namespace: opsmx-isd # Namespace to install ISD, best not to change
   beta: "true"          # Set to true only for beta releases, default is false
   secrets: gittoken,ldappassword,dbpassword,keystorepassword,rabbitmqpassword,saporpassword,redispassword,miniopassword,ldapconfigpassword
