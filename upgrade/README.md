@@ -14,6 +14,7 @@ Use these instructions if:
 Execute these commands, replacing "gitops-repo" with your repo
 - `git clone `**https://github.com/.../gitops-repo**
 - `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 4.0.4`
+- `cp standard-isd-gitops/default/profiles/echo-local.yml gitops-repo/default/profiles/`
 - `cp -r standard-isd-gitops/upgrade gitops-repo`
 - `cd gitops-repo`
 - Copy the existing "values.yaml", that was used for previous installation into this folder. We will call it values-403.yaml
@@ -65,19 +66,16 @@ Upgrade sequence: (4.0.3 to 4.0.4)
      `kubectl patch configmap/upgrade-inputcm --type merge -p '{"data":{"release":"isd"}}' -n opsmx-isd` # Default release name is "isd". Please update it       accordingly and apply the command 
 11. `kubectl -n opsmx-isd apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
 
-12. **DB Upgrade - Schema update**:
-     `kubectl -n opsmx-isd apply -f migration_v403_to_v404.yaml`
-
-13. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
+12. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
 
     - Once the pod is completed please check the pod logs to verify manifest files are updated in GIt or not.
 
          `kubectl -n opsmx-isd logs isd-generate-yamls-xxx -c git-clone` #Replacing the name of the pod name correctly, check if your gitops-repo is cloned correctly
 
-14. Compare and merge branch: This job should have created a branch on the gitops-repo with the helmchart version number specified in upgrade-inputcm.yaml. Raise a PR and check what changes are being made. Once satisfied, merge the PR.
+13. Compare and merge branch: This job should have created a branch on the gitops-repo with the helmchart version number specified in upgrade-inputcm.yaml. Raise a PR and check what changes are being made. Once satisfied, merge the PR.
 
-15. `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
+14. `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
    Wait for isd-yaml-update-* pod to complete
     
     - Once pod will completed so please check the pod logs to verify manifest files are updated in Git or not.
@@ -86,17 +84,17 @@ Upgrade sequence: (4.0.3 to 4.0.4)
 
       `kubectl -n opsmx-isd logs isd-apply-yamls-xxx -c script` #Replacing the name of the pod name correctly, check the log of the script that pushes the yamls and applies them
 
-16. isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this:
+15. isd-spinnaker-halyard-0 pod should restart automatically. If not, execute this:
    
       - `kubectl -n opsmx-isd  delete po isd-spinnaker-halyard-0`
 
-17. Restart all pods:
+16. Restart all pods:
       - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=0` Wait for a min or two
       - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=1` Wait for all pods to come to ready state
  
-18. Go to ISD UI and check that version number has changed in the bottom-left corner
-19. Wait for about 5 min for autoconfiguration to take place.
-20. If required: a) Connect Spinnaker again b) Configure pipeline-promotion again. To do this, in the ISD UI:
+17. Go to ISD UI and check that version number has changed in the bottom-left corner
+18. Wait for about 5 min for autoconfiguration to take place.
+19. If required: a) Connect Spinnaker again b) Configure pipeline-promotion again. To do this, in the ISD UI:
       - Click setup
       - Click Spinnaker tab at the top. Check if "External Accounts" and "Pipeline-promotion" columns show "yes". If any of them is "no":
       - Click "edit" on the 3 dots on the far right. Check the values already filled in, make changes if required and click "update".
@@ -114,4 +112,3 @@ As a first step. Please try the "Troubleshooting Issues during Installation" sec
 3. `kubectl -n opsmx-isd delete svc --all`
 4. `kubectl -n opsmx-isd replace --force -f ISD-Apply-yamls-job.yaml`
 5.  Wait for all the pods to come up
-
