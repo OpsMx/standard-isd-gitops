@@ -6,6 +6,7 @@ cd /repo/
 echo "################Removing the job related templates##############"
 rm -rf /repo/isd/oes/templates/hooks/oes-config-job.yaml
 rm -rf /repo/isd/oes/templates/hooks/github-create.yaml
+rm -rf /repo/isd/oes/templates/forwarder/create-controller-secret.yaml
 ################################################################
 echo "##########Replacing Secret#########"
 grep -ir encrypted: /repo/isd/ | sort -t: -u -k1,1 |cut -d : -f1 > tmp.list
