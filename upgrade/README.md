@@ -17,6 +17,7 @@ Execute these commands, replacing "gitops-repo" with your repo
 - `cp standard-isd-gitops/default/profiles/echo-local.yml gitops-repo/default/profiles/`
 - `cp -r standard-isd-gitops/upgrade gitops-repo`
 - `cd gitops-repo`
+- `Change the spinnaker version to 1.30.1 in ~/.hal/config file`
 - Copy the existing "values.yaml", that was used for previous installation into this folder. We will call it values-403.yaml
 - diff values-403.yaml values-404.yaml and merge all of your changes into "values.yaml".
 - Copy the updated values file as "values.yaml" (file name is important)
