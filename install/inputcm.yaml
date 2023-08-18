@@ -8,7 +8,7 @@ data:
   # Typically, there is no need to change the values below this line
   #####################################################################################################
   branch: main         # Gitrepo branch, MUST be the default branch
-  version: 4.0.23      # ISD Chart version
+  version: 4.0.24      # ISD Chart version
   namespace: opsmx-isd # Namespace to install ISD, best not to change
   beta: "true"          # Set to true only for beta releases, default is false
 
