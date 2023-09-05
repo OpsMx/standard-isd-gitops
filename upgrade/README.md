@@ -33,7 +33,7 @@ Execute these commands, replacing "gitops-repo" with your repo
 
 ## Scenario B
 Use this set if instructions if:
-a) You have a 4.0.3 installed using gitops installer
+a) You have a 4.0.3/4.0.3.1 installed using gitops installer
 b) Already have a gitops-repo for ISD (AP and Spinnaker) Configuration
 
 Execute these commands, replacing "gitops-repo" with your repo
@@ -45,7 +45,7 @@ Execute these commands, replacing "gitops-repo" with your repo
 - Check that a "values.yaml" file exists in this directory (root of the gitops-repo)
 
 ## Common Steps
-Upgrade sequence: (4.0.3 to 4.0.4)
+Upgrade sequence: (4.0.3/4.0.3.1 to 4.0.4)
 1. Ensure that "default" account is configured to deploy to the ISD namespace (e.g. opsmx-isd)
 2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
 3. Copy the bom from standard-isd-gitops.git to the gitops-repo
@@ -54,24 +54,58 @@ Upgrade sequence: (4.0.3 to 4.0.4)
 
 4. If there are any custom settings done for spinnaker please update those changes accordingly in gitops-repo/default/profiles.
 
-5. Please refer below doc to check the differences from 4.0.3 to 4.0.4 of git-repo and updated it accordingly
-   https://docs.google.com/document/d/14pEUXDwWshpUPRPLykM0lW4gzHvw5kHJyTJHveGlfoo/edit# (TODO)
-6. `cd upgrade`
-7. Update upgrade-inputcm.yaml: 
+5. `cd upgrade`
+6. Update upgrade-inputcm.yaml: 
    - url, username and gitemail MUST be updated. TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
    - **If ISD Namespace is different from "opsmx-isd"**: Update namespace (default is opsmx-isd) to the namespace where ISD is installed
-8. **If ISD Namespace is different from "opsmx-isd"**: Edit serviceaccount.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
-9. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
-10. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
-     `kubectl patch configmap/upgrade-inputcm --type merge -p '{"data":{"release":"isd"}}' -n opsmx-isd` # Default release name is "isd". Please update it       accordingly and apply the command 
-11. `kubectl -n opsmx-isd apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
+7. **If ISD Namespace is different from "opsmx-isd"**: Edit serviceaccount.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
+8. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
+9. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
+     `kubectl patch configmap/upgrade-inputcm --type merge -p '{"data":{"release":"isd"}}' -n opsmx-isd` # Default release name is "isd".        
+   Please update it accordingly and apply the command
+
+10. `kubectl -n opsmx-isd apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
+
+    **NOTE** : **PLEASE IGNORE DB UPGRADE - SCHME UPDATE STEP IF YOU ARE UPGRADING FROM 4.0.3.1 to 4.0.4**
+
+11. **DB Upgrade - Schema update**:
+
+    Read the comments in the audit-local.yml and update the `DBHOSTNAME,DBUSERNAME,DBPASSWORD`.
+
+    **Hint**:
+
+    - `DBHOSTNAME,DBUSERNAME` is passed in values.yaml under db section. Please copy paste that.
+    - `DBPASSWORD` can be fetched from dbpassword secret from the Cluster.
+
+      `kubectl -n opsmx-isd create secret generic oes-audit-service-config-new --from-file=audit-local.yml`
+
+      `kubectl -n opsmx-isd apply -f migration_v403_to_v404.yaml`
+
+    - Once the above command is executed new pod will be created is running so please check the pod logs to verify if the Schema is updated or not.
+
+      Below is the sample log message:
+
+      ```console
+      2023-05-11 16:05:18.101  INFO 7 --- [ task-1] c.o.a.events.UserActivityEvent : User activity data migration started
+      2023-05-11 16:05:18.582  INFO 7 --- [ task-1] c.o.a.events.UserActivityEvent : Migrated 39 user activity events successfully: 
+      2023-05-11 16:05:18.583  INFO 7 --- [ task-1] c.o.a.events.UserActivityEvent : User activity data migration ended
+      2023-05-11 16:05:18.606  INFO 7 --- [ task-1] c.o.a.events.PolicyAuditEvent  : Policy Audit data migration started
+      2023-05-11 16:05:18.619  INFO 7 --- [ task-1] c.o.a.events.PolicyAuditEvent  : Should be a fresh install or Policy Audit events            might have migrated already so not attempting migration now
+      2023-05-11 16:05:18.633  INFO 7 --- [ task-1] c.o.a.events.PipelineConfigEvent : Pipeline Config data migration started
+      2023-05-11 16:05:18.649  INFO 7 --- [ task-1] c.o.a.events.PipelineConfigEvent : Should be a fresh install or Pipeline Config events       might have migrated already so not attempting migration now
+      2023-05-11 16:05:18.653  INFO 7 --- [ task-1] c.o.auditservice.events.MigrationEvent : database migration Ended
+      ```
+
+     - Once the migration is sucessfull delete the migration yaml
+
+        `kubectl -n opsmx-isd delete -f migration_v403_to_v404.yaml`
 
 12. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
 
     - Once the pod is completed please check the pod logs to verify manifest files are updated in GIt or not.
 
-         `kubectl -n opsmx-isd logs isd-generate-yamls-xxx -c git-clone` #Replacing the name of the pod name correctly, check if your gitops-repo is cloned correctly
+      `kubectl -n opsmx-isd logs isd-generate-yamls-xxx -c git-clone` #Replacing the name of the pod name correctly, check if your gitops-repo is cloned correctly
 
 13. Compare and merge branch: This job should have created a branch on the gitops-repo with the helmchart version number specified in upgrade-inputcm.yaml. Raise a PR and check what changes are being made. Once satisfied, merge the PR.
 
