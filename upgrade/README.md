@@ -1,13 +1,13 @@
 
 # Upgrade Instructions
 
-Please follow these instructions if you are upgrading from 4.0.3 (to 4.0.4). The current installtion (4.0.3) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
+Please follow these instructions if you are upgrading from 4.0.3/4.0.3.1 (to 4.0.4). The current installtion (4.0.3/4.0.3.1) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
 
 **WARNING**: Please backup all the databases, in particualr the Posgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration. 
 
 ## Scenario A
 Use these instructions if:
-- You have a 4.0.3 installed using the helm installer and
+- You have a 4.0.3/4.0.3.1 installed using the helm installer and
 - Already have a "gitops-repo" for Spinnaker Configuration
 - Have values.yaml that was used for helm installation
 
@@ -17,8 +17,8 @@ Execute these commands, replacing "gitops-repo" with your repo
 - `cp standard-isd-gitops/default/profiles/echo-local.yml gitops-repo/default/profiles/`
 - `cp -r standard-isd-gitops/upgrade gitops-repo`
 - `cd gitops-repo`
-- Copy the existing "values.yaml", that was used for previous installation into this folder. We will call it values-403.yaml
-- diff values-403.yaml values-404.yaml and merge all of your changes into "values.yaml".
+- Copy the existing "values.yaml", that was used for previous installation into this folder. We will call it values-403.yaml/values-4031.yaml
+- Update the values-403.yaml/values-4031.yaml as per the requirement
 - Copy the updated values file as "values.yaml" (file name is important)
 - create gittoken secret. This token will be used to authenticate to the gitops-repo
    - `kubectl -n opsmx-isd create secret generic gittoken --from-literal gittoken=PUT_YOUR_GITTOKEN_HERE` 
