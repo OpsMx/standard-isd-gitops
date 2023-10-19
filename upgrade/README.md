@@ -1,24 +1,24 @@
 
 # Upgrade Instructions
 
-Please follow these instructions if you are upgrading from 4.0.3/4.0.3.1 (to 4.0.4). The current installtion (4.0.3/4.0.3.1) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
+Please follow these instructions if you are upgrading from 4.0.3.1 / 4.0.4 (to 4.0.4.1). The current installtion ( 4.0.3.1 / 4.0.4) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
 
 **WARNING**: Please backup all the databases, in particualr the Posgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration. 
 
 ## Scenario A
 Use these instructions if:
-- You have a 4.0.3/4.0.3.1 installed using the helm installer and
+- You have a 4.0.3.1/4.0.4 installed using the helm installer and
 - Already have a "gitops-repo" for Spinnaker Configuration
 - Have values.yaml that was used for helm installation
 
 Execute these commands, replacing "gitops-repo" with your repo
 - `git clone `**https://github.com/.../gitops-repo**
-- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 4.0.4`
+- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 4.0.4.1`
 - `cp standard-isd-gitops/default/profiles/echo-local.yml gitops-repo/default/profiles/`
 - `cp -r standard-isd-gitops/upgrade gitops-repo`
 - `cd gitops-repo`
-- Copy the existing "values.yaml", that was used for previous installation into this folder. We will call it values-403.yaml/values-4031.yaml
-- Update the values-403.yaml/values-4031.yaml as per the requirement
+- Copy the existing "values.yaml", that was used for previous installation into this folder. We will call it values-4031.yaml/values-404.yaml
+- Update the values-4031.yaml/values-404.yaml as per the requirement
 - Copy the updated values file as "values.yaml" (file name is important)
 - create gittoken secret. This token will be used to authenticate to the gitops-repo
    - `kubectl -n opsmx-isd create secret generic gittoken --from-literal gittoken=PUT_YOUR_GITTOKEN_HERE` 
@@ -33,7 +33,7 @@ Execute these commands, replacing "gitops-repo" with your repo
 
 ## Scenario B
 Use this set if instructions if:
-a) You have a 4.0.3/4.0.3.1 installed using gitops installer
+a) You have a 4.0.3.1 / 4.0.4 installed using gitops installer
 b) Already have a gitops-repo for ISD (AP and Spinnaker) Configuration
 
 Execute these commands, replacing "gitops-repo" with your repo
@@ -45,7 +45,7 @@ Execute these commands, replacing "gitops-repo" with your repo
 - Check that a "values.yaml" file exists in this directory (root of the gitops-repo)
 
 ## Common Steps
-Upgrade sequence: (4.0.3/4.0.3.1 to 4.0.4)
+Upgrade sequence: (4.0.3.1/4.0.4 to 4.0.4.1)
 1. Ensure that "default" account is configured to deploy to the ISD namespace (e.g. opsmx-isd)
 2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
 3. Copy the bom from standard-isd-gitops.git to the gitops-repo
@@ -59,46 +59,21 @@ Upgrade sequence: (4.0.3/4.0.3.1 to 4.0.4)
    - url, username and gitemail MUST be updated. TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
    - **If ISD Namespace is different from "opsmx-isd"**: Update namespace (default is opsmx-isd) to the namespace where ISD is installed
 7. **If ISD Namespace is different from "opsmx-isd"**: Edit serviceaccount.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
-8. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
-9. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
+8. DB Upgrade:
+   - Need to upadte the values.yaml under dbmigration section. 
+   `dbmigration:
+      enable: true
+      versionFrom: 4.0.4 ## We need to update this flag if we want to run migration from other ISD versions. For eg: versionFrom: 4.0.3.1`
+
+   **NOTE** We need to set the dbmigration > enable: true   & dbmigration > versionFrom: 4.0.3.1 or 4.0.4 [Give the current ISD version]
+
+9. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
+
+10. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
      `kubectl patch configmap/upgrade-inputcm --type merge -p '{"data":{"release":"isd"}}' -n opsmx-isd` # Default release name is "isd".        
    Please update it accordingly and apply the command
 
-10. `kubectl -n opsmx-isd apply -f serviceaccount.yaml` # Edit namespace if changed from the default "opsmx-isd"
-
-    **NOTE** : **PLEASE IGNORE DB UPGRADE - SCHME UPDATE STEP IF YOU ARE UPGRADING FROM 4.0.3.1 to 4.0.4**
-
-11. **DB Upgrade - Schema update**:
-
-    Read the comments in the audit-local.yml and update the `DBHOSTNAME,DBUSERNAME,DBPASSWORD`.
-
-    **Hint**:
-
-    - `DBHOSTNAME,DBUSERNAME` is passed in values.yaml under db section. Please copy paste that.
-    - `DBPASSWORD` can be fetched from dbpassword secret from the Cluster.
-
-      `kubectl -n opsmx-isd create secret generic oes-audit-service-config-new --from-file=audit-local.yml`
-
-      `kubectl -n opsmx-isd apply -f migration_v403_to_v404.yaml`
-
-    - Once the above command is executed new pod will be created is running so please check the pod logs to verify if the Schema is updated or not.
-
-      Below is the sample log message:
-
-      ```console
-      2023-05-11 16:05:18.101  INFO 7 --- [ task-1] c.o.a.events.UserActivityEvent : User activity data migration started
-      2023-05-11 16:05:18.582  INFO 7 --- [ task-1] c.o.a.events.UserActivityEvent : Migrated 39 user activity events successfully: 
-      2023-05-11 16:05:18.583  INFO 7 --- [ task-1] c.o.a.events.UserActivityEvent : User activity data migration ended
-      2023-05-11 16:05:18.606  INFO 7 --- [ task-1] c.o.a.events.PolicyAuditEvent  : Policy Audit data migration started
-      2023-05-11 16:05:18.619  INFO 7 --- [ task-1] c.o.a.events.PolicyAuditEvent  : Should be a fresh install or Policy Audit events            might have migrated already so not attempting migration now
-      2023-05-11 16:05:18.633  INFO 7 --- [ task-1] c.o.a.events.PipelineConfigEvent : Pipeline Config data migration started
-      2023-05-11 16:05:18.649  INFO 7 --- [ task-1] c.o.a.events.PipelineConfigEvent : Should be a fresh install or Pipeline Config events       might have migrated already so not attempting migration now
-      2023-05-11 16:05:18.653  INFO 7 --- [ task-1] c.o.auditservice.events.MigrationEvent : database migration Ended
-      ```
-
-     - Once the migration is sucessfull delete the migration yaml
-
-        `kubectl -n opsmx-isd delete -f migration_v403_to_v404.yaml`
+11. `kubectl -n opsmx-isd apply -f serviceaccount.yaml` # Edit namespace if changed from the default "
 
 12. `kubectl -n opsmx-isd replace --force -f ISD-Generate-yamls-job.yaml`
    [ Wait for isd-generate-yamls-* pod to complete ]
@@ -127,7 +102,9 @@ Upgrade sequence: (4.0.3/4.0.3.1 to 4.0.4)
       - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=1` Wait for all pods to come to ready state
  
 17. Go to ISD UI and check that version number has changed in the bottom-left corner
+
 18. Wait for about 5 min for autoconfiguration to take place.
+
 19. If required: a) Connect Spinnaker again b) Configure pipeline-promotion again. To do this, in the ISD UI:
       - Click setup
       - Click Spinnaker tab at the top. Check if "External Accounts" and "Pipeline-promotion" columns show "yes". If any of them is "no":
