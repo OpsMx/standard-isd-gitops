@@ -126,7 +126,7 @@ db:
 ########################################################################################
 ############################### DB Migration configuration################################################
 dbmigration:
-  enable: false
+  enable: false  ### By default it's set to FALSE; if you are upgrading the ISD from 4.0.3.1 or 4.0.4, we need to set this flag to 'true'
   versionFrom: 4.0.4 ## We need to update this version if we want to run migration from other ISD versions. For eg: versionFrom: 4.0.3.1
 ########################################################################################
 rabbitmq:

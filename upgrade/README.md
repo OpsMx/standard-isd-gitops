@@ -39,7 +39,7 @@ b) Already have a gitops-repo for ISD (AP and Spinnaker) Configuration
 Execute these commands, replacing "gitops-repo" with your repo
 Execute these commands, replacing "gitops-repo" with your repo
 - `git clone `**https://github.com/.../gitops-repo**
-- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 4.0.4`
+- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 4.0.4.1`
 - `cp -r standard-isd-gitops/upgrade gitops-repo/` 
 - `cd gitops-repo`
 - Check that a "values.yaml" file exists in this directory (root of the gitops-repo)
@@ -62,7 +62,7 @@ Upgrade sequence: (4.0.3.1/4.0.4 to 4.0.4.1)
 8. DB Upgrade:
    - Need to upadte the values.yaml under dbmigration section. 
    `dbmigration:
-      enable: true
+      enable: true  ### If we are upgrading the existing ISD From 4.0.3.1 / 4.0.4, then we need to set this flag to 'true'
       versionFrom: 4.0.4 ## We need to update this flag if we want to run migration from other ISD versions. For eg: versionFrom: 4.0.3.1`
 
    **NOTE** We need to set the dbmigration > enable: true   & dbmigration > versionFrom: 4.0.3.1 or 4.0.4 [Give the current ISD version]
