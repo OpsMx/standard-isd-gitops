@@ -85,6 +85,9 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 
    **NOTE**: Make sure values.yaml has saml configuration
 
+## Enable Grafana and Prometheus 
+1. Document for enabling Grafana and Prometheus can be found [here](https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit)
+
 # Troubleshooting Issues during installation
 ## ISD-Install-Job fails to start, no pod created or it errors
 Execute this command:
