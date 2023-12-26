@@ -12,7 +12,7 @@ Should we have different infrastructure requirements, please contact OpsMx.
 
 1. Create an empty-repo (called the "gitops-repo" in the document),  "main" branch should be the default, and clone it locally
 2. Clone https://github.com/OpsMx/standard-isd-gitops, selecting the appropriate branch:
-- `git clone https://github.com/OpsMx/standard-isd-gitops -b 4.0.4.1`
+- `git clone https://github.com/OpsMx/standard-isd-gitops -b 4.0.4.2`
 
 3. Copy contents of the standard-isd-repo to the gitops-repo created above using:
    
@@ -24,7 +24,7 @@ Should we have different infrastructure requirements, please contact OpsMx.
 *The installation process requires inputs such as the application version, git-repo details and so on.*
 
 4. In the gitops-repo cloned to disk and edit `install/inputcm.yaml`. This should be updated, at a **minimum**, with gitrepo and username.
-5. **Update Values.yaml as required**, specifically: At **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/v4.0.4/charts/oes
+5. **Update Values.yaml as required**, specifically: At **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/v4.0.4.2/charts/oes
 
 NOTE: We recommend that we start with the defaults, updating just the URL and gitopsHalyard details and gradually adding SSO, external DBs, etc. while updating the installed instance.
 
@@ -128,3 +128,10 @@ Issue these commands, replace -n option with the namespace
 - `kubectl -n opsmx-isd delete pvc -–all`
 - `kubectl -n opsmx-isd delete secrets --all`
 - `kubectl delete ns opsmx-isd`
+
+# Creating view_access user in Grafana
+
+1. Go to grafana dashboard
+2. Click on Toggle Menu and select “Administration”
+3. Select Users→ New user→ give username and password as provided in values.yaml(under grafana section)
+4. Click on create user

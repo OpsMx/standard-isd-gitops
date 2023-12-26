@@ -1,24 +1,24 @@
 
 # Upgrade Instructions
 
-Please follow these instructions if you are upgrading from 4.0.3.1 / 4.0.4 (to 4.0.4.1). The current installtion ( 4.0.3.1 / 4.0.4) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
+Please follow these instructions if you are upgrading from 4.0.4.1  (to 4.0.4.2). The current installtion ( 4.0.4.1) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
 
 **WARNING**: Please backup all the databases, in particualr the Posgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration. 
 
 ## Scenario A
 Use these instructions if:
-- You have a 4.0.3.1/4.0.4 installed using the helm installer and
+- You have a 4.0.4.1 installed using the helm installer and
 - Already have a "gitops-repo" for Spinnaker Configuration
 - Have values.yaml that was used for helm installation
 
 Execute these commands, replacing "gitops-repo" with your repo
 - `git clone `**https://github.com/.../gitops-repo**
-- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 4.0.4.1`
+- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 4.0.4.2`
 - `cp standard-isd-gitops/default/profiles/echo-local.yml gitops-repo/default/profiles/`
 - `cp -r standard-isd-gitops/upgrade gitops-repo`
 - `cd gitops-repo`
-- Copy the existing "values.yaml", that was used for previous installation into this folder. We will call it values-4031.yaml/values-404.yaml
-- Update the values-4031.yaml/values-404.yaml as per the requirement
+- Copy the existing "values.yaml", that was used for previous installation into this folder. We will call it values-4041.yaml
+- Update the values-4041.yaml as per the requirement
 - Copy the updated values file as "values.yaml" (file name is important)
 - create gittoken secret. This token will be used to authenticate to the gitops-repo
    - `kubectl -n opsmx-isd create secret generic gittoken --from-literal gittoken=PUT_YOUR_GITTOKEN_HERE` 
@@ -33,19 +33,19 @@ Execute these commands, replacing "gitops-repo" with your repo
 
 ## Scenario B
 Use this set if instructions if:
-a) You have a 4.0.3.1 / 4.0.4 installed using gitops installer
+a) You have a 4.0.4.1 installed using gitops installer
 b) Already have a gitops-repo for ISD (AP and Spinnaker) Configuration
 
 Execute these commands, replacing "gitops-repo" with your repo
 Execute these commands, replacing "gitops-repo" with your repo
 - `git clone `**https://github.com/.../gitops-repo**
-- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 4.0.4.1`
+- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 4.0.4.2`
 - `cp -r standard-isd-gitops/upgrade gitops-repo/` 
 - `cd gitops-repo`
 - Check that a "values.yaml" file exists in this directory (root of the gitops-repo)
 
 ## Common Steps
-Upgrade sequence: (4.0.3.1/4.0.4 to 4.0.4.1)
+Upgrade sequence: (4.0.4.1 to 4.0.4.2)
 1. Ensure that "default" account is configured to deploy to the ISD namespace (e.g. opsmx-isd)
 2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
 3. Copy the bom from standard-isd-gitops.git to the gitops-repo
@@ -62,10 +62,10 @@ Upgrade sequence: (4.0.3.1/4.0.4 to 4.0.4.1)
 8. DB Upgrade:
    - Need to upadte the values.yaml under dbmigration section. 
    `dbmigration:
-      enable: true  ### If we are upgrading the existing ISD From 4.0.3.1 / 4.0.4, then we need to set this flag to 'true'
-      versionFrom: 4.0.4 ## We need to update this flag if we want to run migration from other ISD versions. For eg: versionFrom: 4.0.3.1`
+      enable: true  ### If we are upgrading the existing ISD From 4.0.4.1 / 4.0.4, then we need to set this flag to 'true'
+      versionFrom: 4.0.4 ## We need to update this flag if we want to run migration from other ISD versions. For eg: versionFrom: 4.0.4.1`
 
-   **NOTE** We need to set the dbmigration > enable: true   & dbmigration > versionFrom: 4.0.3.1 or 4.0.4 [Give the current ISD version]
+   **NOTE** We need to set the dbmigration > enable: true   & dbmigration > versionFrom: 4.0.4.1 [Give the current ISD version]
 
 9. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
 
