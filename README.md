@@ -128,3 +128,10 @@ Issue these commands, replace -n option with the namespace
 - `kubectl -n opsmx-isd delete pvc -–all`
 - `kubectl -n opsmx-isd delete secrets --all`
 - `kubectl delete ns opsmx-isd`
+
+# Creating view_access user in Grafana
+
+1. Go to grafana dashboard
+2. Click on Toggle Menu and select “Administration”
+3. Select Users→ New user→ give username and password as provided in values.yaml(under grafana section)
+4. Click on create user
