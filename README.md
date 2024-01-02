@@ -135,6 +135,6 @@ Issue these commands, replace -n option with the namespace
 # Creating view_access user in Grafana
 
 1. Go to grafana dashboard
-2. Click on Toggle Menu and select “Administration”
+2. Click on Arrow and select “Server Admin”
 3. Select Users→ New user→ give username and password as provided in values.yaml(under grafana section)
 4. Click on create user
