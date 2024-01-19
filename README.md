@@ -23,15 +23,19 @@ Should we have different infrastructure requirements, please contact OpsMx.
 ## Specify inputs based on your environment and git-repo
 *The installation process requires inputs such as the application version, git-repo details and so on.*
 
-4. In the gitops-repo cloned to disk and edit `install/inputcm.yaml`. This should be updated, at a **minimum**, with gitrepo and username.
-5. **Update Values.yaml as required**, specifically: At **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/v4.0.4.2/charts/oes
+4. In the gitops-repo cloned to disk and edit `install/inputcm.yaml`. This should be updated, at a **minimum**, with gitrepo url,username and gitemail.
+5. **Update Values.yaml as required**, specifically: At **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/v4.0.4.2/charts/oes 
 
 NOTE: We recommend that we start with the defaults, updating just the URL and gitopsHalyard details and gradually adding SSO, external DBs, etc. while updating the installed instance.
 
-6. Edit namespace in the `install/inputcm.yaml` file and `install/serviceaccount.yaml`,  if changed from default (i.e. "opsmx-isd")
-7. Edit the beta value to true in the `install/inputcm.yaml` file for beta releases only, let the default value be false (i.e. "false")
-8. Push all changes in the gitops-repo to git (e.g `git add -A; git commit -m"my changes";git push`)
-9. Create namespace, a configmap for inputs and a service account as follows [edit namespace (i.e. opsmx-isd) as appropriate]:
+## Enable Grafana and Prometheus 
+6. If we want to install ISD along with new Grafana URL and Prometheus URL, enable the enableCentralMonitoring,openTelemetry,grafana URL,prometheus URL[here](https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit)
+- We can configure the exiting grafana and prometheus URL's and enableCentralMonitoring set to be false in the Values.yaml (existing URL's should be present in the same cluster)
+
+7. Edit namespace in the `install/inputcm.yaml` file and `install/serviceaccount.yaml`,  if changed from default (i.e. "opsmx-isd")
+8. Edit the beta value to true in the `install/inputcm.yaml` file for beta releases only, let the default value be false (i.e. "false")
+9. Push all changes in the gitops-repo to git (e.g `git add -A; git commit -m"my changes";git push`)
+10. Create namespace, a configmap for inputs and a service account as follows [edit namespace (i.e. opsmx-isd) as appropriate]:
 - `kubectl create ns opsmx-isd` 
 - `kubectl -n opsmx-isd apply -f install/inputcm.yaml` 
 - `kubectl -n opsmx-isd apply -f install/serviceaccount.yaml`
@@ -39,7 +43,7 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 ## Create secrets
 *ISD supports multiple secret managers for storing secrets such as DB passwords, SSO authenticatoin details and so on. Using kubernetes secrets is the default.*
 
-10. Create the following secrets. The default values are handled by the installer, except for gittoken. If you are using External SSO, DBs, etc. you might want to change them. Else, best to leave them at the defaults:
+11. Create the following secrets. The default values are handled by the installer, except for gittoken. If you are using External SSO, DBs, etc. you might want to change them. Else, best to leave them at the defaults:
 - `kubectl -n opsmx-isd create secret generic gittoken --from-literal=gittoken=PUT_YOUR_GITTOKEN_HERE`
 
 ### Optional
@@ -56,12 +60,12 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 ## Start the installation
 *The installation is done by a kubenetes job that processes the secrets, generates YAMLs, stores them into the git-repo and creats the objectes in Kubernetes.*
 
-11. Installation ISD by executing this command:
+12. Installation ISD by executing this command:
 
 - `kubectl -n opsmx-isd apply -f install/ISD-Install-Job.yaml`
 
 ## Monitor the installation process
-12. Wait for all pods to stabilize (about 10-20 min, depending on your cluster load). The "oes-config" in Completed status indicates completion of the installation process. Check status using:
+13. Wait for all pods to stabilize (about 10-20 min, depending on your cluster load). The "oes-config" in Completed status indicates completion of the installation process. Check status using:
 
 - `kubectl -n opsmx-isd get po -w`
 
@@ -75,8 +79,32 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 - `kubectl -n opsmx-isd logs isd-spinnaker-halyard-0 -c create-halyard-local`
 
 ## Check the installation
-13. Access ISD using the URL specified in the values.yaml in step 5 in a browser such as Chrome.
-14. Login to the ISD instance with user/password as admin and opsmxadmin123, if using the defaults for build-in LDAP.
+14. Access ISD using the URL specified in the values.yaml in step 5 and step 6 in a browser such as Chrome.
+16. Login to the ISD instance with user/password as admin and opsmxadmin123, if using the defaults for build-in LDAP.
+17. Login to the Grafana URL with admin user/password as admin and opsmxadmin123 directly then need to provide "/grafana" at the end of URL then create non admin user (follow the Creating Non admin user mean view_access user in Grafana) steps
+18. Once we create non admin user ISD will be auto login with non admin user
+
+# Creating DataSource in Grafana
+1. Access Grafana using the URL specified in values.yaml 
+2. Login to grafana using admin credentials (default username and password admin/opsmxadmin123 )
+3. Now, select Add new connection → select prometheus → Add new data source
+4. Provide the name and prometheus server URL(https://Prometheus) and save
+5. It will generate uid (ex: bed11ea0-a802-4b67-9646-5d6f2194495f)
+
+# Importing Dashboards in Grafana
+1. Go to grafana dashboard
+2. Click on Toggle Menu and select Dashboards
+3. Before importing the pipeline Insights and Stage Insights Json change the uid in all the panels which we get while creating promethus 
+4. Now, click on New → Import the Pipeline Insights 
+5. Provide the name and Change uid name and Import
+6. Same as Import the Stage Insights json also.
+
+# Creating Non admin user mean view_access user in Grafana
+1. Go to grafana dashboard
+2. Click on toggle button and select “Administration"
+3. Select Users→ New user→ give username and password as provided in values.yaml(under grafana section)
+4. Click on create user
+
 
 ## Switch from OpenLDAP to Saml
 1. Document to update from OpenLDAP to Saml can be found [here](https://docs.google.com/document/d/1y1xpMFq5fm5oqS83Bk62msM9VzdIr5kAcH_j2sNrmCw/edit#)
@@ -84,9 +112,6 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
    - Move the old values.yaml to openldap-values.yaml and saml-values.yaml to values.yaml
 
    **NOTE**: Make sure values.yaml has saml configuration
-
-## Enable Grafana and Prometheus 
-1. Document for enabling Grafana and Prometheus can be found [here](https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit)
 
 # Troubleshooting Issues during installation
 ## ISD-Install-Job fails to start, no pod created or it errors
@@ -132,9 +157,4 @@ Issue these commands, replace -n option with the namespace
 - `kubectl -n opsmx-isd delete secrets --all`
 - `kubectl delete ns opsmx-isd`
 
-# Creating view_access user in Grafana
 
-1. Go to grafana dashboard
-2. Click on Arrow and select “Server Admin”
-3. Select Users→ New user→ give username and password as provided in values.yaml(under grafana section)
-4. Click on create user
