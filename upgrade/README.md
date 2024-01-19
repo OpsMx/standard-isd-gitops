@@ -56,14 +56,14 @@ Upgrade sequence: (4.0.4.1 to 4.0.4.2)
 
 5. `cd upgrade`
 6. Update upgrade-inputcm.yaml: 
-   - url, username and gitemail MUST be updated. TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
+   - url, username and gitemail MUST be updated(if require update grafana and promethus URL's). TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
    - **If ISD Namespace is different from "opsmx-isd"**: Update namespace (default is opsmx-isd) to the namespace where ISD is installed
 7. **If ISD Namespace is different from "opsmx-isd"**: Edit serviceaccount.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
 8. DB Upgrade:
    - Need to upadte the values.yaml under dbmigration section. 
    `dbmigration:
-      enable: true  ### If we are upgrading the existing ISD From 4.0.4.1 / 4.0.4, then we need to set this flag to 'true'
-      versionFrom: 4.0.4 ## We need to update this flag if we want to run migration from other ISD versions. For eg: versionFrom: 4.0.4.1`
+      enable: false  ### If we are upgrading the existing ISD From 4.0.4.1 / 4.0.4, then we need to set this flag to 'true'
+      versionFrom: 4.0.4.2 ## We need to update this flag if we want to run migration from other ISD versions. For eg: versionFrom: 4.0.4.1`
 
    **NOTE** We need to set the dbmigration > enable: true   & dbmigration > versionFrom: 4.0.4.1 [Give the current ISD version]
 
