@@ -63,7 +63,7 @@ Upgrade sequence: (4.0.4.1 to 4.0.4.2)
    - Need to upadte the values.yaml under dbmigration section. 
    `dbmigration:
       enable: false  ### If we are upgrading the existing ISD From 4.0.4.1 / 4.0.4, then we need to set this flag to 'true'
-      versionFrom: 4.0.4.2 ## We need to update this flag if we want to run migration from other ISD versions. For eg: versionFrom: 4.0.4.1`
+      versionFrom: 4.0.4.1 ## We need to update this flag if we want to run migration from other ISD versions. For eg: versionFrom: 4.0.4
 
    **NOTE** We need to set the dbmigration > enable: true   & dbmigration > versionFrom: 4.0.4.1 [Give the current ISD version]
 

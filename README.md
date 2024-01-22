@@ -25,12 +25,11 @@ Should we have different infrastructure requirements, please contact OpsMx.
 
 4. In the gitops-repo cloned to disk and edit `install/inputcm.yaml`. This should be updated, at a **minimum**, with gitrepo url,username and gitemail.
 5. **Update Values.yaml as required**, specifically: At **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/v4.0.4.2/charts/oes 
+- (Optional) Refer to [this document] (https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit) if we want to enable the new (Pipeline and Stage) Insight charts added to ISD.
+
+6. (Optional) If you enabled new Insights feature, please follow the post installation steps listed [here] (https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit#heading=h.odfvfs38x0e3)
 
 NOTE: We recommend that we start with the defaults, updating just the URL and gitopsHalyard details and gradually adding SSO, external DBs, etc. while updating the installed instance.
-
-## Enable Grafana and Prometheus 
-6. If we want to install ISD along with new Grafana URL and Prometheus URL, enable the enableCentralMonitoring,openTelemetry,grafana URL,prometheus URL[here](https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit)
-- We can configure the exiting grafana and prometheus URL's and enableCentralMonitoring set to be false in the Values.yaml (existing URL's should be present in the same cluster)
 
 7. Edit namespace in the `install/inputcm.yaml` file and `install/serviceaccount.yaml`,  if changed from default (i.e. "opsmx-isd")
 8. Edit the beta value to true in the `install/inputcm.yaml` file for beta releases only, let the default value be false (i.e. "false")
@@ -81,30 +80,6 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 ## Check the installation
 14. Access ISD using the URL specified in the values.yaml in step 5 and step 6 in a browser such as Chrome.
 16. Login to the ISD instance with user/password as admin and opsmxadmin123, if using the defaults for build-in LDAP.
-17. Login to the Grafana URL with admin user/password as admin and opsmxadmin123 directly then need to provide "/grafana" at the end of URL then create non admin user (follow the Creating Non admin user mean view_access user in Grafana) steps
-18. Once we create non admin user ISD will be auto login with non admin user
-
-# Creating DataSource in Grafana
-1. Access Grafana using the URL specified in values.yaml 
-2. Login to grafana using admin credentials (default username and password admin/opsmxadmin123 )
-3. Now, select Add new connection → select prometheus → Add new data source
-4. Provide the name and prometheus server URL(https://Prometheus) and save
-5. It will generate uid (ex: bed11ea0-a802-4b67-9646-5d6f2194495f)
-
-# Importing Dashboards in Grafana
-1. Go to grafana dashboard
-2. Click on Toggle Menu and select Dashboards
-3. Before importing the pipeline Insights and Stage Insights Json change the uid in all the panels which we get while creating promethus 
-4. Now, click on New → Import the Pipeline Insights 
-5. Provide the name and Change uid name and Import
-6. Same as Import the Stage Insights json also.
-
-# Creating Non admin user mean view_access user in Grafana
-1. Go to grafana dashboard
-2. Click on toggle button and select “Administration"
-3. Select Users→ New user→ give username and password as provided in values.yaml(under grafana section)
-4. Click on create user
-
 
 ## Switch from OpenLDAP to Saml
 1. Document to update from OpenLDAP to Saml can be found [here](https://docs.google.com/document/d/1y1xpMFq5fm5oqS83Bk62msM9VzdIr5kAcH_j2sNrmCw/edit#)
