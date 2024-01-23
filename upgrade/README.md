@@ -56,16 +56,18 @@ Upgrade sequence: (4.0.4.1 to 4.0.4.2)
 
 5. `cd upgrade`
 6. Update upgrade-inputcm.yaml: 
-   - url, username and gitemail MUST be updated(if require update grafana and promethus URL's). TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
+   - url, username and gitemail MUST be updated. TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
    - **If ISD Namespace is different from "opsmx-isd"**: Update namespace (default is opsmx-isd) to the namespace where ISD is installed
 7. **If ISD Namespace is different from "opsmx-isd"**: Edit serviceaccount.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
-8. DB Upgrade:
-   - Need to upadte the values.yaml under dbmigration section. 
-   `dbmigration:
-      enable: false  ### If we are upgrading the existing ISD From 4.0.4.1 / 4.0.4, then we need to set this flag to 'true'
-      versionFrom: 4.0.4.1 ## We need to update this flag if we want to run migration from other ISD versions. For eg: versionFrom: 4.0.4
-
-   **NOTE** We need to set the dbmigration > enable: true   & dbmigration > versionFrom: 4.0.4.1 [Give the current ISD version]
+8. Update values.yaml:
+   - (Optional) Refer to [this] (https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit) document if you want to enable the new Insights pages (Pipeline Insights and Stage Insights) added to ISD.
+   - DB Upgrade:
+     Upgrade from ISD 4.0.4.1 to 4.0.4.2 doesn't include DB changes so, dbmigration flag in values.yaml should be set to false.
+      dbmigration:
+        enable: false
+        versionFrom: 4.0.4 ## We need to update this flag if we want to run migration from other ISD versions. For eg: versionFrom: 4.0.3.1
+  
+**NOTE** We need to set the dbmigration > enable: true   & dbmigration > versionFrom: 4.0.4.1 [Give the current ISD version]
 
 9. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
 
@@ -100,8 +102,10 @@ Upgrade sequence: (4.0.4.1 to 4.0.4.2)
 16. Restart all pods:
       - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=0` Wait for a min or two
       - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=1` Wait for all pods to come to ready state
+      
+17. If you enabled new Insights feature in step 8, please follow the post installation steps listed [here] (https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit#heading=h.odfvfs38x0e3)
  
-17. Go to ISD UI and check that version number has changed in the bottom-left corner
+18. Go to ISD UI and check that version number has changed in the top right corner (under Help menu)
 
 18. Wait for about 5 min for autoconfiguration to take place.
 

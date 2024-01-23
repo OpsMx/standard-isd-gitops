@@ -25,16 +25,14 @@ Should we have different infrastructure requirements, please contact OpsMx.
 
 4. In the gitops-repo cloned to disk and edit `install/inputcm.yaml`. This should be updated, at a **minimum**, with gitrepo url,username and gitemail.
 5. **Update Values.yaml as required**, specifically: At **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/v4.0.4.2/charts/oes 
-- (Optional) Refer to [this document] (https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit) if we want to enable the new (Pipeline and Stage) Insight charts added to ISD.
-
-6. (Optional) If you enabled new Insights feature, please follow the post installation steps listed [here] (https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit#heading=h.odfvfs38x0e3)
+- (Optional) Refer to [this] (https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit) document if you want to enable the new Insights pages (Pipeline Insights and Stage Insights) added to ISD.
 
 NOTE: We recommend that we start with the defaults, updating just the URL and gitopsHalyard details and gradually adding SSO, external DBs, etc. while updating the installed instance.
 
-7. Edit namespace in the `install/inputcm.yaml` file and `install/serviceaccount.yaml`,  if changed from default (i.e. "opsmx-isd")
-8. Edit the beta value to true in the `install/inputcm.yaml` file for beta releases only, let the default value be false (i.e. "false")
-9. Push all changes in the gitops-repo to git (e.g `git add -A; git commit -m"my changes";git push`)
-10. Create namespace, a configmap for inputs and a service account as follows [edit namespace (i.e. opsmx-isd) as appropriate]:
+6. Edit namespace in the `install/inputcm.yaml` file and `install/serviceaccount.yaml`,  if changed from default (i.e. "opsmx-isd")
+7. Edit the beta value to true in the `install/inputcm.yaml` file for beta releases only, let the default value be false (i.e. "false")
+8. Push all changes in the gitops-repo to git (e.g `git add -A; git commit -m"my changes";git push`)
+9. Create namespace, a configmap for inputs and a service account as follows [edit namespace (i.e. opsmx-isd) as appropriate]:
 - `kubectl create ns opsmx-isd` 
 - `kubectl -n opsmx-isd apply -f install/inputcm.yaml` 
 - `kubectl -n opsmx-isd apply -f install/serviceaccount.yaml`
@@ -42,7 +40,7 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 ## Create secrets
 *ISD supports multiple secret managers for storing secrets such as DB passwords, SSO authenticatoin details and so on. Using kubernetes secrets is the default.*
 
-11. Create the following secrets. The default values are handled by the installer, except for gittoken. If you are using External SSO, DBs, etc. you might want to change them. Else, best to leave them at the defaults:
+10. Create the following secrets. The default values are handled by the installer, except for gittoken. If you are using External SSO, DBs, etc. you might want to change them. Else, best to leave them at the defaults:
 - `kubectl -n opsmx-isd create secret generic gittoken --from-literal=gittoken=PUT_YOUR_GITTOKEN_HERE`
 
 ### Optional
@@ -59,12 +57,12 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 ## Start the installation
 *The installation is done by a kubenetes job that processes the secrets, generates YAMLs, stores them into the git-repo and creats the objectes in Kubernetes.*
 
-12. Installation ISD by executing this command:
+11. Installation ISD by executing this command:
 
 - `kubectl -n opsmx-isd apply -f install/ISD-Install-Job.yaml`
 
 ## Monitor the installation process
-13. Wait for all pods to stabilize (about 10-20 min, depending on your cluster load). The "oes-config" in Completed status indicates completion of the installation process. Check status using:
+12. Wait for all pods to stabilize (about 10-20 min, depending on your cluster load). The "oes-config" in Completed status indicates completion of the installation process. Check status using:
 
 - `kubectl -n opsmx-isd get po -w`
 
@@ -78,8 +76,9 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 - `kubectl -n opsmx-isd logs isd-spinnaker-halyard-0 -c create-halyard-local`
 
 ## Check the installation
+13. If you enabled new Insights feature in step 5, please follow the post installation steps listed [here] (https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit#heading=h.odfvfs38x0e3) 
 14. Access ISD using the URL specified in the values.yaml in step 5 and step 6 in a browser such as Chrome.
-16. Login to the ISD instance with user/password as admin and opsmxadmin123, if using the defaults for build-in LDAP.
+15. Login to the ISD instance with user/password as admin and opsmxadmin123, if using the defaults for build-in LDAP.
 
 ## Switch from OpenLDAP to Saml
 1. Document to update from OpenLDAP to Saml can be found [here](https://docs.google.com/document/d/1y1xpMFq5fm5oqS83Bk62msM9VzdIr5kAcH_j2sNrmCw/edit#)
