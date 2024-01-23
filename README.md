@@ -77,7 +77,7 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 
 ## Check the installation
 13. If you enabled new Insights feature in step 5, please follow the post installation steps listed [here] (https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit#heading=h.odfvfs38x0e3) 
-14. Access ISD using the URL specified in the values.yaml in step 5 and step 6 in a browser such as Chrome.
+14. Access ISD using the URL specified in the values.yaml in step 5 in a browser such as Chrome.
 15. Login to the ISD instance with user/password as admin and opsmxadmin123, if using the defaults for build-in LDAP.
 
 ## Switch from OpenLDAP to Saml
