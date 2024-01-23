@@ -23,8 +23,9 @@ Should we have different infrastructure requirements, please contact OpsMx.
 ## Specify inputs based on your environment and git-repo
 *The installation process requires inputs such as the application version, git-repo details and so on.*
 
-4. In the gitops-repo cloned to disk and edit `install/inputcm.yaml`. This should be updated, at a **minimum**, with gitrepo and username.
-5. **Update Values.yaml as required**, specifically: At **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/v4.0.4.2/charts/oes
+4. In the gitops-repo cloned to disk and edit `install/inputcm.yaml`. This should be updated, at a **minimum**, with gitrepo url,username and gitemail.
+5. **Update Values.yaml as required**, specifically: At **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/v4.0.4.2/charts/oes 
+- (Optional) Refer to [this] (https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit) document if you want to enable the new Insights pages (Pipeline Insights and Stage Insights) added to ISD.
 
 NOTE: We recommend that we start with the defaults, updating just the URL and gitopsHalyard details and gradually adding SSO, external DBs, etc. while updating the installed instance.
 
@@ -75,8 +76,9 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 - `kubectl -n opsmx-isd logs isd-spinnaker-halyard-0 -c create-halyard-local`
 
 ## Check the installation
-13. Access ISD using the URL specified in the values.yaml in step 5 in a browser such as Chrome.
-14. Login to the ISD instance with user/password as admin and opsmxadmin123, if using the defaults for build-in LDAP.
+13. If you enabled new Insights feature in step 5, please follow the post installation steps listed [here] (https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit#heading=h.odfvfs38x0e3) 
+14. Access ISD using the URL specified in the values.yaml in step 5 in a browser such as Chrome.
+15. Login to the ISD instance with user/password as admin and opsmxadmin123, if using the defaults for build-in LDAP.
 
 ## Switch from OpenLDAP to Saml
 1. Document to update from OpenLDAP to Saml can be found [here](https://docs.google.com/document/d/1y1xpMFq5fm5oqS83Bk62msM9VzdIr5kAcH_j2sNrmCw/edit#)
@@ -84,9 +86,6 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
    - Move the old values.yaml to openldap-values.yaml and saml-values.yaml to values.yaml
 
    **NOTE**: Make sure values.yaml has saml configuration
-
-## Enable Grafana and Prometheus 
-1. Document for enabling Grafana and Prometheus can be found [here](https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit)
 
 # Troubleshooting Issues during installation
 ## ISD-Install-Job fails to start, no pod created or it errors
@@ -131,10 +130,3 @@ Issue these commands, replace -n option with the namespace
 - `kubectl -n opsmx-isd delete pvc -–all`
 - `kubectl -n opsmx-isd delete secrets --all`
 - `kubectl delete ns opsmx-isd`
-
-# Creating view_access user in Grafana
-
-1. Go to grafana dashboard
-2. Click on Toggle button and select “Administration”
-3. Select Users→ New user→ give username and password as provided in values.yaml(under grafana section)
-4. Click on create user
