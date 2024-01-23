@@ -130,5 +130,3 @@ Issue these commands, replace -n option with the namespace
 - `kubectl -n opsmx-isd delete pvc -–all`
 - `kubectl -n opsmx-isd delete secrets --all`
 - `kubectl delete ns opsmx-isd`
-
-
