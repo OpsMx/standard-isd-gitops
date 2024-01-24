@@ -102,7 +102,7 @@ Most common issues during installation are related to incorrect values in values
 - Update the values.yaml, and push to the git-repo
 - Wait for the helm install to error out, it is best to not break the process
 - `kubectl -n opsmx-isd apply -f install/ISD-Install-Job.yaml`
-- Once the job is in Completed state, if required, delete the crashing/erroring pods and the isd-spinnaker-halyard-0 pod
+- Once the job is in Completed state, if required, delete the crashing/erroring pods and the isd-spinnaker-halyard-0 pod.
 
 ## *-spinnaker-halyard-0 is in error/crashloop
 One of the common errors faced by first time installers is spinnaker-halyard going into an Error state. Most common reason is that the init container failed to clone the gitops repo. Note that “main” branch is expected to be the default branch for the repo.

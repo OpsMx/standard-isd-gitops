@@ -62,12 +62,13 @@ Upgrade sequence: (4.0.4.1 to 4.0.4.2)
 8. Update values.yaml:
    - (Optional) Refer to [this](https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit) document if you want to enable the new Insights pages (Pipeline Insights and Stage Insights) added to ISD.
    - **DB Upgrade**:
+   
        `Upgrade from ISD 4.0.4.1 to 4.0.4.2 doesn't include DB changes so, dbmigration flag in values.yaml should be set to false`
        `dbmigration`:
         `enable: false`
         `versionFrom: 4.0.4 ## We need to update this flag if we want to run migration from other ISD versions. For eg: versionFrom: 4.0.3.1`
  
-9. Push changes to git: `git add -A; git commit -m"Upgrade related changes";git push`
+9. Push changes to git: `git add -A; git commit -m "Upgrade related changes"; git push`
 
 10. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
      `kubectl patch configmap/upgrade-inputcm --type merge -p '{"data":{"release":"isd"}}' -n opsmx-isd` # Default release name is "isd".        
