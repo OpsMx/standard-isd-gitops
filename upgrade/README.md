@@ -56,7 +56,7 @@ Upgrade sequence: (4.0.4.1 to 4.0.4.2)
 
 5. `cd upgrade`
 6. Update upgrade-inputcm.yaml: 
-   - url, username and gitemail MUST be updated. TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here
+   - url, username and gitemail MUST be updated. TIP: if you have install/inputcm.yaml from previous installation, simply copy-paste these lines here.
    - **If ISD Namespace is different from "opsmx-isd"**: Update namespace (default is opsmx-isd) to the namespace where ISD is installed
 7. **If ISD Namespace is different from "opsmx-isd"**: Edit serviceaccount.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
 8. Update values.yaml:
