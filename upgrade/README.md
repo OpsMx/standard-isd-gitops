@@ -67,9 +67,9 @@ Upgrade sequence: (4.0.4.1 to 4.0.4.2)
        Upgrade from ISD 4.0.4.1 to 4.0.4.2 doesn't include DB changes so, dbmigration flag in values.yaml should be set to false
        `dbmigration`:
        
-        `enable: false`
+           enable: false
         
-        `versionFrom: 4.0.4 ## We need to update this flag if we want to run migration from other ISD versions. For eg: versionFrom: 4.0.3.1`
+           versionFrom: 4.0.4 ## We need to update this flag if we want to run migration from other ISD versions. For eg: versionFrom: 4.0.3.1
  
 9. Push changes to git: `git add -A; git commit -m "Upgrade related changes"; git push`
 
