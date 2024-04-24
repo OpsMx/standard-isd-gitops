@@ -1,13 +1,13 @@
 
 # Upgrade Instructions
 
-Please follow these instructions if you are upgrading from 4.0.3.1 (to 4.0.4.3).The current installtion (4.0.4.3) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
+Please follow these instructions if you are upgrading from 4.0.3.1 (to 4.0.4.3).The current installtion (4.0.3.1) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
 
 **WARNING**: Please backup all the databases, in particualr the Posgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration. 
 
 ## Scenario A
 Use these instructions if:
-- You have a 4.0.3.1/4.0.4.3 installed using the helm installer and
+- You have a 4.0.3.1 installed using the helm installer and
 - Already have a "gitops-repo" for Spinnaker Configuration
 - Have values.yaml that was used for helm installation
 
