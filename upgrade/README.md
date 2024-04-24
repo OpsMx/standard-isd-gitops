@@ -1,19 +1,19 @@
 
 # Upgrade Instructions
 
-Please follow these instructions if you are upgrading from 4.0.4.1 (to 4.0.4.2).The current installtion (4.0.4.1) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
+Please follow these instructions if you are upgrading from 4.0.3.1 (to 4.0.4.3).The current installtion (4.0.4.3) could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
 
 **WARNING**: Please backup all the databases, in particualr the Posgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration. 
 
 ## Scenario A
 Use these instructions if:
-- You have a 4.0.4.1 installed using the helm installer and
+- You have a 4.0.3.1/4.0.4.3 installed using the helm installer and
 - Already have a "gitops-repo" for Spinnaker Configuration
 - Have values.yaml that was used for helm installation
 
 Execute these commands, replacing "gitops-repo" with your repo
 - `git clone `**https://github.com/.../gitops-repo**
-- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 4.0.4.2`
+- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 4.0.4.3`
 - `cp standard-isd-gitops/default/profiles/echo-local.yml gitops-repo/default/profiles/`
 - `cp -r standard-isd-gitops/upgrade gitops-repo`
 - `cd gitops-repo`
@@ -33,19 +33,19 @@ Execute these commands, replacing "gitops-repo" with your repo
 
 ## Scenario B
 Use this set if instructions if:
-a) You have a 4.0.4.1 installed using gitops installer
+a) You have a 4.0.3.1/4.0.4.3 installed using gitops installer
 b) Already have a gitops-repo for ISD (AP and Spinnaker) Configuration
 
 Execute these commands, replacing "gitops-repo" with your repo
 Execute these commands, replacing "gitops-repo" with your repo
 - `git clone `**https://github.com/.../gitops-repo**
-- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 4.0.4.2`
+- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 4.0.4.3`
 - `cp -r standard-isd-gitops/upgrade gitops-repo/` 
 - `cd gitops-repo`
 - Check that a "values.yaml" file exists in this directory (root of the gitops-repo)
 
 ## Common Steps
-Upgrade sequence: (4.0.4.1 to 4.0.4.2)
+Upgrade sequence: (4.0.3.1 to 4.0.4.3)
 1. Ensure that "default" account is configured to deploy to the ISD namespace (e.g. opsmx-isd)
 2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
 3. Copy the bom from standard-isd-gitops.git to the gitops-repo
@@ -64,11 +64,11 @@ Upgrade sequence: (4.0.4.1 to 4.0.4.2)
    - (Optional) Refer to [this](https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit) document if you want to enable the new Insights pages (Pipeline Insights and Stage Insights) added to ISD.
    - **DB Upgrade**:
    
-       Upgrade from ISD 4.0.4.1 to 4.0.4.2 doesn't include DB changes so, dbmigration flag in values.yaml should be set to false
+       Upgrade from ISD 4.0.3.1 to 4.0.4.3 include DB changes so, dbmigration flag in values.yaml should be set to true
        ```
        dbmigration:
-         enable: false
-         versionFrom: 4.0.4 ## We need to update this flag if we want to run migration from other ISD versions. For eg: versionFrom: 4.0.3.1
+         enable: true
+         versionFrom: 4.0.3.1 ## We need to update this flag if we want to run migration from other ISD versions. For eg: versionFrom: 4.0.3.1
        ```
 9. Push changes to git: `git add -A; git commit -m "Upgrade related changes"; git push`
 
