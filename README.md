@@ -12,7 +12,7 @@ Should we have different infrastructure requirements, please contact OpsMx.
 
 1. Create an empty-repo (called the "gitops-repo" in the document),  "main" branch should be the default, and clone it locally
 2. Clone https://github.com/OpsMx/standard-isd-gitops, selecting the appropriate branch:
-- `git clone https://github.com/OpsMx/standard-isd-gitops -b 4.0.4.2`
+- `git clone https://github.com/OpsMx/standard-isd-gitops -b 4.0.4.3`
 
 3. Copy contents of the standard-isd-repo to the gitops-repo created above using:
    
@@ -24,9 +24,9 @@ Should we have different infrastructure requirements, please contact OpsMx.
 *The installation process requires inputs such as the application version, git-repo details and so on.*
 
 4. In the gitops-repo cloned to disk and edit `install/inputcm.yaml`. This should be updated, at a **minimum**, with gitrepo url,username and gitemail.
-5. **Update Values.yaml as required**, specifically: At **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/v4.0.4.2/charts/oes 
+5. **Update Values.yaml as required**, specifically: At **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/v4.0.4.3/charts/oes 
 
-- (Optional) Refer to [this](https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit) document if you want to enable the new Insights pages (Pipeline Insights and Stage Insights) added to ISD.
+- (Optional) Refer to [this](https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit) document if you want to enable the new Insights pages (Pipeline Insights and User Insights) added to ISD.
 
 NOTE: We recommend that we start with the defaults, updating just the URL and gitopsHalyard details and gradually adding SSO, external DBs, etc. while updating the installed instance.
 
