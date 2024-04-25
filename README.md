@@ -82,7 +82,7 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 15. Login to the ISD instance with user/password as admin and opsmxadmin123, if using the defaults for build-in LDAP.
 
 ## Switch from OpenLDAP to Saml
-1. Document to update from OpenLDAP to Saml can be found [here](https://docs.google.com/document/d/1y1xpMFq5fm5oqS83Bk62msM9VzdIr5kAcH_j2sNrmCw/edit#)
+1. Document to update from OpenLDAP to Saml can be found [here](https://docs.google.com/document/d/1HOGDpmo0bdybFlW4n-lTfzsufkO9Qfb0N-tSBMorFGE/edit)
 2. Inorder to Install/Upgrade user can use saml-values.yaml file.
    - Move the old values.yaml to openldap-values.yaml and saml-values.yaml to values.yaml
 
