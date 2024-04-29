@@ -53,6 +53,7 @@ global:
 
 ####################################################
 spinnaker:
+  autoInstallSampleApps: true   # Set this to FALSE if upgrading
   gitopsHalyard: # A repo with appropriate contents used for configuring Spinnaker
     repo:
       type: git # git, s3, stash(bitbucket server) use a different sample values file for s3/bitbuck-stash
