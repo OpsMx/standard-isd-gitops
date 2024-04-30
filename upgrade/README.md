@@ -32,8 +32,8 @@ Execute these commands, replacing "gitops-repo" with your repo
    - `kubectl -n opsmx-isd create secret generic keystorepassword --from-literal keystorepassword=PUT_YOUR_SECRET_HERE`
 
 ## Scenario B
-Use this set if instructions if:
-a) You have a 4.0.3.1/4.0.4.3 installed using gitops installer
+Use this set of instructions if:
+a) You have a 4.0.3.1 installed using gitops installer
 b) Already have a gitops-repo for ISD (AP and Spinnaker) Configuration
 
 Execute these commands, replacing "gitops-repo" with your repo
@@ -61,10 +61,10 @@ Upgrade sequence: (4.0.3.1 to 4.0.4.3)
 7. **If ISD Namespace is different from "opsmx-isd"**: Edit serviceaccount.yaml and edit "namespace:" to update it to the ISD namespace (e.g.oes)
 8. Update values.yaml:
 
-   - (Optional) Refer to [this](https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit) document if you want to enable the new Insights pages (Pipeline Insights and Stage Insights) added to ISD.
+   - (Optional) Refer to [this](https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit) document if you want to enable the new Insights pages (Pipeline Insights and User Insights) added to ISD.
    - **DB Upgrade**:
    
-       Upgrade from ISD 4.0.3.1 to 4.0.4.3 include DB changes so, dbmigration flag in values.yaml should be set to true
+       Upgrade from ISD 4.0.3.1 to 4.0.4.3 involves DB changes so, dbmigration flag in values.yaml should be set to true
        ```
        dbmigration:
          enable: true
@@ -104,7 +104,7 @@ Upgrade sequence: (4.0.3.1 to 4.0.4.3)
       - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=0` Wait for a min or two
       - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=1` Wait for all pods to come to ready state
         
-17. Need to add the below code manullay in the `default/profiles/echo-local.yml` for echo pods to come to ready state.
+17. Add the below configuration (if not already present) in the default/profiles/echo-local.yml for echo pods.
      ```
        ssd:
          name: preview-saas-ssd
