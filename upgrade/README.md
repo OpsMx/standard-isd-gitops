@@ -1,9 +1,9 @@
 
 # Upgrade Instructions
 
-Please follow these instructions to upgrade ISD to 2024.06.00.The current installation (or we call it the 'fromVersion') could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
+Please follow these instructions to upgrade ISD to 2024.06.00. The current installation (or we call it the 'fromVersion') could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
 
-**Note**: ISD can be upgrade to 2024.06.00 from version 4.0.3.1 or any other version released in between (e.g. 4.0.4.2). Please pay attention to the DB Upgrade requirement for specific upgrade path.
+**Note**: ISD can be upgraded to 2024.06.00 from version 4.0.3.1 or later versions. Please pay attention to the DB Upgrade requirement for specific upgrade path.
 
 **WARNING**: Please backup all the databases, in particualr the Posgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration. 
 
@@ -67,10 +67,11 @@ Upgrade sequence:
    - (Optional) Refer to [this](https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit) document if you want to enable the new Insights pages (Pipeline Insights and User Insights) added to ISD.
    - **DB Upgrade**:
    
-       Set the dbmigration enabled flag to 
-	   - true, if you are upgrading ISD from a version older than 4.0.4.1 (e.g. 4.0.3.1) 
-	   - false, if you are upgrading ISD from 4.0.4.1 or a newer version 
-	   If dbmigration enaled is set to true, set the dbmigration versionFrom property to the ISD version in numeric (e.g. 4.0.3.1 or 4.0.4.2 or 4.0.4.3 ) you are currently running. 
+       Set the `dbmigration enabled` flag to 
+	   - `true`, if you are upgrading ISD from a version older than 4.0.4.1 (e.g. 4.0.3.1) 
+	   - `false`, if you are upgrading ISD from 4.0.4.1 or a newer version.
+        
+	   If `dbmigration enaled` is set to true, set the `dbmigration versionFrom` property to the ISD version in numeric (e.g. 4.0.3.1 or 4.0.4.2 or 4.0.4.3 ) you are currently running. 
 	   
 	   Sample configuration for upgrade from ISD 4.0.3.1  
        ```
