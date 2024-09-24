@@ -3,9 +3,9 @@
 
 Please follow these instructions to upgrade ISD to 2024.06.00. The current installation (or we call it the 'fromVersion') could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
 
-**Note**: ISD can be upgraded to 2024.06.00 from version 4.0.3.1 or later versions. Please pay attention to the DB Upgrade requirement for specific upgrade path.
+**Note**: ISD can be upgraded to 2024.06.00 from version 4.0.3.1 or later versions. Please pay attention to the DB Upgrade requirement for specific upgrade paths.
 
-**WARNING**: Please backup all the databases, in particualr the Posgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration. 
+**WARNING**: Please backup all the databases, in particualr the Postgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration. 
 
 ## Scenario A
 Use these instructions if:
@@ -39,7 +39,6 @@ a) You have ISD installed using gitops installer
 b) Already have a gitops-repo for ISD (AP and Spinnaker) Configuration
 
 Execute these commands, replacing "gitops-repo" with your repo
-Execute these commands, replacing "gitops-repo" with your repo
 - `git clone `**https://github.com/.../gitops-repo**
 - `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 2024.06.00`
 - `cp -r standard-isd-gitops/upgrade gitops-repo/` 
@@ -49,7 +48,7 @@ Execute these commands, replacing "gitops-repo" with your repo
 ## Common Steps
 Upgrade sequence:
 1. Ensure that "default" account is configured to deploy to the ISD namespace (e.g. opsmx-isd)
-2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them up using "syncToGit" pipeline opsmx-gitops application.
+2. If you have modified "sampleapp" or "opsmx-gitops" applications, please backup them by using the "syncToGit" pipeline opsmx-gitops application.
 3. Copy the bom from standard-isd-gitops.git to the gitops-repo
 
    `cp -r standard-isd-gitops/bom gitops-repo/`
