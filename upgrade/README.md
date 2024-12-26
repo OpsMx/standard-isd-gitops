@@ -1,9 +1,9 @@
 
 # Upgrade Instructions
 
-Please follow these instructions to upgrade ISD to 2024.06.00. The current installation (or we call it the 'fromVersion') could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
+Please follow these instructions to upgrade ISD to 2024.12.00. The current installation (or we call it the 'fromVersion') could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
 
-**Note**: ISD can be upgraded to 2024.06.00 from version 4.0.3.1 or later versions. Please pay attention to the DB Upgrade requirement for specific upgrade paths.
+**Note**: ISD can be upgraded to 2024.12.00 from version 2024.06.00 or later versions. Please pay attention to the DB Upgrade requirement for specific upgrade paths.
 
 **WARNING**: Please backup all the databases, in particualr the Postgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration. 
 
@@ -15,7 +15,7 @@ Use these instructions if:
 
 Execute these commands, replacing "gitops-repo" with your repo
 - `git clone `**https://github.com/.../gitops-repo**
-- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 2024.06.00`
+- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 2024.12.00`
 - `cp standard-isd-gitops/default/profiles/echo-local.yml gitops-repo/default/profiles/`
 - `cp -r standard-isd-gitops/upgrade gitops-repo`
 - `cd gitops-repo`
@@ -40,7 +40,7 @@ b) Already have a gitops-repo for ISD (AP and Spinnaker) Configuration
 
 Execute these commands, replacing "gitops-repo" with your repo
 - `git clone `**https://github.com/.../gitops-repo**
-- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 2024.06.00`
+- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 2024.12.00`
 - `cp -r standard-isd-gitops/upgrade gitops-repo/` 
 - `cd gitops-repo`
 - Check that a "values.yaml" file exists in this directory (root of the gitops-repo)

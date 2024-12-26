@@ -20,6 +20,6 @@ services:
   deck:
     image: quay.io/opsmxpublic/ubi8-oes-custom-deck:isd-spin-2024.12.00-e3e0f91e6-202412020935
   orca:
-    image: quay.io/opsmxpublic/ubi8-orca-cve:1.33.3-0dddbdca6-202412031306
+    image: quay.io/opsmxpublic/ubi8-orca-cve:1.33.3-22a062d4c-202412171337
   gate:
     image: quay.io/opsmxpublic/ubi8-gate-cve:1.33.3-575a6590-202412031015
