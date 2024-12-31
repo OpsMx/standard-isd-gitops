@@ -63,28 +63,11 @@ Upgrade sequence:
 8. Update values.yaml:
 
    - Set `autoInstallSampleApps` to false
-   - (Optional) Refer to [this](https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit) document if you want to enable the new Insights pages (Pipeline Insights and User Insights) added to ISD.
+   - (Optional) Refer to [this](https://docs.google.com/document/d/1aGzMEmXyVyrN_G9rU6VuCaz_H6X5u3OnpzZjhDKptcM/edit?tab=t.0#heading=h.ugse09v98wzj) document if you want to enable the new Insights pages (Pipeline Insights,User Insights and Deployment Insights) added to ISD.
    - **DB Upgrade**:
    
-       Set the `dbmigration enabled` flag to 
-	   - `true`, if you are upgrading ISD from a version older than 4.0.4.1 (e.g. 4.0.3.1) 
-	   - `false`, if you are upgrading ISD from 4.0.4.1 or a newer version.
-        
-	   If `dbmigration enaled` is set to true, set the `dbmigration versionFrom` property to the ISD version in numeric (e.g. 4.0.3.1 or 4.0.4.2 or 4.0.4.3 ) you are currently running. 
-	   
-	   Sample configuration for upgrade from ISD 4.0.3.1  
-       ```
-       dbmigration:
-         enable: true
-         versionFrom: 4.0.3.1 ## We need to update this flag if we want to run migration from other ISD versions. For eg: versionFrom: 4.0.3.1
-       ```
-	   
-       Sample configuration for upgrade from ISD 4.0.4.2 
-       ```
-       dbmigration:
-         enable: false
-         versionFrom: 4.0.4.2 ## We need to update this flag if we want to run migration from other ISD versions. For eg: versionFrom: 4.0.3.1
-       ```	   
+       Set the `dbmigration enabled` flag to `false`, if you are upgrading ISD from 2024.06.00 or a newer version.
+       
 9. Push changes to git: `git add -A; git commit -m "Upgrade related changes"; git push`
 10. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
 11. `kubectl patch configmap/upgrade-inputcm --type merge -p '{"data":{"release":"isd"}}' -n opsmx-isd` # Default release name is "isd".
@@ -124,7 +107,7 @@ Upgrade sequence:
       - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=0` Wait for a min or two
       - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=1` Wait for all pods to come to ready state
         
-19. If you enabled new Insights feature in step 8, please follow the post installation steps listed [here](https://docs.google.com/document/d/1FgbvGeylTmWKBFKZNs2mMkKlkxHpyzPMEy5wJCaKSxk/edit#heading=h.odfvfs38x0e3)
+19. If you enabled new Insights feature in step 8, please follow the post installation steps listed [here](https://docs.google.com/document/d/1aGzMEmXyVyrN_G9rU6VuCaz_H6X5u3OnpzZjhDKptcM/edit?tab=t.0#heading=h.odfvfs38x0e3)
  
 20. Go to ISD UI and check that version number has changed in the top right corner (under Help menu)
 
