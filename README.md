@@ -28,7 +28,7 @@ Should we have different infrastructure requirements, please contact OpsMx.
 4. In the gitops-repo cloned to disk and edit `install/inputcm.yaml`. This should be updated, at a **minimum**, with gitrepo url,username,namespace and gitemail.
 5. **Update Values.yaml as required**, specifically: At **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/isd-spin-2025.03.00/charts/oes
 
-- (Optional) Refer to [this](https://docs.google.com/document/d/1aGzMEmXyVyrN_G9rU6VuCaz_H6X5u3OnpzZjhDKptcM/edit?tab=t.0#heading=h.ugse09v98wzj) document if you want to enable the new Insights pages (Pipeline Insights, User Insights and Deployment Insights) added to ISD.
+- (Optional) Refer to [this](https://docs.google.com/document/d/1EPiEBjRw457aHhKlEOYEewfhkSc3Nr_TlAjiseULsls/edit?tab=t.0#heading=h.ugse09v98wzj) document if you want to enable the new Insights pages (Pipeline Insights, User Insights and Deployment Insights) added to ISD.
 
 NOTE: We recommend that we start with the defaults, updating just the URL and gitopsHalyard details and gradually adding SSO, external DBs, etc. while updating the installed instance.
 
