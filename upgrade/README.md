@@ -111,11 +111,11 @@ Upgrade sequence:
 
     **Note**: If Pipeline Insights was enabled before upgrade, you need to edit the query for Currently Running Pipelines panel (inside Pipeline Insights dashboard, in the Grafana UI) and change metric name from currently_executing_pipelines_new_ratio to currently_executing_pipelines_new (do not forget to save your changes to the dashboard)
  
-22. Go to ISD UI and check that version number has changed in the top right corner (under Help menu)
+20. Go to ISD UI and check that version number has changed in the top right corner (under Help menu)
 
-23. Wait for about 5 min for autoconfiguration to take place.
+21. Wait for about 5 min for autoconfiguration to take place.
 
-24. If required: a) Connect Spinnaker again b) Configure pipeline-promotion again. To do this, in the ISD UI:
+22. If required: a) Connect Spinnaker again b) Configure pipeline-promotion again. To do this, in the ISD UI:
       - Click setup
       - Click Spinnaker tab at the top. Check if "External Accounts" and "Pipeline-promotion" columns show "yes". If any of them is "no":
       - Click "edit" on the 3 dots on the far right. Check the values already filled in, make changes if required and click "update".
