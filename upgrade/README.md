@@ -109,7 +109,7 @@ Upgrade sequence:
         
 19. If you enabled new Insights feature in step 8, please follow the post installation steps listed [here](https://docs.google.com/document/d/1EPiEBjRw457aHhKlEOYEewfhkSc3Nr_TlAjiseULsls/edit?tab=t.0#heading=h.odfvfs38x0e3)
 
-    **Note**: If Pipeline Insights was enabled before upgrade, you need to edit the query for Currently Running Pipelines panel (inside Pipeline Insights dashboard, in the Grafana UI) and change metric name from currently_executing_pipelines_new_ratio to currently_executing_pipelines_new (do not forget to save your changes to the dashboard)
+    **Note**: If Pipeline Insights was enabled before upgrade, you need to edit the query for Currently Running Pipelines panel (inside Pipeline Insights dashboard, in the Grafana UI) and change metric name from `currently_executing_pipelines_new_ratio` to `currently_executing_pipelines_new` (do not forget to save your changes to the dashboard)
  
 20. Go to ISD UI and check that version number has changed in the top right corner (under Help menu)
 
