@@ -1,7 +1,7 @@
 
 # Upgrade Instructions
 
-Please follow these instructions to upgrade ISD to 2025.03.00. The current installation (or we call it the 'fromVersion') could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
+Please follow these instructions to upgrade ISD to 2025.08.00. The current installation (or we call it the 'fromVersion') could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
 
 **Note**: ISD can be upgraded to 2025.08.00 from version 2025.03.00 or later versions. Please pay attention to the DB Upgrade requirement for specific upgrade paths.
 
