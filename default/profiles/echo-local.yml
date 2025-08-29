@@ -20,6 +20,9 @@ spinnaker:
 microsoftteams:
   enabled: true
 
+cdevents:
+  enabled: true  
+
 #slack:
 #  app:
 #    token: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"

@@ -1734,6 +1734,10 @@ spinnaker:
         enabled: true
         version: 1.0.1
         config:
+      Opsmx.RuntimePipelineValidatePlugin:
+        enabled: true
+        version: 1.0.1
+        config:         
 policy:
   opa:
     enabled: true
@@ -1743,3 +1747,6 @@ policy:
       timeout: 10
 pipeline:
   rbac: false
+  validate:
+    runtime:
+      enabled: true

@@ -1,5 +1,5 @@
 enabled: false
-artifactId: quay.io/opsmxpublic/ubi8-gate-cve:1.33.3-7641f44-202505231214
+artifactId: quay.io/opsmxpublic/ubi8-gate-cve:1.33.3-e02948a-202507111304
 healthEndpoint: /health
 kubernetes:
   useExecHealthCheck: false
