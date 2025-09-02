@@ -45,7 +45,7 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 
 10. Create the following secrets. The default values are handled by the installer, except for gittoken and docker. If you are using External SSO, DBs, etc. you might want to change them. Else, best to leave them at the defaults:
 - `kubectl -n opsmx-isd create secret generic gittoken --from-literal=gittoken=PUT_YOUR_GITTOKEN_HERE`
-- `kubectl -n opsmx-isd create secret generic docker-pat-secret --from-literal=REG_PAT=PUT_YOUR_GITTOKEN_HERE` 
+- `kubectl -n opsmx-isd create secret generic docker-pat-secret --from-literal=REG_PAT=PUT_YOUR_DOCKERTOKEN_HERE` 
 
 ### Optional
 *In case we want to change these, please enter the correct values and create the secrets*
