@@ -23,7 +23,9 @@ Execute these commands, replacing "gitops-repo" with your repo
 - Update the values-fromVersion.yaml as per the requirement
 - Copy the updated values file as "values.yaml" (file name is important)
 - create gittoken secret. This token will be used to authenticate to the gitops-repo
-   - `kubectl -n opsmx-isd create secret generic gittoken --from-literal gittoken=PUT_YOUR_GITTOKEN_HERE` 
+   - `kubectl -n opsmx-isd create secret generic gittoken --from-literal gittoken=PUT_YOUR_GITTOKEN_HERE`
+- create docker secret. This token will be used to install the isd
+   - `kubectl -n opsmx-isd create secret generic docker-pat-secret --from-literal=REG_PAT=PUT_YOUR_DOCKERTOKEN_HERE`    
 - create secrets mentioned above. **NOTE**: You only need to create these secrets if they are changed from the default
    - `kubectl -n opsmx-isd create secret generic ldapconfigpassword --from-literal ldapconfigpassword=PUT_YOUR_SECRET_HERE`
    - `kubectl -n opsmx-isd create secret generic ldappassword --from-literal ldappassword=PUT_YOUR_SECRET_HERE`
