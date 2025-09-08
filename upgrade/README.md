@@ -66,6 +66,8 @@ Upgrade sequence:
 
    - Set `autoInstallSampleApps` to false
    - (Optional) Refer to [this](https://docs.google.com/document/d/1Um_FvVip5GtTWdezN2wANz3QsIoGrlFS07lTxNk6Sw8/edit?tab=t.0#heading=h.ugse09v98wzj) document if you want to enable the new Insights pages (Pipeline Insights,User Insights and Deployment Insights) added to ISD.
+
+     **Note**: In this version we have upgraded the grafana from 10.2.2 to 12.0.2 we can check in grafana URL.
    - **DB Upgrade**:
    
        Set the `dbmigration enabled` flag to `false`, if you are upgrading ISD from 2025.08.00 or a newer version.
@@ -112,8 +114,6 @@ Upgrade sequence:
 19. If you enabled new Insights feature in step 8, please follow the post installation steps listed [here](https://docs.google.com/document/d/1Um_FvVip5GtTWdezN2wANz3QsIoGrlFS07lTxNk6Sw8/edit?tab=t.0#heading=h.odfvfs38x0e3)
 
     **Note**: If Pipeline Insights was enabled before upgrade, you need to edit the query for Currently Running Pipelines panel (inside Pipeline Insights dashboard, in the Grafana UI) and change metric name from `currently_executing_pipelines_new_ratio` to `currently_executing_pipelines_new` (do not forget to save your changes to the dashboard)
-
-    **Note**: In this version we have upgraded the grafana from 10.2.2 to 12.0.2 we can check in grafana URL.
  
 21. Go to ISD UI and check that version number has changed in the top right corner (under Help menu)
 
@@ -125,10 +125,7 @@ Upgrade sequence:
       - Click "edit" on the 3 dots on the far right. Check the values already filled in, make changes if required and click "update".
       - Restart the halyard pod by clicking "Sync Accounts to Spinnaker" in the Cloud Accounts tab or simply delete the halyard pod
 
-24. In this version we have updated the opa,sidecars and rabbitmq images we can check by using this command:
-      - `kubectl get po -o=custom-columns="IMAGE:.spec.containers[*].image" -n opsmx-isd`
         
-
 ## If things go wrong during upgrade
 *As we have a gitops installer, recovering from a failed install/upgrade is very easy. In summary, we simply delete all objects are re-apply. Please follow the steps below to recover.*
 
