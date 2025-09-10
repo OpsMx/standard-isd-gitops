@@ -67,10 +67,10 @@ Upgrade sequence:
    - Set `autoInstallSampleApps` to false
    - (Optional) Refer to [this](https://docs.google.com/document/d/1Um_FvVip5GtTWdezN2wANz3QsIoGrlFS07lTxNk6Sw8/edit?tab=t.0#heading=h.ugse09v98wzj) document if you want to enable the new Insights pages (Pipeline Insights,User Insights and Deployment Insights) added to ISD.
 
-     **Note**: In this version we have upgraded the grafana from 10.2.2 to 12.0.2 we can check in grafana URL.
+     **Note**: In this version we have upgraded the grafana from 10.2.2 to 12.0.2 
    - **DB Upgrade**:
    
-       Set the `dbmigration enabled` flag to `false`, if you are upgrading ISD from 2025.08.00 or a newer version.
+       Set the `dbmigration enabled` flag to `false`, if you are upgrading ISD from 2025.03.00 or a newer version.
        
 9. Push changes to git: `git add -A; git commit -m "Upgrade related changes"; git push`
 10. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
