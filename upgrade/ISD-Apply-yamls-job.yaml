@@ -68,7 +68,7 @@ spec:
 
               then
 
-                kubectl -n $2 create secret generic ldappassword --from-literal ldappassword=$OPSMX_LDAP_PASSWORD
+                kubectl -n $2 create secret generic ldappassword --from-literal ldappassword=opsmxadmin123
 
                 if [ $?!= 0 ]; then echo "Error creating default secret ldappassword"; exit 1; fi
 
@@ -78,7 +78,7 @@ spec:
 
               then
 
-                kubectl -n $2 create secret generic dbpassword --from-literal dbpassword=$OPSMX_DB_PASSWORD
+                kubectl -n $2 create secret generic dbpassword --from-literal dbpassword=networks123
 
                 if [ $?!= 0 ]; then echo "Error creating default secret dbpassword"; exit 1; fi
 
@@ -88,7 +88,7 @@ spec:
 
               then
 
-                kubectl -n $2 create secret generic keystorepassword --from-literal keystorepassword=$OPSMX_KEYSTORE_PASSWORD
+                kubectl -n $2 create secret generic keystorepassword --from-literal keystorepassword=changeit
 
                 if [ $?!= 0 ]; then echo "Error creating default secret keystorepassword"l exit 1; fi
 
@@ -98,7 +98,7 @@ spec:
 
               then
 
-                kubectl -n $2 create secret generic rabbitmqpassword --from-literal rabbitmqpassword=$OPSMX_RABBIT_PASSWORD
+                kubectl -n $2 create secret generic rabbitmqpassword --from-literal rabbitmqpassword=Networks123
 
                 if [ $?!= 0 ]; then echo "Error creating default secret rabbitmqpassword"; exit 1; fi
 
@@ -108,7 +108,7 @@ spec:
 
               then
 
-                kubectl -n $2 create secret generic saporpassword --from-literal saporpassword=$OPSMX_SAPOR_PASSWORD
+                kubectl -n $2 create secret generic saporpassword --from-literal saporpassword=saporadmin
 
                 if [ $?!= 0 ]; then echo "Error creating default secret saporpassword"; exit 1; fi
 
@@ -118,7 +118,7 @@ spec:
 
               then
 
-                kubectl -n $2 create secret generic redispassword --from-literal redispassword=$OPSMX_REDIS_PASSWORD
+                kubectl -n $2 create secret generic redispassword --from-literal redispassword=password
 
                 if [ $?!= 0 ]; then echo "Error creating default secret redispassword"; exit 1; fi
 
@@ -128,7 +128,7 @@ spec:
 
               then
 
-                kubectl -n $2 create secret generic miniopassword --from-literal miniopassword=$OPSMX_MINIO_PASSWORD
+                kubectl -n $2 create secret generic miniopassword --from-literal miniopassword=spinnakeradmin
 
                 if [ $?!= 0 ]; then echo "Error creating default secret miniopassword"; exit 1; fi
 
@@ -138,7 +138,7 @@ spec:
 
               then
 
-                kubectl -n $2 create secret generic ldapconfigpassword --from-literal ldapconfigpassword=$OPSMX_LDAPCONFIG_PASSWORD
+                kubectl -n $2 create secret generic ldapconfigpassword --from-literal ldapconfigpassword=opsmxadmin123
 
                 if [ $?!= 0 ]; then echo "Error creating default secret ldapconfigpassword"; exit 1; fi
 
@@ -168,7 +168,7 @@ spec:
           envFrom:
           - configMapRef:
               name: upgrade-inputcm
-          image: 'quay.io/opsmxpublic/opsmx-custom-binaries:kubectl-spin-cli-git-bash-jq-yq_default'
+          image: 'quay.io/opsmxpublic/opsmx-custom-binaries:kubectl-spin-cli-git-bash-jq-yq'
           imagePullPolicy: IfNotPresent
           name: get-secrets
           volumeMounts:
