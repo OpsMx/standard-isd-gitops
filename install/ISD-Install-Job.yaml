@@ -65,10 +65,9 @@ spec:
               if [[ $1 == "ldappassword" ]]
 
               then
-
-                kubectl -n $2 create secret generic ldappassword --from-literal ldappassword=opsmxadmin123
-
-                if [ $?!= 0 ]; then echo "Error creating default secret ldappassword"; exit 1; fi
+              
+                 echo "No secret found: ldappassword"
+                 exit 1
 
               fi
               
@@ -76,9 +75,9 @@ spec:
 
               then
 
-                kubectl -n $2 create secret generic dbpassword --from-literal dbpassword=networks123
+                 echo "No secret found: dbpassword"
+                 exit 1
 
-                if [ $?!= 0 ]; then echo "Error creating default secret dbpassword"; exit 1; fi
 
               fi
               
@@ -86,9 +85,9 @@ spec:
 
               then
 
-                kubectl -n $2 create secret generic keystorepassword --from-literal keystorepassword=changeit
 
-                if [ $?!= 0 ]; then echo "Error creating default secret keystorepassword"l exit 1; fi
+                 echo "No secret found: keystorepassword"
+                 exit 1
 
               fi
               
@@ -96,9 +95,8 @@ spec:
 
               then
 
-                kubectl -n $2 create secret generic rabbitmqpassword --from-literal rabbitmqpassword=Networks123
-
-                if [ $?!= 0 ]; then echo "Error creating default secret rabbitmqpassword"; exit 1; fi
+                echo "No secret found: rabbitmqpassword"
+                exit 1
 
               fi
               
@@ -106,9 +104,8 @@ spec:
 
               then
 
-                kubectl -n $2 create secret generic saporpassword --from-literal saporpassword=saporadmin
-
-                if [ $?!= 0 ]; then echo "Error creating default secret saporpassword"; exit 1; fi
+                echo "No secret found: saporpassword"
+                exit 1
 
               fi
               
@@ -116,9 +113,8 @@ spec:
 
               then
 
-                kubectl -n $2 create secret generic redispassword --from-literal redispassword=password
-
-                if [ $?!= 0 ]; then echo "Error creating default secret redispassword"; exit 1; fi
+                echo "No secret found: redispassword"
+                exit 1
 
               fi
               
@@ -126,9 +122,8 @@ spec:
 
               then
 
-                kubectl -n $2 create secret generic miniopassword --from-literal miniopassword=spinnakeradmin
-
-                if [ $?!= 0 ]; then echo "Error creating default secret miniopassword"; exit 1; fi
+                echo "No secret found: miniopassword"
+                exit 1
 
               fi
               
@@ -136,9 +131,8 @@ spec:
 
               then
 
-                kubectl -n $2 create secret generic ldapconfigpassword --from-literal ldapconfigpassword=opsmxadmin123
-
-                if [ $?!= 0 ]; then echo "Error creating default secret ldapconfigpassword"; exit 1; fi
+                echo "No secret found: ldapconfigpassword"
+                exit 1
 
               fi
 
