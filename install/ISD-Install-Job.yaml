@@ -50,106 +50,15 @@ spec:
         - args:
             - >-
 
-              create_default_secret()
-              {
-              if [[ $1 == "gittoken" ]]
-
-              then
-
-                echo "Error: Cannot create a default gittoken as it is specific to the git-repo. Please create a secret containing the gittoken manually."
-
-                exit 1
-
-              fi
-              
-              if [[ $1 == "ldappassword" ]]
-
-              then
-              
-                 echo "No secret found: ldappassword"
-                 exit 1
-
-              fi
-              
-              if [[ $1 == "dbpassword" ]]
-
-              then
-
-                 echo "No secret found: dbpassword"
-                 exit 1
-
-
-              fi
-              
-              if [[ $1 == "keystorepassword" ]]
-
-              then
-
-
-                 echo "No secret found: keystorepassword"
-                 exit 1
-
-              fi
-              
-              if [[ $1 == "rabbitmqpassword" ]]
-
-              then
-
-                echo "No secret found: rabbitmqpassword"
-                exit 1
-
-              fi
-              
-              if [[ $1 == "saporpassword" ]]
-
-              then
-
-                echo "No secret found: saporpassword"
-                exit 1
-
-              fi
-              
-              if [[ $1 == "redispassword" ]]
-
-              then
-
-                echo "No secret found: redispassword"
-                exit 1
-
-              fi
-              
-              if [[ $1 == "miniopassword" ]]
-
-              then
-
-                echo "No secret found: miniopassword"
-                exit 1
-
-              fi
-              
-              if [[ $1 == "ldapconfigpassword" ]]
-
-              then
-
-                echo "No secret found: ldapconfigpassword"
-                exit 1
-
-              fi
-
-              }
-
-
               for secret in $(echo $secrets | sed "s/,/ /g")
 
               do
 
               echo getting $secret
 
-              kubectl -n "$namespace" get secret "$secret" 2>/dev/null || { echo "Defaulting secret $secret as it was not found." ; create_default_secret $secret $namespace; }
+              kubectl -n "$namespace" get secret "$secret" 2>/dev/null || { echo "No secret $secret found so exiting" ; exit 1 }
 
-              kubectl -n "$namespace" get secret "$secret" -o jsonpath='{.data.*}' |
-
-              base64 -d > /secret/"$secret" 
+              kubectl -n "$namespace" get secret "$secret" -o jsonpath='{.data.*}' | base64 -d > /secret/"$secret" 
 
               ls -ltr /secret/"$secret"
 
