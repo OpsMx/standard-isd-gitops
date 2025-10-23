@@ -56,7 +56,11 @@ spec:
 
               echo getting $secret
 
-              kubectl -n "$namespace" get secret "$secret" 2>/dev/null || { echo "No secret $secret found so exiting" ; exit 1 }
+              if ! kubectl -n "$namespace" get secret "$secret" >/dev/null 2>&1; then
+              kubectl -n "$namespace" get secret "$secret"
+                  echo "No secret $secret found, exiting"
+                  exit 1
+              fi
 
               kubectl -n "$namespace" get secret "$secret" -o jsonpath='{.data.*}' | base64 -d > /secret/"$secret" 
 
