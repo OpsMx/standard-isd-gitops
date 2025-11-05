@@ -43,7 +43,7 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 ## Create secrets
 *ISD supports multiple secret managers for storing secrets such as DB passwords, SSO authenticatoin details and so on. Using kubernetes secrets is the default.*
 
-10. Create the following secrets. The default values are handled by the installer, except for gittoken and docker. If you are using External SSO, DBs, etc. you might want to change them. Else, best to leave them at the defaults:
+10. Create the following secrets. The default values are handled by the installer, except for gittoken,ldapconfigpassword,ldappassword,miniopassword,redispassword,saporpassword,rabbitmqpassword,keystorepassword and docker. If you are using External SSO, DBs, etc. you might want to change them. Else, best to leave them at the defaults:
 - `kubectl -n opsmx-isd create secret generic gittoken --from-literal=gittoken=PUT_YOUR_GITTOKEN_HERE`
 
 please enter the correct values and create the secrets
@@ -79,7 +79,7 @@ please enter the correct values and create the secrets
 - `kubectl -n opsmx-isd logs isd-spinnaker-halyard-0 -c create-halyard-local`
 
 ## Check the installation
-13. If you enabled new Insights feature in step 5, please follow the post installation steps listed [here](https://docs.google.com/document/d/1Um_FvVip5GtTWdezN2wANz3QsIoGrlFS07lTxNk6Sw8/edit?tab=t.0#heading=h.odfvfs38x0e3). 
+13. If you enabled new Insights feature in step 5, please follow the post installation steps listed [here](https://docs.google.com/document/d/11DDcIGVNzCMSkG-zxLknTfjLog9UhzBW09vP7k4fJJw/edit?tab=t.0#heading=h.odfvfs38x0e3). 
 14. Access ISD using the URL specified in the values.yaml in step 5 in a browser such as Chrome.
 15. Login to the ISD instance with user/password as admin and opsmxadmin123, if using the defaults for build-in LDAP.
 
