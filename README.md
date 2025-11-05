@@ -13,7 +13,7 @@ Should we have different infrastructure requirements, please contact OpsMx.
 1. Create an empty-repo (called the "gitops-repo" in the document),  "main" branch should be the default, and clone it locally
 2. Clone https://github.com/OpsMx/standard-isd-gitops, selecting the appropriate branch:
 ```
-git clone https://github.com/OpsMx/standard-isd-gitops -b 2025.08.00
+git clone https://github.com/OpsMx/standard-isd-gitops -b 2025.10.00
 ```
 
 3. Copy contents of the standard-isd-repo to the gitops-repo created above using:
@@ -45,11 +45,8 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 
 10. Create the following secrets. The default values are handled by the installer, except for gittoken and docker. If you are using External SSO, DBs, etc. you might want to change them. Else, best to leave them at the defaults:
 - `kubectl -n opsmx-isd create secret generic gittoken --from-literal=gittoken=PUT_YOUR_GITTOKEN_HERE`
-- `kubectl -n opsmx-isd create secret generic docker-pat-secret --from-literal=REG_PAT=PUT_YOUR_DOCKERTOKEN_HERE` 
 
-### Optional
-*In case we want to change these, please enter the correct values and create the secrets*
-
+* please enter the correct values and create the secrets*
 - `kubectl -n opsmx-isd create secret generic ldapconfigpassword --from-literal ldapconfigpassword=PUT_YOUR_SECRET_HERE`
 - `kubectl -n opsmx-isd create secret generic ldappassword --from-literal ldappassword=PUT_YOUR_SECRET_HERE`
 - `kubectl -n opsmx-isd create secret generic miniopassword --from-literal miniopassword=PUT_YOUR_SECRET_HERE`
@@ -57,6 +54,8 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 - `kubectl -n opsmx-isd create secret generic saporpassword --from-literal saporpassword=PUT_YOUR_SECRET_HERE`
 - `kubectl -n opsmx-isd create secret generic rabbitmqpassword --from-literal rabbitmqpassword=PUT_YOUR_SECRET_HERE`
 - `kubectl -n opsmx-isd create secret generic keystorepassword --from-literal keystorepassword=PUT_YOUR_SECRET_HERE`
+
+- `kubectl -n opsmx-isd create secret generic docker-pat-secret --from-literal=REG_PAT=PUT_YOUR_DOCKERTOKEN_HERE` 
 
 ## Start the installation
 *The installation is done by a kubenetes job that processes the secrets, generates YAMLs, stores them into the git-repo and creats the objectes in Kubernetes.*
