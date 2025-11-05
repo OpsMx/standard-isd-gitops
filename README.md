@@ -26,9 +26,9 @@ git clone https://github.com/OpsMx/standard-isd-gitops -b 2025.10.00
 *The installation process requires inputs such as the application version, git-repo details and so on.*
 
 4. In the gitops-repo cloned to disk and edit `install/inputcm.yaml`. This should be updated, at a **minimum**, with gitrepo url,username,namespace and gitemail.
-5. **Update Values.yaml as required**, specifically: At **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/isd-spin-2025.08.00/charts/oes
+5. **Update Values.yaml as required**, specifically: At **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/isd-spin-2025.10.00/charts/oes
 
-- (Optional) Refer to [this](https://docs.google.com/document/d/1Um_FvVip5GtTWdezN2wANz3QsIoGrlFS07lTxNk6Sw8/edit?tab=t.0) document if you want to enable the new Insights pages (Pipeline Insights, User Insights and Deployment Insights) added to ISD.
+- (Optional) Refer to [this](https://docs.google.com/document/d/11DDcIGVNzCMSkG-zxLknTfjLog9UhzBW09vP7k4fJJw/edit?tab=t.0#heading=h.xtirn4xpx75t) document if you want to enable the new Insights pages (Pipeline Insights, User Insights and Deployment Insights) added to ISD.
 
 NOTE: We recommend that we start with the defaults, updating just the URL and gitopsHalyard details and gradually adding SSO, external DBs, etc. while updating the installed instance.
 
@@ -46,7 +46,7 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 10. Create the following secrets. The default values are handled by the installer, except for gittoken and docker. If you are using External SSO, DBs, etc. you might want to change them. Else, best to leave them at the defaults:
 - `kubectl -n opsmx-isd create secret generic gittoken --from-literal=gittoken=PUT_YOUR_GITTOKEN_HERE`
 
-* please enter the correct values and create the secrets*
+please enter the correct values and create the secrets
 - `kubectl -n opsmx-isd create secret generic ldapconfigpassword --from-literal ldapconfigpassword=PUT_YOUR_SECRET_HERE`
 - `kubectl -n opsmx-isd create secret generic ldappassword --from-literal ldappassword=PUT_YOUR_SECRET_HERE`
 - `kubectl -n opsmx-isd create secret generic miniopassword --from-literal miniopassword=PUT_YOUR_SECRET_HERE`
