@@ -1,9 +1,9 @@
 
 # Upgrade Instructions
 
-Please follow these instructions to upgrade ISD to 2025.08.00. The current installation (or we call it the 'fromVersion') could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
+Please follow these instructions to upgrade ISD to 2025.10.00. The current installation (or we call it the 'fromVersion') could have been installed using helm (Scenario A) or using the gitops installer (Scenario B). Please follow the steps as per your current scenario.
 
-**Note**: ISD can be upgraded to 2025.08.00 from version 2025.03.00 or later versions. Please pay attention to the DB Upgrade requirement for specific upgrade paths.
+**Note**: ISD can be upgraded to 2025.10.00 from version 2025.08.00 or later versions. Please pay attention to the DB Upgrade requirement for specific upgrade paths.
 
 **WARNING**: Please backup all the databases, in particualr the Postgres DB, BEFORE begining the upgrade. Backup procedures may differ depending your usage of external DBs and Spinnaker configuration. 
 
@@ -15,7 +15,7 @@ Use these instructions if:
 
 Execute these commands, replacing "gitops-repo" with your repo
 - `git clone `**https://github.com/.../gitops-repo**
-- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 2025.08.00`
+- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 2025.10.00`
 - `cp standard-isd-gitops/default/profiles/echo-local.yml gitops-repo/default/profiles/`
 - `cp -r standard-isd-gitops/upgrade gitops-repo`
 - `cd gitops-repo`
@@ -42,7 +42,7 @@ b) Already have a gitops-repo for ISD (AP and Spinnaker) Configuration
 
 Execute these commands, replacing "gitops-repo" with your repo
 - `git clone `**https://github.com/.../gitops-repo**
-- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 2025.08.00`
+- `git clone https://github.com/OpsMx/standard-isd-gitops.git -b 2025.10.00`
 - `cp -r standard-isd-gitops/upgrade gitops-repo/` 
 - `cd gitops-repo`
 - Check that a "values.yaml" file exists in this directory (root of the gitops-repo)
@@ -65,12 +65,11 @@ Upgrade sequence:
 8. Update values.yaml:
 
    - Set `autoInstallSampleApps` to false
-   - (Optional) Refer to [this](https://docs.google.com/document/d/1Um_FvVip5GtTWdezN2wANz3QsIoGrlFS07lTxNk6Sw8/edit?tab=t.0#heading=h.ugse09v98wzj) document if you want to enable the new Insights pages (Pipeline Insights,User Insights and Deployment Insights) added to ISD.
+   - (Optional) Refer to [this](https://docs.google.com/document/d/11DDcIGVNzCMSkG-zxLknTfjLog9UhzBW09vP7k4fJJw/edit?tab=t.0#heading=h.xtirn4xpx75t) document if you want to enable the new Insights pages (Pipeline Insights,User Insights and Deployment Insights) added to ISD.
 
-     **Note**: In this version we have upgraded the grafana from 10.2.2 to 12.0.2 
    - **DB Upgrade**:
    
-       Set the `dbmigration enabled` flag to `false`, if you are upgrading ISD from 2025.03.00 or a newer version.
+       Set the `dbmigration enabled` flag to `false`, if you are upgrading ISD from 2025.08.00 or a newer version.
        
 9. Push changes to git: `git add -A; git commit -m "Upgrade related changes"; git push`
 10. `kubectl -n opsmx-isd apply -f upgrade-inputcm.yaml`
@@ -111,7 +110,7 @@ Upgrade sequence:
       - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=0` Wait for a min or two
       - `kubectl -n opsmx-isd scale deploy -l app=oes --replicas=1` Wait for all pods to come to ready state
         
-19. If you enabled new Insights feature in step 8, please follow the post installation steps listed [here](https://docs.google.com/document/d/1Um_FvVip5GtTWdezN2wANz3QsIoGrlFS07lTxNk6Sw8/edit?tab=t.0#heading=h.odfvfs38x0e3)
+19. If you enabled new Insights feature in step 8, please follow the post installation steps listed [here](https://docs.google.com/document/d/11DDcIGVNzCMSkG-zxLknTfjLog9UhzBW09vP7k4fJJw/edit?tab=t.0#heading=h.odfvfs38x0e3)
 
     **Note**: If Pipeline Insights was enabled before upgrade, you need to edit the query for Currently Running Pipelines panel (inside Pipeline Insights dashboard, in the Grafana UI) and change metric name from `currently_executing_pipelines_new_ratio` to `currently_executing_pipelines_new` (do not forget to save your changes to the dashboard)
  

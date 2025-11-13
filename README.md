@@ -13,7 +13,7 @@ Should we have different infrastructure requirements, please contact OpsMx.
 1. Create an empty-repo (called the "gitops-repo" in the document),  "main" branch should be the default, and clone it locally
 2. Clone https://github.com/OpsMx/standard-isd-gitops, selecting the appropriate branch:
 ```
-git clone https://github.com/OpsMx/standard-isd-gitops -b 2025.08.00
+git clone https://github.com/OpsMx/standard-isd-gitops -b 2025.10.00
 ```
 
 3. Copy contents of the standard-isd-repo to the gitops-repo created above using:
@@ -26,9 +26,9 @@ git clone https://github.com/OpsMx/standard-isd-gitops -b 2025.08.00
 *The installation process requires inputs such as the application version, git-repo details and so on.*
 
 4. In the gitops-repo cloned to disk and edit `install/inputcm.yaml`. This should be updated, at a **minimum**, with gitrepo url,username,namespace and gitemail.
-5. **Update Values.yaml as required**, specifically: At **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/isd-spin-2025.08.00/charts/oes
+5. **Update Values.yaml as required**, specifically: At **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/isd-spin-2025.10.00/charts/oes
 
-- (Optional) Refer to [this](https://docs.google.com/document/d/1Um_FvVip5GtTWdezN2wANz3QsIoGrlFS07lTxNk6Sw8/edit?tab=t.0) document if you want to enable the new Insights pages (Pipeline Insights, User Insights and Deployment Insights) added to ISD.
+- (Optional) Refer to [this](https://docs.google.com/document/d/11DDcIGVNzCMSkG-zxLknTfjLog9UhzBW09vP7k4fJJw/edit?tab=t.0#heading=h.xtirn4xpx75t) document if you want to enable the new Insights pages (Pipeline Insights, User Insights and Deployment Insights) added to ISD.
 
 NOTE: We recommend that we start with the defaults, updating just the URL and gitopsHalyard details and gradually adding SSO, external DBs, etc. while updating the installed instance.
 
@@ -43,13 +43,10 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 ## Create secrets
 *ISD supports multiple secret managers for storing secrets such as DB passwords, SSO authenticatoin details and so on. Using kubernetes secrets is the default.*
 
-10. Create the following secrets. The default values are handled by the installer, except for gittoken and docker. If you are using External SSO, DBs, etc. you might want to change them. Else, best to leave them at the defaults:
+10. Create the following secrets. The default values are handled by the installer, except for gittoken,ldapconfigpassword,ldappassword,miniopassword,redispassword,saporpassword,rabbitmqpassword,keystorepassword and docker. If you are using External SSO, DBs, etc. you might want to change them. Else, best to leave them at the defaults:
 - `kubectl -n opsmx-isd create secret generic gittoken --from-literal=gittoken=PUT_YOUR_GITTOKEN_HERE`
-- `kubectl -n opsmx-isd create secret generic docker-pat-secret --from-literal=REG_PAT=PUT_YOUR_DOCKERTOKEN_HERE` 
 
-### Optional
-*In case we want to change these, please enter the correct values and create the secrets*
-
+please enter the correct values and create the secrets
 - `kubectl -n opsmx-isd create secret generic ldapconfigpassword --from-literal ldapconfigpassword=PUT_YOUR_SECRET_HERE`
 - `kubectl -n opsmx-isd create secret generic ldappassword --from-literal ldappassword=PUT_YOUR_SECRET_HERE`
 - `kubectl -n opsmx-isd create secret generic miniopassword --from-literal miniopassword=PUT_YOUR_SECRET_HERE`
@@ -57,6 +54,8 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 - `kubectl -n opsmx-isd create secret generic saporpassword --from-literal saporpassword=PUT_YOUR_SECRET_HERE`
 - `kubectl -n opsmx-isd create secret generic rabbitmqpassword --from-literal rabbitmqpassword=PUT_YOUR_SECRET_HERE`
 - `kubectl -n opsmx-isd create secret generic keystorepassword --from-literal keystorepassword=PUT_YOUR_SECRET_HERE`
+
+- `kubectl -n opsmx-isd create secret generic docker-pat-secret --from-literal=REG_PAT=PUT_YOUR_DOCKERTOKEN_HERE` 
 
 ## Start the installation
 *The installation is done by a kubenetes job that processes the secrets, generates YAMLs, stores them into the git-repo and creats the objectes in Kubernetes.*
@@ -80,7 +79,7 @@ NOTE: We recommend that we start with the defaults, updating just the URL and gi
 - `kubectl -n opsmx-isd logs isd-spinnaker-halyard-0 -c create-halyard-local`
 
 ## Check the installation
-13. If you enabled new Insights feature in step 5, please follow the post installation steps listed [here](https://docs.google.com/document/d/1Um_FvVip5GtTWdezN2wANz3QsIoGrlFS07lTxNk6Sw8/edit?tab=t.0#heading=h.odfvfs38x0e3). 
+13. If you enabled new Insights feature in step 5, please follow the post installation steps listed [here](https://docs.google.com/document/d/11DDcIGVNzCMSkG-zxLknTfjLog9UhzBW09vP7k4fJJw/edit?tab=t.0#heading=h.odfvfs38x0e3). 
 14. Access ISD using the URL specified in the values.yaml in step 5 in a browser such as Chrome.
 15. Login to the ISD instance with user/password as admin and opsmxadmin123, if using the defaults for build-in LDAP.
 

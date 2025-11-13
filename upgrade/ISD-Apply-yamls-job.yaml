@@ -70,8 +70,6 @@ spec:
               
               kubectl -n "$namespace" get secret "$secret" -o jsonpath='{.data.*}' | base64 -d > /secret/"$secret"
 
-              
-
               ls -ltr /secret/"$secret"
 
               done
