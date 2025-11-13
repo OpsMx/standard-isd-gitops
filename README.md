@@ -54,6 +54,7 @@ please enter the correct values and create the secrets
 - `kubectl -n opsmx-isd create secret generic saporpassword --from-literal saporpassword=PUT_YOUR_SECRET_HERE`
 - `kubectl -n opsmx-isd create secret generic rabbitmqpassword --from-literal rabbitmqpassword=PUT_YOUR_SECRET_HERE`
 - `kubectl -n opsmx-isd create secret generic keystorepassword --from-literal keystorepassword=PUT_YOUR_SECRET_HERE`
+- `kubectl -n opsmx-isd create secret generic dbpassword --from-literal dbpassword=PUT_YOUR_SECRET_HERE`
 
 - `kubectl -n opsmx-isd create secret generic docker-pat-secret --from-literal=REG_PAT=PUT_YOUR_DOCKERTOKEN_HERE` 
 
