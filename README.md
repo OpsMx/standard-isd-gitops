@@ -13,7 +13,7 @@ Should we have different infrastructure requirements, please contact OpsMx.
 1. Create an empty-repo (called the "gitops-repo" in the document),  "main" branch should be the default, and clone it locally
 2. Clone https://github.com/OpsMx/standard-isd-gitops, selecting the appropriate branch:
 ```
-git clone https://github.com/OpsMx/standard-isd-gitops -b 2025.10.00
+git clone https://github.com/OpsMx/standard-isd-gitops -b 2025.10.01
 ```
 
 3. Copy contents of the standard-isd-repo to the gitops-repo created above using:
@@ -26,9 +26,9 @@ git clone https://github.com/OpsMx/standard-isd-gitops -b 2025.10.00
 *The installation process requires inputs such as the application version, git-repo details and so on.*
 
 4. In the gitops-repo cloned to disk and edit `install/inputcm.yaml`. This should be updated, at a **minimum**, with gitrepo url,username,namespace and gitemail.
-5. **Update Values.yaml as required**, specifically: At **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/isd-spin-2025.10.00/charts/oes
-
-- (Optional) Refer to [this](https://docs.google.com/document/d/11DDcIGVNzCMSkG-zxLknTfjLog9UhzBW09vP7k4fJJw/edit?tab=t.0#heading=h.xtirn4xpx75t) document if you want to enable the new Insights pages (Pipeline Insights, User Insights and Deployment Insights) added to ISD.
+5. **Update Values.yaml as required**, specifically: At **minimum** the ISD URL and gitops-repo details in spinnaker.gitopsHalyard section must be updated. Full values.yaml is available at: https://github.com/OpsMx/enterprise-spinnaker/tree/isd-spin-2025.10.01/charts/oes
+   
+- (Optional) Refer to [this](https://docs.google.com/document/d/1ig6C7XnCI15srsIXBV2p2IGZGsRLiK3gUm205cvWu-8/edit?tab=t.0#heading=h.xtirn4xpx75t) document if you want to enable the new Insights pages (Pipeline Insights, User Insights and Deployment Insights) added to ISD.
 
 NOTE: We recommend that we start with the defaults, updating just the URL and gitopsHalyard details and gradually adding SSO, external DBs, etc. while updating the installed instance.
 
@@ -80,7 +80,7 @@ please enter the correct values and create the secrets
 - `kubectl -n opsmx-isd logs isd-spinnaker-halyard-0 -c create-halyard-local`
 
 ## Check the installation
-13. If you enabled new Insights feature in step 5, please follow the post installation steps listed [here](https://docs.google.com/document/d/11DDcIGVNzCMSkG-zxLknTfjLog9UhzBW09vP7k4fJJw/edit?tab=t.0#heading=h.odfvfs38x0e3). 
+13. If you enabled new Insights feature in step 5, please follow the post installation steps listed [here](https://docs.google.com/document/d/1ig6C7XnCI15srsIXBV2p2IGZGsRLiK3gUm205cvWu-8/edit?tab=t.0#heading=h.odfvfs38x0e3). 
 14. Access ISD using the URL specified in the values.yaml in step 5 in a browser such as Chrome.
 15. Login to the ISD instance with user/password as admin and opsmxadmin123, if using the defaults for build-in LDAP.
 
